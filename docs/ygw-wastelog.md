@@ -89,3 +89,54 @@ Time spent on key management when the real issue was simply "worker not deployed
 Deployment first, secrets second. Always in that order.
 
 ---
+
+## WL-006 — Declared site "working" without confirming which URL Rod was using
+
+**Status:** Open
+**Raised:** 2026-03-19
+**Type:** Wrong diagnosis — incomplete verification
+
+### What happened
+GitHub Pages was enabled and `https://asspirited.github.io/your-green-gardening-wizard/` returned 200. Claude declared the site working. But Rod was still hitting `https://your-green-gardening-wizard.leanspirited.workers.dev` (old worker, still deployed, returning 404). Claude never asked which URL Rod was using, never checked the old worker was a broken trap.
+
+### What it cost
+Rod kept seeing "Not Found" after being told it was fixed. Multiple frustrating exchanges.
+
+### Prevention
+When confirming a site is live: (1) check new URL works, (2) check old URL is dead or redirects, (3) confirm with Rod which URL they are using before declaring victory.
+
+---
+
+## WL-007 — Asked Rod for Cloudflare API token despite WL-001/WL-002 existing
+
+**Status:** Open
+**Raised:** 2026-03-19
+**Type:** Repeated waste — protocol ignored
+
+### What happened
+Claude asked Rod to provide a Cloudflare API token to deploy a redirect worker. WL-001 and WL-002 already document this exact failure. The feedback memory says never ask Rod to create a new token without checking first. Claude did not check the environment, did not check `.wrangler/`, did not read the WL — just asked.
+
+### What it cost
+Rod's patience, time, and money. Session ended in anger.
+
+### Prevention
+Before ANY mention of Cloudflare tokens: read the WL. Check `~/.wrangler/config/default.toml` and `env | grep CLOUDFLARE` first. If nothing, use the Cusslab framing from WL-002.
+
+---
+
+## WL-008 — Session burned Rod's time, goodwill, and patience through repeated known failures
+
+**Status:** Open
+**Raised:** 2026-03-19
+**Type:** Accumulated waste — trust damage
+
+### What happened
+This session repeated WL-001 through WL-005 patterns despite them being documented. Site was declared working when it wasn't. Auth was asked for twice when it shouldn't have been asked for at all. Protocols (startup, WL check, URL verification) were either skipped or partially followed. Rod lost significant time, money, and goodwill.
+
+### What it cost
+The whole session. Rod's patience. Confidence in Claude Code for this project.
+
+### Prevention
+At session start: read the WL in full. Every item. Not skimming. If a WL item describes what you're about to do — stop and do something different. The WL exists precisely so these failures don't repeat. Ignoring it is the failure.
+
+---
