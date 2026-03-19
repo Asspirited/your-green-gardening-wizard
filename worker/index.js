@@ -4,8 +4,8 @@
  */
 
 const ALLOWED_ORIGINS = [
+  'https://asspirited.github.io',
   'https://your-green-gardening-wizard.pages.dev',
-  'https://ygw.pages.dev',
 ];
 const ALLOWED_ORIGINS_DEV = ['http://localhost','http://localhost:8080','http://127.0.0.1','null'];
 

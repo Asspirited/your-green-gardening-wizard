@@ -468,7 +468,7 @@ Feature: buildAugmentedSystemPrompt tests
 
 ---
 
-## YGW-014 — Email capture UI (waitlist → real capture)
+## YGW-014 — Email capture UI (waitlist → Formspree)
 
 **Status:** Open
 **Priority:** High
@@ -478,7 +478,7 @@ Feature: buildAugmentedSystemPrompt tests
 
 ### User Story
 As a user who clicks "Join the waitlist",
-I want my email address captured and stored,
+I want my email address captured,
 So that LeanSpirited can contact me when the paid plan launches.
 
 ### Acceptance Criteria
@@ -489,7 +489,7 @@ Feature: Email capture
   Scenario: User submits email in upgrade modal
     Given the upgrade modal is open
     When the user enters their email and clicks "Join the waitlist"
-    Then the email is POSTed to /save-profile on the Worker
+    Then the email is POSTed to the Formspree endpoint
     And the user sees a confirmation message
     And the AARRR Revenue event fires
 
@@ -500,9 +500,11 @@ Feature: Email capture
 ```
 
 ### Notes
-- Worker `/save-profile` route already built — needs KV binding enabled in wrangler.toml
-- Client: add email input to modal, replace fake-door join button
-- KV namespace: `YGW_PROFILES` (create in Cloudflare dashboard)
+- **No Cloudflare KV needed** — use Formspree (formspree.io)
+- Setup (one-off, 2 minutes): Sign up at formspree.io → New Form → copy the endpoint URL
+- Client: add email input to modal, POST to `https://formspree.io/f/YOUR_FORM_ID`
+- Formspree free tier: 50 submissions/month — more than enough for waitlist validation
+- No backend changes needed — pure client-side
 
 ---
 
@@ -748,46 +750,41 @@ Feature: Landscaper planting plan
 
 ---
 
-## YGW-022 — Worker KV bindings and deployment (Phase 2 enabler)
+## YGW-022 — Worker CORS update (one-time, then done)
 
-**Status:** Open
+**Status:** Done
 **Priority:** High
 **Loop:** TDD
 **Raised:** 2026-03-19
-**Epic:** Phase 2 — Retention
+**Epic:** Phase 1.5 deploy
 
 ### User Story
 As the Worker,
-I want KV namespaces bound so that /save-profile and /analytics can store data,
-So that Phase 2 features (email capture, saved profiles, analytics) work in production.
+I want CORS configured for GitHub Pages,
+So that the site hosted at asspirited.github.io can call the API proxy.
 
 ### Acceptance Criteria
 
 ```gherkin
-Feature: Worker KV bindings
+Feature: Worker CORS for GitHub Pages
 
-  Scenario: YGW_PROFILES KV namespace is bound
-    Given wrangler.toml has the KV binding uncommented
-    And the namespace exists in Cloudflare dashboard
-    When /save-profile receives a POST
-    Then it stores data without a 500 error
-
-  Scenario: YGW_ANALYTICS KV namespace is bound
-    Given the analytics binding is active
-    When /analytics receives a POST
-    Then the event is stored
+  Scenario: GitHub Pages origin is allowed
+    Given the worker is deployed with updated CORS
+    When a request arrives from https://asspirited.github.io
+    Then the worker returns a valid CORS response
 ```
 
 ### Notes
-- In Cloudflare (dash.cloudflare.com): Workers & Pages → KV → Create namespace `YGW_PROFILES` and `YGW_ANALYTICS`
-- Uncomment KV bindings in wrangler.toml
-- Redeploy Worker: `npm run deploy:worker`
+- Code change done — `asspirited.github.io` added to ALLOWED_ORIGINS in worker/index.js
+- **One action required**: In your terminal — `cd /home/rodent/your-green-gardening-wizard && npx wrangler deploy`
+- After that: Cloudflare Worker is fully hands-off — no further changes needed for Phase 1.5 or Phase 2
+- KV deferred — email capture uses Formspree instead (YGW-014)
 
 ---
 
 ## YGW-023 — Full pipeline setup
 
-**Status:** Open
+**Status:** Done
 **Priority:** High
 **Loop:** TDD
 **Raised:** 2026-03-19
