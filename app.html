@@ -316,6 +316,10 @@
   </button>
   <div class="toolbar-right">
     <span class="season-indicator" id="season-indicator">Spring</span>
+    <div class="toolbar-sep"></div>
+    <button class="tool-btn" id="btn-export" onclick="exportPDF()">
+      🖨 Export PDF
+    </button>
   </div>
 </div>
 
@@ -911,6 +915,147 @@ function showToast(msg) {
   t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
+
+// ── PDF Export ──
+function exportPDF() {
+  // Ensure proposal view for best render
+  if (state.view !== 'proposal') setView('proposal');
+  render();
+
+  const imgData = canvas.toDataURL('image/png');
+  const area_m2 = state.boundaryClosed ? polygonArea(state.boundary).toFixed(1) : '—';
+  const seasonLabel = state.season.charAt(0).toUpperCase() + state.season.slice(1);
+
+  // Plant schedule
+  const counts = {};
+  state.plants.forEach(p => { counts[p.plantId] = (counts[p.plantId] || 0) + 1; });
+  const plantRows = Object.entries(counts).map(([id, n]) => {
+    const plant = PLANTS.find(p => p.id === id);
+    if (!plant) return '';
+    return `<tr>
+      <td><span class="dot" style="background:${plant.dotColour}"></span>${plant.name}</td>
+      <td>${plant.type}</td>
+      <td>${n}</td>
+      <td>${plant.spread}m</td>
+      <td>${plant.height}m</td>
+    </tr>`;
+  }).join('');
+
+  const dateStr = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  const html = `<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<title>Garden Design Proposal — Your Green Gardening Wizard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', system-ui, sans-serif; color: #1c1c1c; background: white; }
+  .page { max-width: 210mm; margin: 0 auto; padding: 18mm 20mm 14mm; }
+
+  /* Header */
+  .doc-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 22px; padding-bottom: 14px; border-bottom: 2px solid #1a3a2a; }
+  .doc-title { font-family: 'Playfair Display', Georgia, serif; font-size: 1.6rem; color: #1a3a2a; line-height: 1.2; margin-bottom: 4px; }
+  .doc-date  { font-size: 0.8rem; color: #888; }
+  .brand     { font-family: 'Playfair Display', Georgia, serif; font-size: 1rem; color: #1a3a2a; text-align: right; }
+  .brand em  { color: #52b788; font-style: italic; }
+
+  /* Garden image */
+  .garden-image { width: 100%; border: 1px solid #ddd; border-radius: 6px; margin-bottom: 18px; display: block; }
+
+  /* Stats row */
+  .stats { display: flex; gap: 0; margin-bottom: 22px; border: 1px solid #e0ded8; border-radius: 6px; overflow: hidden; }
+  .stat { flex: 1; padding: 10px 16px; border-right: 1px solid #e0ded8; }
+  .stat:last-child { border-right: none; }
+  .stat-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #2d6a4f; margin-bottom: 3px; }
+  .stat-value { font-size: 1.05rem; font-weight: 500; color: #1a3a2a; }
+
+  /* Plant schedule */
+  h2 { font-family: 'Playfair Display', Georgia, serif; font-size: 1rem; color: #1a3a2a; margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; font-size: 0.83rem; margin-bottom: 24px; }
+  thead th { background: #1a3a2a; color: white; padding: 8px 12px; text-align: left; font-size: 0.7rem; font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+  thead th:not(:first-child) { text-align: center; }
+  tbody td { padding: 8px 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
+  tbody td:not(:first-child) { text-align: center; }
+  tbody tr:nth-child(even) { background: #f9f9f6; }
+  .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 7px; vertical-align: middle; flex-shrink: 0; }
+
+  /* Footer */
+  .doc-footer { padding-top: 12px; border-top: 1px solid #e0ded8; display: flex; justify-content: space-between; font-size: 0.72rem; color: #aaa; }
+
+  @media print {
+    body { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { padding: 10mm 15mm; max-width: 100%; }
+    @page { size: A4; margin: 0; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="doc-header">
+    <div>
+      <div class="doc-title">Garden Design Proposal</div>
+      <div class="doc-date">Prepared ${dateStr}</div>
+    </div>
+    <div class="brand">Your Green <em>Gardening Wizard</em></div>
+  </div>
+
+  <img class="garden-image" src="${imgData}" alt="Garden plan — ${seasonLabel} view">
+
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-label">Garden area</div>
+      <div class="stat-value">${area_m2} m²</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Plants placed</div>
+      <div class="stat-value">${state.plants.length}</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Species count</div>
+      <div class="stat-value">${Object.keys(counts).length}</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Season</div>
+      <div class="stat-value">${seasonLabel}</div>
+    </div>
+  </div>
+
+  <h2>Plant Schedule</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Plant</th>
+        <th>Type</th>
+        <th>Qty</th>
+        <th>Spread</th>
+        <th>Height</th>
+      </tr>
+    </thead>
+    <tbody>
+      ${plantRows || '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px">No plants placed in this plan</td></tr>'}
+    </tbody>
+  </table>
+
+  <div class="doc-footer">
+    <span>Your Green Gardening Wizard · asspirited.github.io/your-green-gardening-wizard</span>
+    <span>Generated ${dateStr}</span>
+  </div>
+
+</div>
+<script>
+  // Auto-print once fonts and image have loaded
+  window.addEventListener('load', () => setTimeout(() => window.print(), 450));
+<\/script>
+</body></html>`;
+
+  const w = window.open('', '_blank');
+  if (!w) { showToast('Allow pop-ups to export PDF'); return; }
+  w.document.write(html);
+  w.document.close();
+}
+window.exportPDF = exportPDF;
 
 // Initial render
 render();

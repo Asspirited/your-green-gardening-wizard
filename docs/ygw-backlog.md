@@ -331,14 +331,14 @@ Feature: Bulk developer API
 
 | ID | Title | Score | Status |
 |---|---|---|---|
-| YGW-039 | Garden canvas MVP (app.html) — boundary + plant placement + seasonal grid | 9.0 | 🔨 Building |
+| YGW-039 | Garden canvas MVP (app.html) — boundary + plant placement + seasonal grid | 9.0 | ✅ Done |
 | YGW-040 | Seasonal date override in canvas — preview garden at any calendar date | 5.5 | 📋 Open |
-| YGW-041 | Export canvas to PDF — proposal flow for landscapers | 8.5 | 📋 Open |
+| YGW-041 | Export canvas to PDF — proposal flow for landscapers | 8.5 | ✅ Done |
 | YGW-042 | Plant library phase 2 — landscaper builds own plant list | 6.0 | 📋 Open |
 | YGW-043 | Plant quantity estimator in canvas — auto-count from area + spread | 8.5 | 📋 Open |
 | YGW-044 | Pact contract test for Worker /messages endpoint | 7.0 | ✅ Done |
 | YGW-045 | Plant growth timeline — canvas shows spread at Now/1yr/3yr/5yr/10yr | 9.0 | 📋 Open |
-| YGW-047 | Left-hand nav panel on landing page — tool switcher for Ollie demo | 7.0 | 🔨 Building |
+| YGW-047 | Left-hand nav panel on landing page — tool switcher for Ollie demo | 7.0 | ✅ Done |
 
 ---
 
