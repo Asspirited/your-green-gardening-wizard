@@ -6,25 +6,25 @@
 
 ## What was done this session
 
-- **YGW-013** — Tests for buildAugmentedSystemPrompt(): already done, marked ✅ Done
-- **YGW-014** — Pre-commit hook: already done, marked ✅ Done
-- **YGW-015** — hardiness-zones.md: already done, marked ✅ Done
-- **YGW-017** — 5 Tier 2 style files: already done, marked ✅ Done
-- **YGW-018** — Shareable visual plan card: ✅ Done
-  - `extractSharePlants(markdown)` — pure function, top 5 bold names, truncate >30 chars
-  - `generateShareCard(profile, result, refinements, { createCanvas })` — 1080×1080 PNG, injectable canvas for testability
-  - `🖼️ Share as image` button added to result-actions in index.html
-  - `shareAsImage()` — native share sheet (mobile) / download fallback (desktop)
-  - 147 tests, all green
-- **GitHub Pages** enabled and site confirmed live at new URL
-- **DEPLOY.md** rewritten to reflect GitHub Pages hosting
-- **WL-006, WL-007** raised for session failures
+- **Auth crisis resolved** — both URLs now work:
+  - `https://asspirited.github.io/your-green-gardening-wizard/` ✅ (GitHub Pages, primary)
+  - `https://your-green-gardening-wizard.leanspirited.workers.dev` ✅ (now redirects 301 → GitHub Pages)
+- **Root cause 1 fixed**: `index.html` was calling `WORKER_URL` bare (root `/`) instead of `WORKER_URL + '/messages'` — worker returned 404 for all requests
+- **Root cause 2 fixed**: Deployed 3-line redirect worker to old dead URL
+- **Auth infrastructure built**:
+  - `scripts/check-auth.sh` — canary script, run at pipeline start, exits RED if token/key missing
+  - `.claude/practices/auth-ops.md` — permanent WSL auth rules, source of truth
+- **WL-009 to WL-012** raised for this session's repeated failures
+- **Token used**: `cfat_NggRndoJHw7kaGrs5CBAqKBTIRqxbV5PcHfVz7uD3e509f81` (Account API Token, verified working with wrangler)
+- 147 tests green, pushed to main
 
 ---
 
 ## Decisions made
 
-DECISION 2026-03-19: Site is now hosted on GitHub Pages (not Cloudflare Pages/Workers). Auto-deploys on every `git push` to main. No manual deploy steps needed for the front end.
+DECISION 2026-03-19: `cfat_` prefix tokens (Account API Tokens) do NOT validate via the `/user/tokens/verify` REST endpoint but DO work with wrangler. Always test with `wrangler whoami`, not curl verify.
+
+DECISION 2026-03-19: Auth canary (`scripts/check-auth.sh`) must run as first step of every session before any code work. RED = stop everything.
 
 ---
 
@@ -36,46 +36,25 @@ Unchanged: *"A conversational garden advisor that remembers your garden profile 
 
 ## Live URLs
 
-- **Site:** https://asspirited.github.io/your-green-gardening-wizard/
-- **Worker:** https://ygw-api-proxy.leanspirited.workers.dev (alive — 405 on GET = correct)
+- **Site (primary):** https://asspirited.github.io/your-green-gardening-wizard/
+- **Site (old URL — now redirects):** https://your-green-gardening-wizard.leanspirited.workers.dev → 301
+- **API Worker:** https://ygw-api-proxy.leanspirited.workers.dev (alive, ANTHROPIC_API_KEY set)
 - **Landscaper:** https://asspirited.github.io/your-green-gardening-wizard/landscaper.html
-- **OLD URL (broken — 404):** https://your-green-gardening-wizard.leanspirited.workers.dev ← do not use
-
----
-
-## Open blocker for next session
-
-**`your-green-gardening-wizard.leanspirited.workers.dev` still returns 404.** An old Cloudflare Worker with this name is deployed and acting as a dead-end trap. Rod likely has this URL saved. Fix options:
-1. In **Cloudflare (dash.cloudflare.com)** → Workers & Pages → `your-green-gardening-wizard` → Edit code → paste redirect → Deploy (no token needed)
-2. OR `CLOUDFLARE_API_TOKEN=<token> wrangler deploy --name your-green-gardening-wizard` with a 1-line redirect worker
-
-Redirect code (3 lines):
-```js
-export default {
-  fetch() { return Response.redirect('https://asspirited.github.io/your-green-gardening-wizard/', 301); }
-}
-```
-
----
-
-## Missing knowledge file
-
-`knowledge/tier1/soil-types.md` does not exist — 404 on GitHub Pages. `buildAugmentedSystemPrompt` degrades gracefully so the app still works, but soil knowledge injection is silently disabled. Should be created. Not blocking.
 
 ---
 
 ## Next session top 3
 
-1. **Fix old worker redirect** (WL-006/WL-007 blocker — before showing site to Oz/Jerry)
-2. **Create soil-types.md** (knowledge gap — silent degradation)
-3. **YGW-025** — Year-round interest planner (next highest open item)
+1. **Run auth canary first** (`bash scripts/check-auth.sh`) — confirm GREEN before any work
+2. **Create soil-types.md** — `knowledge/tier1/soil-types.md` still missing, silent degradation
+3. **YGW-025** — Year-round interest planner (next open backlog item by priority)
 
 ---
 
 ## What Claude.ai should know
 
-- Site is on GitHub Pages — auto-deploy on push, no Cloudflare needed for front end
-- The old `your-green-gardening-wizard.leanspirited.workers.dev` URL is broken and needs a redirect
-- 147 tests green, pipeline enforced via pre-commit hook
-- YGW-018 (share card) is done — `generateShareCard` and `extractSharePlants` are in domain.js
-- Session ended badly due to repeated auth friction — WL-006 and WL-007 capture the failures
+- This session was entirely consumed by auth issues — no product work done
+- The auth problems have cost ~18 hours and ~£1,900 across sessions — Rod is at the limit of his patience
+- Both URLs now work. Product is functional. Next session should be clean build time.
+- Token `cfat_` format = Account API Token. Use `wrangler whoami` to verify, not curl.
+- WL-009 to WL-012 document this session's failure patterns in full

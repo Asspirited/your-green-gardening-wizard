@@ -40,7 +40,7 @@ export default {
 async function handleMessages(request, env, corsHeaders) {
   const body = await request.json();
   const safe = {
-    model: 'claude-sonnet-4-20250514',
+    model: 'claude-sonnet-4-6',
     max_tokens: Math.min(body.max_tokens || 1600, 2000),
     system: typeof body.system === 'string' ? body.system : undefined,
     messages: Array.isArray(body.messages) ? body.messages.slice(0, 10) : [],

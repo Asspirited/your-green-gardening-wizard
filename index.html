@@ -1214,9 +1214,10 @@ function applyHeroSeason(season) {
   const grad = stops.map((c, i) => `${c} ${Math.round((i / (stops.length - 1)) * 100)}%`).join(', ');
   document.getElementById('hero').style.background = `linear-gradient(160deg, ${grad})`;
 
-  // Particles
-  particleCanvas.width  = particleCanvas.offsetWidth  || document.getElementById('hero').offsetWidth;
-  particleCanvas.height = particleCanvas.offsetHeight || document.getElementById('hero').offsetHeight;
+  // Size canvas to hero element
+  const hero = document.getElementById('hero');
+  particleCanvas.width  = hero.offsetWidth  || window.innerWidth;
+  particleCanvas.height = hero.offsetHeight || 300;
   startParticles(particleCanvas, season);
 
   // Override button states
@@ -1564,6 +1565,25 @@ function restartWizard() {
   document.getElementById('wizard').style.display = 'block';
   document.getElementById('wizard').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+// ── Expose all onclick-called functions to global scope ──
+// Module scripts are not in global scope — inline onclick handlers need window.xxx
+window.startWizard          = startWizard;
+window.selectOption         = selectOption;
+window.toggleGoal           = toggleGoal;
+window.goNext               = goNext;
+window.goBack               = goBack;
+window.toggleRefine         = toggleRefine;
+window.toggleRefineOpt      = toggleRefineOpt;
+window.toggleRefineMulti    = toggleRefineMulti;
+window.submitRefinement     = submitRefinement;
+window.shareResult          = shareResult;
+window.shareAsImage         = shareAsImage;
+window.openUpgrade          = openUpgrade;
+window.closeUpgrade         = closeUpgrade;
+window.closeUpgradeIfOutside = closeUpgradeIfOutside;
+window.joinWaitlist         = joinWaitlist;
+window.restartWizard        = restartWizard;
 </script>
 </body>
 </html>
