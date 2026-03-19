@@ -1,0 +1,35 @@
+name = "ygw-api-proxy"
+main = "worker/index.js"
+compatibility_date = "2024-01-01"
+
+# ── Phase 1 ──
+# Set via: wrangler secret put ANTHROPIC_API_KEY
+# [vars]
+# ENVIRONMENT = "production"  # change to "development" for local testing
+
+# ── Phase 1.5 — Analytics Engine ──
+# Uncomment when ready to track AARRR events
+# [[analytics_engine_datasets]]
+# binding = "YGW_EVENTS"
+# dataset = "ygw_events"
+
+# ── Phase 2 — KV profile storage ──
+# Create KV namespace first:
+#   wrangler kv:namespace create YGW_PROFILES
+# Then uncomment and fill in the id:
+# [[kv_namespaces]]
+# binding = "YGW_PROFILES"
+# id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+# ── Phase 2 — Email (Resend) ──
+# Set via: wrangler secret put EMAIL_API_KEY
+# Sign up at resend.com — free tier: 100 emails/day, 3,000/month
+
+# ── Phase 3 — Stripe ──
+# Set via: wrangler secret put STRIPE_SECRET_KEY
+# Set via: wrangler secret put STRIPE_WEBHOOK_SECRET
+
+# ── Cron for seasonal emails (Phase 2) ──
+# Runs at start of each UK season
+# [triggers]
+# crons = ["0 8 1 3 *", "0 8 1 6 *", "0 8 1 9 *", "0 8 1 12 *"]

@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garden Plan Generator — For Landscapers | YGW</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --forest: #1a3a2a; --moss: #2d6a4f; --sage: #52b788; --mint: #b7e4c7;
+    --cream: #faf6f0; --parch: #f0e8d8; --soil: #6b4226; --ink: #1c1c1c;
+    --mist: #e8f4e8; --radius: 12px;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-ui: 'DM Sans', system-ui, sans-serif;
+  }
+  body { font-family: var(--font-ui); background: var(--cream); color: var(--ink); min-height: 100vh; }
+  header { background: var(--forest); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+  .brand { font-family: var(--font-display); font-size: 1.1rem; color: var(--cream); }
+  .brand-badge { background: var(--sage); color: var(--forest); font-size: 0.7rem; font-weight: 500; padding: 3px 10px; border-radius: 100px; margin-left: 12px; }
+  .container { max-width: 720px; margin: 0 auto; padding: 32px 20px 80px; }
+  .page-title { font-family: var(--font-display); font-size: 1.8rem; color: var(--forest); margin: 32px 0 8px; }
+  .page-sub { color: #666; font-size: 0.95rem; margin-bottom: 32px; line-height: 1.6; }
+  .card { background: white; border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.07); padding: 28px; margin-bottom: 20px; box-shadow: 0 2px 16px rgba(26,58,42,0.06); }
+  .field-label { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.07em; text-transform: uppercase; color: var(--sage); margin-bottom: 6px; display: block; }
+  .field-hint { font-size: 0.8rem; color: #888; margin-bottom: 10px; }
+  input[type=text], textarea, select {
+    width: 100%; padding: 12px 16px; border: 2px solid var(--parch); border-radius: 10px;
+    font-family: var(--font-ui); font-size: 0.95rem; background: var(--cream); color: var(--ink);
+    outline: none; transition: border-color 0.15s; margin-bottom: 16px;
+  }
+  input[type=text]:focus, textarea:focus, select:focus { border-color: var(--sage); background: white; }
+  textarea { min-height: 100px; resize: vertical; }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .section-title { font-family: var(--font-display); font-size: 1.1rem; color: var(--forest); margin-bottom: 16px; }
+  .opt-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+  .opt-pill { border: 2px solid var(--parch); border-radius: 100px; padding: 6px 16px; cursor: pointer; font-family: var(--font-ui); font-size: 0.82rem; font-weight: 500; color: #555; background: var(--cream); transition: all 0.15s; }
+  .opt-pill:hover { border-color: var(--sage); }
+  .opt-pill.selected { border-color: var(--moss); background: var(--mist); color: var(--forest); }
+  .btn-generate { width: 100%; background: var(--moss); color: white; border: none; border-radius: 100px; padding: 16px; font-family: var(--font-ui); font-weight: 500; font-size: 1rem; cursor: pointer; transition: background 0.15s; margin-top: 8px; }
+  .btn-generate:hover { background: var(--forest); }
+  .btn-generate:disabled { background: #ccc; cursor: not-allowed; }
+  .spinner { width: 40px; height: 40px; border: 3px solid var(--parch); border-top-color: var(--sage); border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 16px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  #loading { display: none; text-align: center; padding: 40px; }
+  #result-card { display: none; }
+  .result-header { background: var(--forest); border-radius: var(--radius) var(--radius) 0 0; padding: 24px; color: var(--cream); }
+  .result-body { background: white; border: 1px solid rgba(0,0,0,0.07); border-top: none; border-radius: 0 0 var(--radius) var(--radius); padding: 28px; }
+  .result-body h3 { font-family: var(--font-display); font-size: 1.05rem; color: var(--forest); margin: 20px 0 10px; }
+  .result-body h3:first-child { margin-top: 0; }
+  .result-body p { font-size: 0.9rem; line-height: 1.7; color: #333; margin-bottom: 10px; }
+  .result-body ul { list-style: none; padding: 0; margin-bottom: 14px; }
+  .result-body li { font-size: 0.875rem; line-height: 1.6; color: #333; padding: 7px 12px; margin-bottom: 5px; background: var(--cream); border-radius: 7px; border-left: 3px solid var(--sage); }
+  .result-body strong { color: var(--forest); }
+  .action-row { display: flex; gap: 10px; margin-top: 20px; flex-wrap: wrap; }
+  .btn-pdf { flex: 1; min-width: 140px; background: var(--forest); color: white; border: none; border-radius: 100px; padding: 12px 20px; font-family: var(--font-ui); font-weight: 500; font-size: 0.9rem; cursor: pointer; transition: background 0.15s; }
+  .btn-pdf:hover { background: var(--moss); }
+  .btn-new { flex: 1; min-width: 140px; background: none; border: 2px solid var(--parch); border-radius: 100px; padding: 10px 20px; font-family: var(--font-ui); font-weight: 500; font-size: 0.9rem; cursor: pointer; color: #666; transition: all 0.15s; }
+  .btn-new:hover { border-color: var(--sage); color: var(--moss); }
+  .pricing-note { background: var(--mist); border-radius: 10px; padding: 16px 20px; font-size: 0.875rem; color: var(--forest); margin-top: 20px; }
+  .pricing-note strong { display: block; margin-bottom: 4px; }
+  @media (max-width: 500px) { .grid-2 { grid-template-columns: 1fr; } .action-row { flex-direction: column; } }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <span class="brand">Your Green Gardening Wizard</span>
+    <span class="brand-badge">For Landscapers</span>
+  </div>
+  <a href="index.html" style="color: var(--mint); font-size: 0.85rem; text-decoration: none;">← Consumer app</a>
+</header>
+
+<div class="container">
+  <div class="page-title">Generate a client planting plan</div>
+  <p class="page-sub">Fill in your client's brief and garden details. We'll generate a professional planting plan with plant names, quantities, and client-ready notes — ready to include in your quote.</p>
+
+  <div id="form-section">
+    <div class="card">
+      <div class="section-title">Client &amp; project details</div>
+      <label class="field-label">Client name or project reference</label>
+      <input type="text" id="client-name" placeholder="e.g. Smith garden, 42 Park Road">
+
+      <label class="field-label">Client brief</label>
+      <div class="field-hint">What does the client want? Low maintenance? Wildlife garden? Entertaining space? Be as specific as you like.</div>
+      <textarea id="client-brief" placeholder="e.g. Client wants a low-maintenance back garden with year-round colour. They have two dogs and want to keep costs down. Existing lawn to be removed and replaced with planting beds and gravel paths."></textarea>
+    </div>
+
+    <div class="card">
+      <div class="section-title">Garden conditions</div>
+      <div class="grid-2">
+        <div>
+          <label class="field-label">Location</label>
+          <input type="text" id="location" placeholder="e.g. Bristol, South Yorkshire">
+        </div>
+        <div>
+          <label class="field-label">Approximate bed area (m²)</label>
+          <input type="text" id="area" placeholder="e.g. 25">
+        </div>
+      </div>
+
+      <label class="field-label">Soil type</label>
+      <select id="soil">
+        <option value="">Select soil type</option>
+        <option value="clay">Heavy clay</option>
+        <option value="sandy">Sandy / light</option>
+        <option value="loam">Rich loam</option>
+        <option value="chalky">Chalky / stony</option>
+        <option value="peaty">Peaty / boggy</option>
+        <option value="unknown">Not sure</option>
+      </select>
+
+      <label class="field-label">Aspect</label>
+      <select id="aspect">
+        <option value="">Select aspect</option>
+        <option value="south">South-facing (full sun)</option>
+        <option value="north">North-facing (shade)</option>
+        <option value="east">East-facing (morning sun)</option>
+        <option value="west">West-facing (afternoon sun)</option>
+        <option value="mixed">Mixed / not sure</option>
+      </select>
+
+      <label class="field-label">Safety requirements</label>
+      <div class="opt-row" id="safety-row">
+        <button class="opt-pill" data-val="dogs" onclick="togglePill(this)">🐕 Dog-safe</button>
+        <button class="opt-pill" data-val="cats" onclick="togglePill(this)">🐈 Cat-safe</button>
+        <button class="opt-pill" data-val="young-children" onclick="togglePill(this)">👶 Child-safe</button>
+        <button class="opt-pill" data-val="bees-important" onclick="togglePill(this)">🐝 Bee-friendly</button>
+      </div>
+
+      <label class="field-label">Style preference (optional)</label>
+      <div class="opt-row" id="style-row">
+        <button class="opt-pill" data-val="natural-wild" onclick="toggleStyle(this)">🌾 Natural</button>
+        <button class="opt-pill" data-val="cottage" onclick="toggleStyle(this)">🏡 Cottage</button>
+        <button class="opt-pill" data-val="mediterranean" onclick="toggleStyle(this)">🫒 Mediterranean</button>
+        <button class="opt-pill" data-val="modern-minimal" onclick="toggleStyle(this)">◻️ Modern</button>
+        <button class="opt-pill" data-val="meticulous" onclick="toggleStyle(this)">✂️ Formal</button>
+      </div>
+    </div>
+
+    <button class="btn-generate" id="btn-generate" onclick="generatePlan()">Generate planting plan →</button>
+
+    <div class="pricing-note">
+      <strong>Currently free during beta</strong>
+      Professional plans with quantity estimates, client PDF export, and schedule of works coming soon. £30–100/month. <a href="mailto:rod@leanspirited.com?subject=YGW+Landscaper+Beta" style="color: var(--moss);">Join the waitlist →</a>
+    </div>
+  </div>
+
+  <div id="loading">
+    <div class="spinner"></div>
+    <div style="font-family: var(--font-display); font-size: 1.1rem; color: var(--forest);">Building your planting plan...</div>
+    <div style="font-size: 0.875rem; color: #888; margin-top: 8px;">This takes about 20 seconds</div>
+  </div>
+
+  <div id="result-card">
+    <div class="result-header">
+      <div style="font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage); margin-bottom: 8px;">Client Planting Plan</div>
+      <div id="result-title" style="font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 4px;"></div>
+      <div id="result-meta" style="font-size: 0.85rem; color: var(--mint); opacity: 0.85;"></div>
+    </div>
+    <div class="result-body" id="result-body"></div>
+    <div style="padding: 0 28px 28px; background: white; border: 1px solid rgba(0,0,0,0.07); border-top: none; border-radius: 0 0 var(--radius) var(--radius);">
+      <div class="action-row">
+        <button class="btn-pdf" onclick="printPlan()">🖨️ Print / Save as PDF</button>
+        <button class="btn-new" onclick="newPlan()">+ New plan</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer style="background: var(--forest); text-align: center; padding: 16px; color: var(--mint); font-size: 0.8rem; opacity: 0.7;">
+  Your Green Gardening Wizard · Landscaper Beta · LeanSpirited
+</footer>
+
+<script type="module">
+import { buildGardenProfile, buildLandscaperSystemPrompt, renderMarkdown } from './domain.js';
+
+const WORKER_URL = 'YOUR_CLOUDFLARE_WORKER_URL';
+
+const state = { safety: [], style: null };
+
+window.togglePill = function(btn) {
+  btn.classList.toggle('selected');
+  const val = btn.dataset.val;
+  if (btn.classList.contains('selected')) { if (!state.safety.includes(val)) state.safety.push(val); }
+  else { state.safety = state.safety.filter(v => v !== val); }
+};
+
+window.toggleStyle = function(btn) {
+  document.querySelectorAll('#style-row .opt-pill').forEach(b => b.classList.remove('selected'));
+  btn.classList.toggle('selected');
+  state.style = btn.classList.contains('selected') ? btn.dataset.val : null;
+};
+
+window.generatePlan = async function() {
+  const clientName = document.getElementById('client-name').value.trim();
+  const clientBrief = document.getElementById('client-brief').value.trim();
+  const location = document.getElementById('location').value.trim();
+  const area = document.getElementById('area').value.trim();
+  const soil = document.getElementById('soil').value;
+  const aspect = document.getElementById('aspect').value;
+
+  if (!location || !soil || !aspect || !clientBrief) {
+    alert('Please fill in location, soil type, aspect, and client brief before generating.');
+    return;
+  }
+
+  document.getElementById('form-section').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+
+  const systemPrompt = buildLandscaperSystemPrompt(clientBrief);
+
+  const soilLabels = { clay:'heavy clay', sandy:'sandy/light', loam:'rich loam', chalky:'chalky/stony', peaty:'peaty/boggy', unknown:'unknown' };
+  const aspectLabels = { south:'south-facing (full sun)', north:'north-facing (shade)', east:'east-facing (morning sun)', west:'west-facing (afternoon sun)', mixed:'mixed aspect' };
+
+  let safetyNote = '';
+  if (state.safety.length > 0) {
+    const labels = { dogs:'dogs', cats:'cats', 'young-children':'young children', 'bees-important':'bee-friendly priority' };
+    safetyNote = `\nSafety requirements: ${state.safety.map(s => labels[s] || s).join(', ')}.`;
+  }
+
+  const styleNote = state.style ? `\nPreferred style: ${state.style.replace('-', ' ')}.` : '';
+
+  const userMessage = `Client: ${clientName || 'Unnamed project'}
+Location: ${location}
+Soil: ${soilLabels[soil]}
+Aspect: ${aspectLabels[aspect]}
+Approximate planting area: ${area ? area + 'm²' : 'not specified'}${safetyNote}${styleNote}
+
+Client brief: ${clientBrief}
+
+Please generate a professional planting plan for this project.`;
+
+  try {
+    const payload = {
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 2000,
+      system: systemPrompt,
+      messages: [{ role: 'user', content: userMessage }]
+    };
+
+    let data;
+    if (WORKER_URL && WORKER_URL !== 'YOUR_CLOUDFLARE_WORKER_URL') {
+      const res = await fetch(WORKER_URL + '/messages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      data = await res.json();
+    } else {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': 'REPLACE_FOR_LOCAL_TEST', 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify(payload)
+      });
+      data = await res.json();
+    }
+
+    const text = data.content[0].text;
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('result-card').style.display = 'block';
+    document.getElementById('result-title').textContent = clientName ? `${clientName} — Planting Plan` : 'Client Planting Plan';
+    document.getElementById('result-meta').textContent = `${location} · ${soilLabels[soil]} · ${aspectLabels[aspect]}${area ? ' · ' + area + 'm²' : ''}`;
+    document.getElementById('result-body').innerHTML = renderMarkdown(text);
+    document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  } catch (err) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('form-section').style.display = 'block';
+    alert('Something went wrong. Please try again.');
+    console.error(err);
+  }
+};
+
+window.printPlan = function() {
+  window.print();
+};
+
+window.newPlan = function() {
+  document.getElementById('result-card').style.display = 'none';
+  document.getElementById('form-section').style.display = 'block';
+  document.getElementById('result-body').innerHTML = '';
+  state.safety = [];
+  state.style = null;
+  document.querySelectorAll('.opt-pill.selected').forEach(b => b.classList.remove('selected'));
+  window.scrollTo(0, 0);
+};
+</script>
+
+<style media="print">
+  header, footer, .pricing-note, .action-row, #form-section { display: none !important; }
+  .container { padding: 0; max-width: 100%; }
+  .result-header { background: #1a3a2a !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: white; }
+</style>
+</body>
+</html>

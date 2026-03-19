@@ -1,0 +1,27 @@
+{
+  "name": "your-green-gardening-wizard",
+  "version": "0.1.0",
+  "description": "AI-powered garden design advisor — LeanSpirited",
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/domain.test.js",
+    "test:watch": "node --test --watch tests/domain.test.js",
+    "test:coverage": "node --test --experimental-test-coverage tests/domain.test.js",
+    "check": "node --check domain.js && node --check worker/index.js",
+    "dev": "wrangler dev --local",
+    "deploy:worker": "wrangler deploy",
+    "deploy:pages": "echo 'Deploy via Cloudflare Pages dashboard or: npx wrangler pages deploy . --project-name=your-green-gardening-wizard'"
+  },
+  "devDependencies": {
+    "wrangler": "^3.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Asspirited/your-green-gardening-wizard"
+  },
+  "author": "LeanSpirited (Tom Roden)",
+  "license": "UNLICENSED"
+}

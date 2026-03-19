@@ -435,6 +435,95 @@
   }
   .btn-restart:hover { color: var(--moss); }
 
+
+  /* ── Refine panel ── */
+  .refine-panel {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.07);
+    border-radius: var(--radius);
+    margin-top: 16px;
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(26,58,42,0.06);
+  }
+  .refine-header {
+    background: var(--parch);
+    padding: 18px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    user-select: none;
+  }
+  .refine-header-left { display: flex; align-items: center; gap: 12px; }
+  .refine-header-icon { font-size: 1.2rem; }
+  .refine-header-text { font-family: var(--font-display); font-size: 1.05rem; color: var(--forest); }
+  .refine-header-sub { font-size: 0.8rem; color: #888; margin-top: 2px; }
+  .refine-chevron { font-size: 1rem; color: #aaa; transition: transform 0.25s; }
+  .refine-chevron.open { transform: rotate(180deg); }
+  .refine-body { display: none; padding: 24px; border-top: 1px solid var(--parch); }
+  .refine-body.open { display: block; }
+  .refine-section { margin-bottom: 24px; }
+  .refine-section:last-child { margin-bottom: 0; }
+  .refine-section-title {
+    font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--moss); margin-bottom: 10px;
+  }
+  .style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .style-opt {
+    border: 2px solid var(--parch); border-radius: 10px; padding: 10px 8px;
+    cursor: pointer; text-align: center; background: var(--cream);
+    transition: all 0.15s; font-family: var(--font-ui);
+  }
+  .style-opt:hover { border-color: var(--sage); background: var(--mist); }
+  .style-opt.selected { border-color: var(--moss); background: var(--mist); }
+  .style-opt .sicon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
+  .style-opt .slabel { font-size: 0.78rem; font-weight: 500; color: var(--forest); display: block; }
+  .colour-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .colour-opt {
+    display: flex; align-items: center; gap: 7px;
+    border: 2px solid var(--parch); border-radius: 100px; padding: 6px 14px 6px 8px;
+    cursor: pointer; background: var(--cream); transition: all 0.15s;
+    font-family: var(--font-ui); font-size: 0.8rem; font-weight: 500; color: #555;
+  }
+  .colour-opt:hover { border-color: var(--sage); }
+  .colour-opt.selected { border-color: var(--moss); background: var(--mist); color: var(--forest); }
+  .colour-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.12); }
+  .safety-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .safety-opt {
+    display: flex; align-items: center; gap: 8px;
+    border: 2px solid var(--parch); border-radius: 10px; padding: 10px 14px;
+    cursor: pointer; background: var(--cream); transition: all 0.15s;
+    font-family: var(--font-ui); font-size: 0.85rem; font-weight: 500; color: #555;
+  }
+  .safety-opt:hover { border-color: #e8a87c; background: #fdf6f0; }
+  .safety-opt.selected { border-color: var(--soil); background: #fdf1e8; color: var(--bark); }
+  .plant-type-grid { display: flex; flex-wrap: wrap; gap: 8px; }
+  .plant-type-opt {
+    border: 2px solid var(--parch); border-radius: 100px; padding: 6px 16px;
+    cursor: pointer; background: var(--cream); transition: all 0.15s;
+    font-family: var(--font-ui); font-size: 0.82rem; font-weight: 500; color: #555;
+  }
+  .plant-type-opt:hover { border-color: var(--sage); }
+  .plant-type-opt.selected { border-color: var(--moss); background: var(--mist); color: var(--forest); }
+  .refine-actions {
+    display: flex; gap: 10px; margin-top: 20px;
+    padding-top: 20px; border-top: 1px solid var(--parch);
+  }
+  .btn-refine {
+    flex: 1; background: var(--moss); color: white; border: none;
+    border-radius: 100px; padding: 13px 20px; font-family: var(--font-ui);
+    font-weight: 500; font-size: 0.9rem; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    gap: 8px; transition: background 0.15s;
+  }
+  .btn-refine:hover { background: var(--forest); }
+  .btn-refine:disabled { background: #ccc; cursor: not-allowed; }
+  .refine-spinner {
+    display: none; text-align: center; padding: 20px;
+    color: var(--moss); font-size: 0.875rem;
+  }
+  .refine-spinner .spinner { width: 32px; height: 32px; margin: 0 auto 10px; }
+
   /* ── Upgrade modal ── */
   .modal-overlay {
     display: none;
@@ -722,6 +811,144 @@
 
 </main>
 
+  <!-- Refine panel -->
+  <div class="refine-panel" id="refine-panel" style="display:none">
+    <div class="refine-header" onclick="toggleRefine()">
+      <div class="refine-header-left">
+        <div class="refine-header-icon">🔍</div>
+        <div>
+          <div class="refine-header-text">Refine your recommendations</div>
+          <div class="refine-header-sub">Add style, colour, plant type and safety preferences</div>
+        </div>
+      </div>
+      <div class="refine-chevron" id="refine-chevron">▼</div>
+    </div>
+    <div class="refine-body" id="refine-body">
+
+      <!-- Garden style -->
+      <div class="refine-section">
+        <div class="refine-section-title">Garden style &amp; vibe</div>
+        <div class="style-grid">
+          <button class="style-opt" data-value="natural-wild" onclick="toggleRefineOpt(this,'style')">
+            <span class="sicon">🌾</span><span class="slabel">Natural &amp; wild</span>
+          </button>
+          <button class="style-opt" data-value="meticulous" onclick="toggleRefineOpt(this,'style')">
+            <span class="sicon">✂️</span><span class="slabel">Meticulous</span>
+          </button>
+          <button class="style-opt" data-value="cottage" onclick="toggleRefineOpt(this,'style')">
+            <span class="sicon">🏡</span><span class="slabel">Cottage garden</span>
+          </button>
+          <button class="style-opt" data-value="mediterranean" onclick="toggleRefineOpt(this,'style')">
+            <span class="sicon">🫒</span><span class="slabel">Mediterranean</span>
+          </button>
+          <button class="style-opt" data-value="modern-minimal" onclick="toggleRefineOpt(this,'style')">
+            <span class="sicon">◻️</span><span class="slabel">Modern &amp; minimal</span>
+          </button>
+          <button class="style-opt" data-value="japanese-zen" onclick="toggleRefineOpt(this,'style')">
+            <span class="sicon">🎋</span><span class="slabel">Japanese &amp; Zen</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Colour palette -->
+      <div class="refine-section">
+        <div class="refine-section-title">Colour palette</div>
+        <div class="colour-grid">
+          <button class="colour-opt" data-value="hot-bold" onclick="toggleRefineMulti(this,'colours')">
+            <span class="colour-dot" style="background:#e84545"></span>Hot &amp; bold
+          </button>
+          <button class="colour-opt" data-value="soft-pastel" onclick="toggleRefineMulti(this,'colours')">
+            <span class="colour-dot" style="background:#f4b8c8"></span>Soft pastels
+          </button>
+          <button class="colour-opt" data-value="cool-purple-blue" onclick="toggleRefineMulti(this,'colours')">
+            <span class="colour-dot" style="background:#7b68ee"></span>Cool purples &amp; blues
+          </button>
+          <button class="colour-opt" data-value="white-silver" onclick="toggleRefineMulti(this,'colours')">
+            <span class="colour-dot" style="background:#d8d8d8"></span>White &amp; silver
+          </button>
+          <button class="colour-opt" data-value="yellow-orange" onclick="toggleRefineMulti(this,'colours')">
+            <span class="colour-dot" style="background:#f5a623"></span>Yellows &amp; oranges
+          </button>
+          <button class="colour-opt" data-value="green-foliage" onclick="toggleRefineMulti(this,'colours')">
+            <span class="colour-dot" style="background:#52b788"></span>Greens &amp; foliage
+          </button>
+        </div>
+      </div>
+
+      <!-- Plant types -->
+      <div class="refine-section">
+        <div class="refine-section-title">Plant types I want</div>
+        <div class="plant-type-grid">
+          <button class="plant-type-opt" data-value="perennials" onclick="toggleRefineMulti(this,'plantTypes')">🌼 Perennials</button>
+          <button class="plant-type-opt" data-value="annuals" onclick="toggleRefineMulti(this,'plantTypes')">🌺 Annuals</button>
+          <button class="plant-type-opt" data-value="shrubs" onclick="toggleRefineMulti(this,'plantTypes')">🌿 Shrubs</button>
+          <button class="plant-type-opt" data-value="trees" onclick="toggleRefineMulti(this,'plantTypes')">🌳 Trees</button>
+          <button class="plant-type-opt" data-value="climbers" onclick="toggleRefineMulti(this,'plantTypes')">🌱 Climbers &amp; wall plants</button>
+          <button class="plant-type-opt" data-value="grasses" onclick="toggleRefineMulti(this,'plantTypes')">🎍 Grasses &amp; ferns</button>
+          <button class="plant-type-opt" data-value="bulbs" onclick="toggleRefineMulti(this,'plantTypes')">🧅 Bulbs</button>
+          <button class="plant-type-opt" data-value="fast-growing" onclick="toggleRefineMulti(this,'plantTypes')">⚡ Fast-growing only</button>
+          <button class="plant-type-opt" data-value="evergreen" onclick="toggleRefineMulti(this,'plantTypes')">🌲 Evergreen only</button>
+        </div>
+      </div>
+
+      <!-- Safety & hazards -->
+      <div class="refine-section">
+        <div class="refine-section-title">Safety &amp; hazards — exclude toxic plants for</div>
+        <div class="safety-grid">
+          <button class="safety-opt" data-value="dogs" onclick="toggleRefineMulti(this,'safety')">
+            <span class="saicon">🐕</span> Dogs
+          </button>
+          <button class="safety-opt" data-value="cats" onclick="toggleRefineMulti(this,'safety')">
+            <span class="saicon">🐈</span> Cats
+          </button>
+          <button class="safety-opt" data-value="young-children" onclick="toggleRefineMulti(this,'safety')">
+            <span class="saicon">👶</span> Young children
+          </button>
+          <button class="safety-opt" data-value="hayfever" onclick="toggleRefineMulti(this,'safety')">
+            <span class="saicon">🤧</span> Hayfever / allergies
+          </button>
+          <button class="safety-opt" data-value="skin-irritants" onclick="toggleRefineMulti(this,'safety')">
+            <span class="saicon">🖐️</span> Skin irritants
+          </button>
+          <button class="safety-opt" data-value="bees-important" onclick="toggleRefineMulti(this,'safety')">
+            <span class="saicon">🐝</span> Prioritise bee-friendly
+          </button>
+        </div>
+      </div>
+
+      <!-- Companion planting -->
+      <div class="refine-section">
+        <div class="refine-section-title">Extra knowledge I want included</div>
+        <div class="safety-grid">
+          <button class="safety-opt" data-value="companion-planting" onclick="toggleRefineMulti(this,'extras')">
+            <span class="saicon">🤝</span> Companion planting
+          </button>
+          <button class="safety-opt" data-value="avoid-combinations" onclick="toggleRefineMulti(this,'extras')">
+            <span class="saicon">🚫</span> What NOT to plant together
+          </button>
+          <button class="safety-opt" data-value="invasive-warning" onclick="toggleRefineMulti(this,'extras')">
+            <span class="saicon">⚠️</span> Flag invasive species
+          </button>
+          <button class="safety-opt" data-value="seasonal-succession" onclick="toggleRefineMulti(this,'extras')">
+            <span class="saicon">📅</span> Seasonal succession plan
+          </button>
+        </div>
+      </div>
+
+      <div class="refine-spinner" id="refine-spinner">
+        <div class="spinner"></div>
+        <div>Updating your garden plan...</div>
+      </div>
+
+      <div class="refine-actions">
+        <button class="btn-refine" onclick="submitRefinement()" id="btn-refine">
+          🌿 Update my garden plan
+        </button>
+      </div>
+    </div>
+  </div>
+
+
 <!-- Upgrade modal -->
 <div class="modal-overlay" id="modal" onclick="closeUpgradeIfOutside(event)">
   <div class="modal">
@@ -750,7 +977,28 @@
 
 <footer>Your Green Gardening Wizard · Made with 🌱 by LeanSpirited</footer>
 
-<script>
+<script type="module">
+import {
+  buildSystemPrompt,
+  buildAugmentedSystemPrompt,
+  buildUserMessage,
+  buildGardenProfile,
+  renderMarkdown,
+  formatShareText,
+  SOIL_LABELS,
+  ASPECT_LABELS,
+  GOAL_LABELS,
+  GOAL_ICONS,
+  STYLE_LABELS
+} from './domain.js';
+
+// Knowledge loader for browser — fetch from /knowledge/ path
+async function loadKnowledge(path) {
+  const res = await fetch(path);
+  if (!res.ok) throw new Error(`Knowledge file not found: ${path}`);
+  return res.text();
+}
+
 // ── State ──
 const state = {
   step: 1,
@@ -759,10 +1007,19 @@ const state = {
   soil: '',
   aspect: '',
   goals: [],
-  result: ''
+  result: '',
+  refinements: {
+    style: null,
+    colours: [],
+    plantTypes: [],
+    safety: [],
+    extras: []
+  }
 };
 
-const WORKER_URL = 'https://ygw-api-proxy.leanspirited.workers.dev';
+// ── IMPORTANT: Replace this URL with your Cloudflare Worker URL after deployment ──
+// During local testing, this calls the Anthropic API directly (requires API key in Worker)
+const WORKER_URL = 'YOUR_CLOUDFLARE_WORKER_URL';
 
 // ── Wizard flow ──
 function startWizard() {
@@ -871,54 +1128,52 @@ async function submitProfile() {
   document.getElementById('loading').style.display = 'block';
   cycleLoadingText();
 
-  const soilLabels = { clay:'heavy clay', sandy:'sandy/light', loam:'rich loam', chalky:'chalky/stony', peaty:'peaty/boggy', unknown:'unknown (help me identify it)' };
-  const aspectLabels = { south:'south-facing (sun all day)', north:'north-facing (mostly shade)', east:'east-facing (morning sun)', west:'west-facing (afternoon sun)', mixed:'mixed/not sure' };
+  const profile = buildGardenProfile(state);
+  let systemPrompt;
+  try {
+    systemPrompt = await buildAugmentedSystemPrompt(profile, null, loadKnowledge);
+  } catch {
+    systemPrompt = buildSystemPrompt(profile, null); // fallback if knowledge load fails
+  }
 
-  const goalLabels = state.goals.map(g => ({
-    'colour':'colour and flowers','wildlife':'wildlife and pollinators','veg':'vegetables and herbs',
-    'low-maintenance':'low maintenance','privacy':'privacy and screening','entertaining':'outdoor entertaining',
-    'scent':'scent','year-round':'year-round interest'
-  }[g])).join(', ');
-
-  const systemPrompt = `You are a friendly, expert UK garden advisor with 25 years of horticultural knowledge. You know British soil types, hardiness zones, rainfall patterns, and the best plants for every situation.
-
-Your job is to give personalised, practical garden advice based on the user's specific conditions. Your recommendations must:
-- Be genuinely tailored to the combination of location + soil + aspect + goals they describe
-- Name specific plant varieties that will actually thrive (not generic categories)
-- Include a mix of structural plants, seasonal interest, and the user's specific goals
-- Mention UK hardiness zones, local climate nuances, or regional considerations where relevant
-- Be warm, encouraging, and written in plain English — no jargon without explanation
-- Feel like advice from a knowledgeable friend, not a textbook
-
-Format your response in clear sections with headers. Include:
-1. A brief, warm read of their garden conditions (2-3 sentences)
-2. Recommended plants (at least 8-10 named varieties with a brief note on each)
-3. Two or three key design ideas tailored to their goals
-4. One or two seasonal tips or things to avoid for their specific conditions
-
-Keep the total response focused and readable — they're likely reading this on a phone.`;
-
-  const userMessage = `My garden profile:
-- Location: ${state.location}
-- Soil type: ${soilLabels[state.soil]}
-- Aspect: ${aspectLabels[state.aspect]}
-- What I want: ${goalLabels}
-
-Please give me personalised plant recommendations and garden design ideas for my specific conditions.`;
+  const userMessage = buildUserMessage(profile);
 
   try {
-    const res = await fetch(WORKER_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1200,
-        system: systemPrompt,
-        messages: [{ role: 'user', content: userMessage }]
-      })
-    });
-    const data = await res.json();
-    const responseText = data.content[0].text;
+    let responseText = '';
+
+    // Try Worker first, fall back to direct API for local dev
+    if (WORKER_URL && WORKER_URL !== 'YOUR_CLOUDFLARE_WORKER_URL') {
+      const res = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1200,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userMessage }]
+        })
+      });
+      const data = await res.json();
+      responseText = data.content[0].text;
+    } else {
+      // Direct API call (Worker not yet configured)
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': 'REPLACE_WITH_KEY_FOR_LOCAL_TEST_ONLY',
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 1200,
+          system: systemPrompt,
+          messages: [{ role: 'user', content: userMessage }]
+        })
+      });
+      const data = await res.json();
+      responseText = data.content[0].text;
+    }
 
     state.result = responseText;
     showResult(responseText);
@@ -940,8 +1195,6 @@ function showResult(text) {
 
   const soilLabels = { clay:'Clay soil', sandy:'Sandy soil', loam:'Rich loam', chalky:'Chalky soil', peaty:'Peaty soil', unknown:'Unknown soil' };
   const aspectLabels = { south:'South-facing ☀️', north:'North-facing 🌥️', east:'East-facing 🌅', west:'West-facing 🌇', mixed:'Mixed aspect 🔄' };
-  const goalIcons = { colour:'🌸', wildlife:'🦋', veg:'🥕', 'low-maintenance':'😌', privacy:'🌳', entertaining:'🍷', scent:'🌹', 'year-round':'📅' };
-  const goalNames = { colour:'Colour', wildlife:'Wildlife', veg:'Veg & herbs', 'low-maintenance':'Low maintenance', privacy:'Privacy', entertaining:'Entertaining', scent:'Scent', 'year-round':'Year-round' };
 
   // Title
   document.getElementById('result-title').textContent = 'Your ' + state.location + ' Garden Plan';
@@ -955,7 +1208,7 @@ function showResult(text) {
     { icon: '📍', text: state.location },
     { icon: '🌍', text: soilLabels[state.soil] },
     { icon: '🧭', text: aspectLabels[state.aspect] },
-    ...state.goals.map(g => ({ icon: goalIcons[g], text: goalNames[g] }))
+    ...state.goals.map(g => ({ icon: GOAL_ICONS[g] || '🌿', text: GOAL_LABELS[g] || g }))
   ].forEach(p => {
     const pill = document.createElement('div');
     pill.className = 'profile-pill';
@@ -969,48 +1222,128 @@ function showResult(text) {
 
   document.getElementById('result').style.display = 'block';
   document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('refine-panel').style.display = 'block';
 }
 
-function renderMarkdown(text) {
-  return text
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^# (.+)$/gm, '<h3>$1</h3>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/^[\-\*] (.+)$/gm, '<li>$1</li>')
-    .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g, m => '<ul>' + m + '</ul>')
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/^(?!<[hul])/gm, '')
-    .replace(/(<\/h3>|<\/ul>)\n/g, '$1')
-    .replace(/^([^<\n].+)$/gm, '<p>$1</p>')
-    .replace(/<p><\/p>/g, '')
-    .replace(/<p>(<[hul])/g, '$1')
-    .replace(/(<\/[hul][^>]*>)<\/p>/g, '$1');
+function toggleRefine() {
+  const body = document.getElementById('refine-body');
+  const chevron = document.getElementById('refine-chevron');
+  body.classList.toggle('open');
+  chevron.classList.toggle('open');
+}
+
+function toggleRefineOpt(btn, field) {
+  // Single select for style
+  btn.closest('.style-grid').querySelectorAll('.style-opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.refinements.style = btn.dataset.value;
+}
+
+function toggleRefineMulti(btn, field) {
+  const val = btn.dataset.value;
+  btn.classList.toggle('selected');
+  if (!state.refinements[field]) state.refinements[field] = [];
+  if (btn.classList.contains('selected')) {
+    if (!state.refinements[field].includes(val)) state.refinements[field].push(val);
+  } else {
+    state.refinements[field] = state.refinements[field].filter(v => v !== val);
+  }
+}
+
+async function submitRefinement() {
+  const btn = document.getElementById('btn-refine');
+  const spinner = document.getElementById('refine-spinner');
+  btn.style.display = 'none';
+  spinner.style.display = 'block';
+
+  const profile = buildGardenProfile(state);
+  let refinedSystemPrompt;
+  try {
+    refinedSystemPrompt = await buildAugmentedSystemPrompt(profile, state.refinements, loadKnowledge);
+  } catch {
+    refinedSystemPrompt = buildSystemPrompt(profile, state.refinements); // fallback
+  }
+  const userMessage = buildUserMessage(profile);
+
+  try {
+    let responseText = '';
+    const payload = {
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: 1600,
+      system: refinedSystemPrompt,
+      messages: [{ role: 'user', content: userMessage }]
+    };
+
+    if (WORKER_URL && WORKER_URL !== 'YOUR_CLOUDFLARE_WORKER_URL') {
+      const res = await fetch(WORKER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const data = await res.json();
+      responseText = data.content[0].text;
+    } else {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': 'REPLACE_WITH_KEY_FOR_LOCAL_TEST_ONLY', 'anthropic-version': '2023-06-01' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      responseText = data.content[0].text;
+    }
+
+    state.result = responseText;
+    document.getElementById('result-body').innerHTML = renderMarkdown(responseText);
+    spinner.style.display = 'none';
+    btn.style.display = 'flex';
+
+    // Update profile pills to show refinements
+    updateRefinementPills();
+
+    document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showToast('Garden plan updated ✓');
+
+  } catch (err) {
+    spinner.style.display = 'none';
+    btn.style.display = 'flex';
+    showToast('Something went wrong — please try again');
+    console.error(err);
+  }
+}
+
+function updateRefinementPills() {
+  const profileDiv = document.getElementById('result-profile');
+  // Remove existing refinement pills
+  profileDiv.querySelectorAll('.pill-refinement').forEach(p => p.remove());
+
+  const styleLabels = STYLE_LABELS;
+  const extras = [];
+  if (state.refinements.style) extras.push({ icon: '🎨', text: styleLabels[state.refinements.style] });
+  if (state.refinements.safety.includes('dogs')) extras.push({ icon: '🐕', text: 'Dog-safe' });
+  if (state.refinements.safety.includes('cats')) extras.push({ icon: '🐈', text: 'Cat-safe' });
+  if (state.refinements.safety.includes('young-children')) extras.push({ icon: '👶', text: 'Child-safe' });
+  if (state.refinements.plantTypes.includes('fast-growing')) extras.push({ icon: '⚡', text: 'Fast-growing' });
+  if (state.refinements.plantTypes.includes('evergreen')) extras.push({ icon: '🌲', text: 'Evergreen' });
+
+  extras.forEach(p => {
+    const pill = document.createElement('div');
+    pill.className = 'profile-pill pill-refinement';
+    pill.style.borderColor = 'var(--moss)';
+    pill.innerHTML = `<span>\${p.icon}</span><span>\${p.text}</span>`;
+    profileDiv.appendChild(pill);
+  });
 }
 
 // ── Share ──
 function shareResult() {
-  const soilLabels = { clay:'clay', sandy:'sandy', loam:'loam', chalky:'chalky', peaty:'peaty', unknown:'unknown' };
-  const aspectLabels = { south:'south-facing', north:'north-facing', east:'east-facing', west:'west-facing', mixed:'mixed aspect' };
-
-  const shareText = `🌿 My Garden Plan from Your Green Gardening Wizard
-
-📍 ${state.location} · ${soilLabels[state.soil]} soil · ${aspectLabels[state.aspect]}
-🎯 Goals: ${state.goals.join(', ')}
-
-${state.result.substring(0, 600)}...
-
-Get your own garden plan → ${window.location.href}`;
-
+  const shareText = formatShareText(
+    buildGardenProfile(state),
+    state.result,
+    window.location.href
+  );
   if (navigator.share) {
     navigator.share({ title: 'My Garden Plan', text: shareText }).catch(() => copyToClipboard(shareText));
   } else {
     copyToClipboard(shareText);
   }
 }
+
 
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard ✓')).catch(() => {
@@ -1035,6 +1368,7 @@ function showToast(msg) {
 let upgradeClicked = false;
 function openUpgrade() {
   document.getElementById('modal').classList.add('open');
+  // Track: this is the fake door click we're measuring
   if (!upgradeClicked) {
     upgradeClicked = true;
     console.log('[AARRR Revenue] Fake door clicked — upgrade intent registered');
