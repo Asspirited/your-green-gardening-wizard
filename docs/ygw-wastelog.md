@@ -124,6 +124,74 @@ Before ANY mention of Cloudflare tokens: read the WL. Check `~/.wrangler/config/
 
 ---
 
+## WL-009 — Declared fix deployed without verifying Rod's actual URL
+
+**Status:** Open
+**Raised:** 2026-03-19
+**Type:** Wrong verification — incomplete confirmation
+
+### What happened
+`/messages` path fix was committed and pushed to GitHub Pages. Claude declared it fixed. Rod was still hitting `your-green-gardening-wizard.leanspirited.workers.dev` (old Worker, returns 404 "Not Found"). Claude never asked or confirmed which URL Rod was using before announcing victory.
+
+### What it cost
+Rod saw "Not Found" 4+ more times after being told it was fixed.
+
+### Prevention
+Before "it's fixed": (1) ask or confirm which URL Rod is testing, (2) verify that specific URL works end-to-end, not just the new one.
+
+---
+
+## WL-010 — "147 tests green" announced as proof product works
+
+**Status:** Open
+**Raised:** 2026-03-19
+**Type:** False equivalence — test suite ≠ working product
+
+### What happened
+After pushing the /messages path fix, Claude said "147 tests green, committed, pushed" as the success signal. But the tests do not test the browser's actual fetch path. The product was still broken from Rod's perspective because the URL he was hitting returned 404.
+
+### What it cost
+More "Not Found". More wasted time. More eroded trust.
+
+### Prevention
+Test suite green is a necessary condition, not a sufficient one. After any fix, verify the actual user-facing URL returns the correct response before declaring done.
+
+---
+
+## WL-011 — Old Worker redirect not fixed first before any code work
+
+**Status:** Open
+**Raised:** 2026-03-19
+**Type:** Wrong priority — fixed the wrong thing first
+
+### What happened
+Shared-session-state.md from the previous session explicitly named the old Worker URL as "Open blocker for next session" and listed fixing the redirect as item #1 in "Next session top 3". Claude instead worked on code (the /messages path), which was a secondary issue. The URL Rod was actually using was still dead.
+
+### What it cost
+All code work was irrelevant until the URL Rod uses works. Session wasted on secondary fix.
+
+### Prevention
+Read shared-session-state.md. If it names a blocker — fix the blocker first. Every time. Code quality is irrelevant if the product URL is dead.
+
+---
+
+## WL-012 — Not Found shown 4 more times in same session after WL-006 was raised
+
+**Status:** Open
+**Raised:** 2026-03-19
+**Type:** Repeated failure — same root cause, same session
+
+### What happened
+WL-006 was raised in the previous session for exactly this: Rod seeing "Not Found" from the old Worker URL while Claude declared the site live. This session repeated it four more times in a row. The WL was not read at session start as a checklist — just acknowledged and filed.
+
+### What it cost
+Rod's patience. Four more occurrences of the exact failure the WL was written to prevent.
+
+### Prevention
+The WL is not a record — it's a checklist. At session start: read every open item and ask "am I about to do this?" If yes — stop and do something different first.
+
+---
+
 ## WL-008 — Session burned Rod's time, goodwill, and patience through repeated known failures
 
 **Status:** Open
