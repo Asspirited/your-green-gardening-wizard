@@ -63,3 +63,21 @@ Phrases: "like RIA", "persona", "scoring agent", "like the assessor"
 
 ## Pipeline Rule
 100% statement and branch coverage required. Full green before merge. No exceptions.
+
+---
+
+## Claude Behaviour Rules
+
+### Rule: Asking Rod to find something
+ALWAYS specify: which system (Cloudflare / GitHub / terminal / browser), which section within it, and what you're looking for.
+BETTER: derive it yourself first. Check known patterns (e.g. worker URL = `https://<worker-name>.leanspirited.workers.dev`), check config files, check existing working examples before asking Rod.
+If you genuinely can't get it: one specific instruction, not a vague gesture.
+
+### Rule: Is it worth doing? (xkcd.com/1205)
+Before fixing, automating, or spending time on anything non-trivial, apply the time-value test:
+- How often does this problem occur?
+- How much time does it cost each occurrence?
+- How long will the fix take?
+If fix_time > (frequency × time_saved × ~260 sessions/year over 5 years) → note it, park it, move on.
+Applies to: tooling tweaks, minor bugs, process improvements, "wouldn't it be nice if".
+Does NOT apply to: correctness bugs, security issues, anything blocking delivery.
