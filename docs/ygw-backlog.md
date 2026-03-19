@@ -7,7 +7,7 @@
 
 ## YGW-001 — Cloudflare Worker API proxy
 
-**Status:** Open
+**Status:** Done
 **Priority:** Critical
 **Loop:** TDD
 **Raised:** 2026-03-19

@@ -1,293 +1,1068 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Green Gardening Wizard</title>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Green Gardening Wizard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --green-dark: #2d5a27;
-      --green-mid: #4a7c3f;
-      --green-light: #7db87a;
-      --cream: #f8f5ee;
-      --text: #1a1a1a;
-      --text-light: #555;
-      --border: #ddd;
-      --radius: 12px;
-    }
+  :root {
+    --forest: #1a3a2a;
+    --moss:   #2d6a4f;
+    --sage:   #52b788;
+    --mint:   #b7e4c7;
+    --cream:  #faf6f0;
+    --parch:  #f0e8d8;
+    --soil:   #6b4226;
+    --bark:   #3d2b1f;
+    --ink:    #1c1c1c;
+    --mist:   #e8f4e8;
+    --radius: 16px;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-ui: 'DM Sans', system-ui, sans-serif;
+  }
 
-    body {
-      font-family: Georgia, 'Times New Roman', serif;
-      background: var(--cream);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+  html { scroll-behavior: smooth; }
 
-    header {
-      background: var(--green-dark);
-      color: white;
-      padding: 1.5rem 1rem;
-      text-align: center;
-    }
+  body {
+    font-family: var(--font-ui);
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
 
-    header h1 {
-      font-size: 1.6rem;
-      font-weight: normal;
-      letter-spacing: 0.02em;
-    }
+  /* ── Header ── */
+  header {
+    background: var(--forest);
+    padding: 20px 24px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .logo-mark {
+    width: 40px; height: 40px;
+    background: var(--sage);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+  }
+  .brand {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--cream);
+    line-height: 1.2;
+  }
+  .brand span { color: var(--sage); font-style: italic; }
 
-    header p {
-      font-size: 0.9rem;
-      opacity: 0.8;
-      margin-top: 0.3rem;
-      font-style: italic;
-    }
+  /* ── Hero ── */
+  .hero {
+    background: linear-gradient(160deg, var(--forest) 0%, var(--moss) 100%);
+    padding: 48px 24px 56px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(ellipse at 20% 80%, rgba(82,183,136,0.15) 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 20%, rgba(183,228,199,0.1) 0%, transparent 50%);
+  }
+  .hero-content { position: relative; max-width: 600px; margin: 0 auto; }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 6vw, 3rem);
+    color: var(--cream);
+    line-height: 1.15;
+    margin-bottom: 16px;
+  }
+  .hero h1 em { color: var(--sage); font-style: italic; }
+  .hero p {
+    color: var(--mint);
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 32px;
+    opacity: 0.9;
+  }
+  .hero-cta {
+    display: inline-block;
+    background: var(--sage);
+    color: var(--forest);
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 14px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    transition: transform 0.15s, background 0.15s;
+    cursor: pointer;
+    border: none;
+  }
+  .hero-cta:hover { background: var(--mint); transform: translateY(-1px); }
 
-    main {
-      flex: 1;
-      max-width: 720px;
-      width: 100%;
-      margin: 0 auto;
-      padding: 1.5rem 1rem 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
+  /* ── Main layout ── */
+  main {
+    flex: 1;
+    max-width: 720px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 32px 20px 80px;
+  }
 
-    #chat {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-      min-height: 300px;
-    }
+  /* ── Profile wizard ── */
+  .wizard-card {
+    background: white;
+    border-radius: var(--radius);
+    border: 1px solid rgba(0,0,0,0.07);
+    overflow: hidden;
+    box-shadow: 0 2px 20px rgba(26,58,42,0.08);
+    margin-bottom: 24px;
+  }
+  .wizard-progress {
+    height: 4px;
+    background: var(--parch);
+    position: relative;
+  }
+  .wizard-progress-fill {
+    height: 100%;
+    background: var(--sage);
+    border-radius: 2px;
+    transition: width 0.4s ease;
+  }
+  .wizard-inner { padding: 28px 28px 24px; }
 
-    .message {
-      max-width: 85%;
-      padding: 0.8rem 1rem;
-      border-radius: var(--radius);
-      line-height: 1.6;
-      font-size: 0.95rem;
-    }
+  .step { display: none; }
+  .step.active { display: block; }
 
-    .message.wizard {
-      background: white;
-      border: 1px solid var(--border);
-      align-self: flex-start;
-      border-bottom-left-radius: 4px;
-    }
+  .step-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 8px;
+  }
+  .step-question {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: var(--forest);
+    margin-bottom: 6px;
+    line-height: 1.3;
+  }
+  .step-hint {
+    font-size: 0.875rem;
+    color: #777;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
 
-    .message.wizard::before {
-      content: '🌿 ';
-    }
+  /* Option grid */
+  .option-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .option-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .option-grid.solo { grid-template-columns: 1fr; }
 
-    .message.user {
-      background: var(--green-dark);
-      color: white;
-      align-self: flex-end;
-      border-bottom-right-radius: 4px;
-    }
+  .opt {
+    border: 2px solid var(--parch);
+    border-radius: 12px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--cream);
+    text-align: left;
+    font-family: var(--font-ui);
+  }
+  .opt:hover { border-color: var(--sage); background: var(--mist); }
+  .opt.selected { border-color: var(--moss); background: var(--mist); }
+  .opt-icon { font-size: 1.5rem; margin-bottom: 6px; display: block; }
+  .opt-label { font-weight: 500; font-size: 0.9rem; color: var(--forest); display: block; }
+  .opt-sub { font-size: 0.78rem; color: #666; display: block; margin-top: 2px; line-height: 1.4; }
 
-    .message.thinking {
-      background: white;
-      border: 1px solid var(--border);
-      align-self: flex-start;
-      color: var(--text-light);
-      font-style: italic;
-      border-bottom-left-radius: 4px;
-    }
+  /* Text input for location */
+  .location-input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid var(--parch);
+    border-radius: 12px;
+    font-family: var(--font-ui);
+    font-size: 1rem;
+    background: var(--cream);
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.15s;
+    margin-bottom: 10px;
+  }
+  .location-input:focus { border-color: var(--sage); background: white; }
 
-    .message.thinking::before {
-      content: '🌿 ';
-    }
+  /* Goal checkboxes */
+  .goal-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  .goal-opt {
+    border: 2px solid var(--parch);
+    border-radius: 10px;
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: var(--cream);
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #555;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .goal-opt:hover { border-color: var(--sage); color: var(--forest); }
+  .goal-opt.selected { border-color: var(--moss); background: var(--mist); color: var(--forest); }
+  .goal-opt .gicon { font-size: 1.1rem; }
 
-    .message.error {
-      background: #fff0f0;
-      border: 1px solid #ffcccc;
-      align-self: flex-start;
-      color: #c00;
-      border-bottom-left-radius: 4px;
-    }
+  /* Nav buttons */
+  .wizard-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 28px 24px;
+    border-top: 1px solid var(--parch);
+    background: white;
+  }
+  .btn-back {
+    font-family: var(--font-ui);
+    font-size: 0.875rem;
+    color: #888;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 0;
+  }
+  .btn-back:hover { color: var(--moss); }
+  .btn-next {
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 0.95rem;
+    background: var(--moss);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    padding: 12px 28px;
+    cursor: pointer;
+    transition: background 0.15s, transform 0.1s;
+  }
+  .btn-next:hover { background: var(--forest); transform: translateY(-1px); }
+  .btn-next:disabled { background: #ccc; cursor: not-allowed; transform: none; }
 
-    #input-area {
-      display: flex;
-      gap: 0.5rem;
-      align-items: flex-end;
-    }
+  /* ── Loading ── */
+  #loading {
+    display: none;
+    text-align: center;
+    padding: 48px 24px;
+  }
+  .spinner {
+    width: 48px; height: 48px;
+    border: 3px solid var(--parch);
+    border-top-color: var(--sage);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+    margin: 0 auto 20px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text {
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    color: var(--forest);
+    margin-bottom: 8px;
+  }
+  .loading-sub { font-size: 0.875rem; color: #888; }
 
-    #user-input {
-      flex: 1;
-      padding: 0.75rem 1rem;
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-family: inherit;
-      font-size: 0.95rem;
-      resize: none;
-      min-height: 48px;
-      max-height: 160px;
-      line-height: 1.5;
-      background: white;
-    }
+  /* ── Result card ── */
+  #result { display: none; }
 
-    #user-input:focus {
-      outline: none;
-      border-color: var(--green-mid);
-    }
+  .result-header {
+    background: var(--forest);
+    border-radius: var(--radius) var(--radius) 0 0;
+    padding: 28px;
+    color: var(--cream);
+  }
+  .result-tag {
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+  .result-title {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    margin-bottom: 6px;
+    line-height: 1.2;
+  }
+  .result-subtitle { font-size: 0.875rem; color: var(--mint); opacity: 0.85; }
 
-    #send-btn {
-      padding: 0.75rem 1.25rem;
-      background: var(--green-dark);
-      color: white;
-      border: none;
-      border-radius: var(--radius);
-      font-family: inherit;
-      font-size: 0.95rem;
-      cursor: pointer;
-      white-space: nowrap;
-      height: 48px;
-    }
+  .result-profile {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 16px 28px;
+    background: var(--mist);
+    border-left: 1px solid rgba(0,0,0,0.06);
+    border-right: 1px solid rgba(0,0,0,0.06);
+  }
+  .profile-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: white;
+    border: 1px solid var(--mint);
+    border-radius: 100px;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    color: var(--forest);
+    font-weight: 500;
+  }
 
-    #send-btn:hover { background: var(--green-mid); }
-    #send-btn:disabled { background: var(--green-light); cursor: not-allowed; }
+  .result-body {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.07);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
+    padding: 28px;
+  }
+  .result-body h3 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    color: var(--forest);
+    margin: 24px 0 12px;
+  }
+  .result-body h3:first-child { margin-top: 0; }
+  .result-body p {
+    font-size: 0.925rem;
+    line-height: 1.7;
+    color: #333;
+    margin-bottom: 12px;
+  }
+  .result-body ul, .result-body ol {
+    padding-left: 0;
+    list-style: none;
+    margin-bottom: 16px;
+  }
+  .result-body li {
+    font-size: 0.9rem;
+    line-height: 1.6;
+    color: #333;
+    padding: 8px 14px;
+    margin-bottom: 6px;
+    background: var(--cream);
+    border-radius: 8px;
+    border-left: 3px solid var(--sage);
+  }
+  .result-body strong { color: var(--forest); }
 
-    @media (max-width: 480px) {
-      header h1 { font-size: 1.3rem; }
-      .message { max-width: 95%; }
-    }
-  </style>
+  /* Action bar */
+  .result-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+  .btn-share {
+    flex: 1;
+    min-width: 140px;
+    background: var(--forest);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    padding: 13px 20px;
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.15s;
+  }
+  .btn-share:hover { background: var(--moss); }
+  .btn-upgrade {
+    flex: 1;
+    min-width: 140px;
+    background: var(--parch);
+    color: var(--soil);
+    border: 2px solid #d4a96a;
+    border-radius: 100px;
+    padding: 11px 20px;
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.15s;
+  }
+  .btn-upgrade:hover { background: #e8d5a8; }
+  .btn-restart {
+    background: none;
+    color: #888;
+    border: none;
+    font-family: var(--font-ui);
+    font-size: 0.85rem;
+    cursor: pointer;
+    padding: 8px 0;
+    width: 100%;
+    text-align: center;
+    margin-top: 8px;
+  }
+  .btn-restart:hover { color: var(--moss); }
+
+  /* ── Upgrade modal ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,58,42,0.7);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: var(--radius);
+    max-width: 420px;
+    width: 100%;
+    overflow: hidden;
+    animation: modalIn 0.2s ease;
+  }
+  @keyframes modalIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .modal-head {
+    background: var(--soil);
+    padding: 24px;
+    color: var(--cream);
+  }
+  .modal-head h3 {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    margin-bottom: 4px;
+  }
+  .modal-head p { font-size: 0.85rem; opacity: 0.8; }
+  .modal-body { padding: 24px; }
+  .modal-feature {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 14px;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  .modal-feature span:first-child { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
+  .modal-price {
+    text-align: center;
+    padding: 16px;
+    background: var(--parch);
+    border-radius: 10px;
+    margin: 20px 0 16px;
+  }
+  .modal-price .price { font-family: var(--font-display); font-size: 2rem; color: var(--soil); }
+  .modal-price .price-note { font-size: 0.8rem; color: #888; }
+  .btn-modal-cta {
+    width: 100%;
+    background: var(--soil);
+    color: white;
+    border: none;
+    border-radius: 100px;
+    padding: 14px;
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-bottom: 10px;
+    transition: background 0.15s;
+  }
+  .btn-modal-cta:hover { background: var(--bark); }
+  .btn-modal-close {
+    width: 100%;
+    background: none;
+    border: none;
+    color: #888;
+    font-size: 0.85rem;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    padding: 6px;
+  }
+  .waitlist-msg {
+    display: none;
+    text-align: center;
+    padding: 16px;
+    background: var(--mist);
+    border-radius: 10px;
+    color: var(--forest);
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 10px;
+  }
+
+  /* ── Share toast ── */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--forest);
+    color: var(--cream);
+    padding: 12px 24px;
+    border-radius: 100px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    z-index: 300;
+    transition: transform 0.3s ease;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── Footer ── */
+  footer {
+    background: var(--forest);
+    text-align: center;
+    padding: 20px;
+    color: var(--mint);
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
+
+  @media (max-width: 480px) {
+    .option-grid { grid-template-columns: 1fr 1fr; }
+    .option-grid.three { grid-template-columns: 1fr 1fr; }
+    .wizard-inner { padding: 22px 20px 18px; }
+    .wizard-nav { padding: 14px 20px 20px; }
+    .result-profile { padding: 14px 20px; }
+    .result-header, .result-body { padding: 22px 20px; }
+    .result-actions { flex-direction: column; }
+  }
+</style>
 </head>
 <body>
 
 <header>
-  <h1>Your Green Gardening Wizard</h1>
-  <p>A knowledgeable friend with a sketchpad</p>
+  <div class="logo-mark">🌿</div>
+  <div class="brand">Your Green <span>Gardening Wizard</span></div>
 </header>
 
-<main>
-  <div id="chat"></div>
-  <div id="input-area">
-    <textarea id="user-input" placeholder="Tell me about your garden…" rows="1"></textarea>
-    <button id="send-btn">Send</button>
+<div class="hero" id="hero">
+  <div class="hero-content">
+    <h1>A garden that's <em>yours,</em><br>not just any garden</h1>
+    <p>Tell us about your plot in a minute or two. We'll tell you exactly what to grow — based on your soil, your light, and your climate.</p>
+    <button class="hero-cta" onclick="startWizard()">Start your garden profile →</button>
   </div>
+</div>
+
+<main>
+
+  <!-- Wizard -->
+  <div class="wizard-card" id="wizard" style="display:none">
+    <div class="wizard-progress">
+      <div class="wizard-progress-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+    <div class="wizard-inner">
+
+      <!-- Step 1: Location -->
+      <div class="step active" data-step="1">
+        <div class="step-label">Step 1 of 4</div>
+        <div class="step-question">Where in the UK is your garden?</div>
+        <div class="step-hint">Town, city, or region is fine — we use this to understand your climate and frost risk.</div>
+        <input class="location-input" type="text" id="location-input" placeholder="e.g. Bristol, Yorkshire, Glasgow..." autocomplete="off">
+      </div>
+
+      <!-- Step 2: Soil -->
+      <div class="step" data-step="2">
+        <div class="step-label">Step 2 of 4</div>
+        <div class="step-question">What's your soil like?</div>
+        <div class="step-hint">Pick the closest match — or tell us if you're not sure.</div>
+        <div class="option-grid">
+          <button class="opt" data-value="clay" onclick="selectOption(this,'soil')">
+            <span class="opt-icon">🟫</span>
+            <span class="opt-label">Heavy clay</span>
+            <span class="opt-sub">Sticky when wet, cracks when dry</span>
+          </button>
+          <button class="opt" data-value="sandy" onclick="selectOption(this,'soil')">
+            <span class="opt-icon">🏖️</span>
+            <span class="opt-label">Sandy / light</span>
+            <span class="opt-sub">Free-draining, dries out quickly</span>
+          </button>
+          <button class="opt" data-value="loam" onclick="selectOption(this,'soil')">
+            <span class="opt-icon">🌱</span>
+            <span class="opt-label">Rich loam</span>
+            <span class="opt-sub">Dark, crumbly, smells earthy</span>
+          </button>
+          <button class="opt" data-value="chalky" onclick="selectOption(this,'soil')">
+            <span class="opt-icon">🪨</span>
+            <span class="opt-label">Chalky / stony</span>
+            <span class="opt-sub">Pale, lots of stones</span>
+          </button>
+          <button class="opt" data-value="peaty" onclick="selectOption(this,'soil')">
+            <span class="opt-icon">🌿</span>
+            <span class="opt-label">Peaty / boggy</span>
+            <span class="opt-sub">Dark, holds water, acidic</span>
+          </button>
+          <button class="opt" data-value="unknown" onclick="selectOption(this,'soil')">
+            <span class="opt-icon">🤷</span>
+            <span class="opt-label">Not sure</span>
+            <span class="opt-sub">We'll guide you through it</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 3: Aspect -->
+      <div class="step" data-step="3">
+        <div class="step-label">Step 3 of 4</div>
+        <div class="step-question">Which way does your garden mainly face?</div>
+        <div class="step-hint">Stand at your back door looking into the garden. Which direction are you facing?</div>
+        <div class="option-grid">
+          <button class="opt" data-value="south" onclick="selectOption(this,'aspect')">
+            <span class="opt-icon">☀️</span>
+            <span class="opt-label">South-facing</span>
+            <span class="opt-sub">Sun all day — the best</span>
+          </button>
+          <button class="opt" data-value="north" onclick="selectOption(this,'aspect')">
+            <span class="opt-icon">🌥️</span>
+            <span class="opt-label">North-facing</span>
+            <span class="opt-sub">Mostly shade</span>
+          </button>
+          <button class="opt" data-value="east" onclick="selectOption(this,'aspect')">
+            <span class="opt-icon">🌅</span>
+            <span class="opt-label">East-facing</span>
+            <span class="opt-sub">Morning sun only</span>
+          </button>
+          <button class="opt" data-value="west" onclick="selectOption(this,'aspect')">
+            <span class="opt-icon">🌇</span>
+            <span class="opt-label">West-facing</span>
+            <span class="opt-sub">Afternoon sun</span>
+          </button>
+          <button class="opt" data-value="mixed" onclick="selectOption(this,'aspect')">
+            <span class="opt-icon">🔄</span>
+            <span class="opt-label">Mixed / not sure</span>
+            <span class="opt-sub">Patchy shade and sun</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Step 4: Goals -->
+      <div class="step" data-step="4">
+        <div class="step-label">Step 4 of 4</div>
+        <div class="step-question">What do you want from your garden?</div>
+        <div class="step-hint">Pick everything that appeals — this is your garden, not anyone else's.</div>
+        <div class="goal-grid">
+          <button class="goal-opt" data-value="colour" onclick="toggleGoal(this)"><span class="gicon">🌸</span> Colour &amp; flowers</button>
+          <button class="goal-opt" data-value="wildlife" onclick="toggleGoal(this)"><span class="gicon">🦋</span> Wildlife &amp; pollinators</button>
+          <button class="goal-opt" data-value="veg" onclick="toggleGoal(this)"><span class="gicon">🥕</span> Vegetables &amp; herbs</button>
+          <button class="goal-opt" data-value="low-maintenance" onclick="toggleGoal(this)"><span class="gicon">😌</span> Low maintenance</button>
+          <button class="goal-opt" data-value="privacy" onclick="toggleGoal(this)"><span class="gicon">🌳</span> Privacy &amp; screening</button>
+          <button class="goal-opt" data-value="entertaining" onclick="toggleGoal(this)"><span class="gicon">🍷</span> Entertaining</button>
+          <button class="goal-opt" data-value="scent" onclick="toggleGoal(this)"><span class="gicon">🌹</span> Scent</button>
+          <button class="goal-opt" data-value="year-round" onclick="toggleGoal(this)"><span class="gicon">📅</span> Year-round interest</button>
+        </div>
+      </div>
+
+    </div>
+    <div class="wizard-nav">
+      <button class="btn-back" id="btn-back" onclick="goBack()" style="visibility:hidden">← Back</button>
+      <button class="btn-next" id="btn-next" onclick="goNext()" disabled>Continue →</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading">
+    <div class="spinner"></div>
+    <div class="loading-text" id="loading-text">Reading your garden...</div>
+    <div class="loading-sub">Your wizard is thinking</div>
+  </div>
+
+  <!-- Result -->
+  <div id="result">
+    <div class="result-header">
+      <div class="result-tag">Your Garden Plan</div>
+      <div class="result-title" id="result-title">Your Personalised Garden</div>
+      <div class="result-subtitle" id="result-subtitle"></div>
+    </div>
+    <div class="result-profile" id="result-profile"></div>
+    <div class="result-body" id="result-body"></div>
+    <div style="padding: 0 28px 28px; background: white; border-radius: 0 0 var(--radius) var(--radius); border: 1px solid rgba(0,0,0,0.07); border-top: none; margin-top: -1px;">
+      <div class="result-actions">
+        <button class="btn-share" onclick="shareResult()">
+          <span>📋</span> Copy &amp; Share
+        </button>
+        <button class="btn-upgrade" onclick="openUpgrade()">
+          <span>🌿</span> Full plan — £9.99
+        </button>
+      </div>
+      <button class="btn-restart" onclick="restartWizard()">Start over with a different garden</button>
+    </div>
+  </div>
+
 </main>
 
+<!-- Upgrade modal -->
+<div class="modal-overlay" id="modal" onclick="closeUpgradeIfOutside(event)">
+  <div class="modal">
+    <div class="modal-head">
+      <h3>Your full garden plan</h3>
+      <p>Everything you need to design and build it yourself</p>
+    </div>
+    <div class="modal-body">
+      <div class="modal-feature"><span>🗺️</span><div><strong>Bed-by-bed planting plan</strong> — exactly what goes where, with spacing and timing</div></div>
+      <div class="modal-feature"><span>📅</span><div><strong>12-month calendar</strong> — what to plant, prune, and harvest each month</div></div>
+      <div class="modal-feature"><span>🛒</span><div><strong>Shopping list</strong> — plants, bulbs, and seeds with UK supplier links</div></div>
+      <div class="modal-feature"><span>💬</span><div><strong>Unlimited follow-up questions</strong> — your wizard stays on call</div></div>
+      <div class="modal-price">
+        <div class="price">£9.99</div>
+        <div class="price-note">One-off. Yours to keep.</div>
+      </div>
+      <div class="waitlist-msg" id="waitlist-msg">✅ You're on the list! We'll email you when it's ready.</div>
+      <button class="btn-modal-cta" onclick="joinWaitlist()">Join the waitlist</button>
+      <button class="btn-modal-close" onclick="closeUpgrade()">Maybe later</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast">Copied to clipboard ✓</div>
+
+<footer>Your Green Gardening Wizard · Made with 🌱 by LeanSpirited</footer>
+
 <script>
-  // ─── CONFIG ──────────────────────────────────────────────────────────────────
-  const WORKER_URL = 'https://ygw-api-proxy.leanspirited.workers.dev';
-  // ─────────────────────────────────────────────────────────────────────────────
+// ── State ──
+const state = {
+  step: 1,
+  totalSteps: 4,
+  location: '',
+  soil: '',
+  aspect: '',
+  goals: [],
+  result: ''
+};
 
-  const SYSTEM_PROMPT = `You are the Green Gardening Wizard — a warm, knowledgeable UK garden advisor. You combine the expertise of an RHS-trained designer with the approachability of a helpful friend.
+const WORKER_URL = 'https://ygw-api-proxy.leanspirited.workers.dev';
 
-Your role is to give personalised, practical plant and garden advice based on what you learn about the user's specific garden.
+// ── Wizard flow ──
+function startWizard() {
+  document.getElementById('hero').style.display = 'none';
+  document.getElementById('wizard').style.display = 'block';
+  updateProgress();
+  updateNav();
+  document.getElementById('wizard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => document.getElementById('location-input').focus(), 300);
+}
 
-On first contact, gather the garden profile by asking conversational questions about:
-- Location (UK region or postcode area, for climate/hardiness zone)
-- Soil type (clay, sandy, loam, chalk, peat — or help them find out)
-- Aspect (which direction the main garden faces: N/S/E/W or mixed)
-- Goals (colour, food growing, wildlife, low maintenance, etc.)
-- Size and any constraints (shading, slopes, existing plants)
+function updateProgress() {
+  const pct = ((state.step - 1) / state.totalSteps) * 100;
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
 
-You don't need all answers at once — build the profile naturally through conversation. Once you have enough to work with, start giving recommendations. Always explain WHY a plant suits their specific conditions.
+function updateNav() {
+  const back = document.getElementById('btn-back');
+  const next = document.getElementById('btn-next');
+  back.style.visibility = state.step > 1 ? 'visible' : 'hidden';
+  next.textContent = state.step === state.totalSteps ? 'Show my garden plan →' : 'Continue →';
+  checkNextEnabled();
+}
 
-Rules:
-- UK plant names and climate zones only
-- Never recommend plants that could be harmful if the user mentions children or pets
-- If you don't know something, say so — don't hallucinate plant facts
-- Keep responses concise and conversational — this is chat, not a report
-- Use plain language, not horticultural jargon, unless the user is clearly knowledgeable`;
+function checkNextEnabled() {
+  const next = document.getElementById('btn-next');
+  let enabled = false;
+  if (state.step === 1) enabled = document.getElementById('location-input').value.trim().length > 1;
+  if (state.step === 2) enabled = !!state.soil;
+  if (state.step === 3) enabled = !!state.aspect;
+  if (state.step === 4) enabled = state.goals.length > 0;
+  next.disabled = !enabled;
+}
 
-  const history = [];
+document.getElementById('location-input').addEventListener('input', function() {
+  state.location = this.value.trim();
+  checkNextEnabled();
+});
 
-  const chat = document.getElementById('chat');
-  const input = document.getElementById('user-input');
-  const sendBtn = document.getElementById('send-btn');
+function selectOption(btn, field) {
+  const grid = btn.closest('.option-grid');
+  grid.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state[field] = btn.dataset.value;
+  checkNextEnabled();
+}
 
-  function addMessage(role, text) {
-    const div = document.createElement('div');
-    div.className = 'message ' + role;
-    div.textContent = text;
-    chat.appendChild(div);
-    chat.scrollTop = chat.scrollHeight;
-    return div;
+function toggleGoal(btn) {
+  const val = btn.dataset.value;
+  btn.classList.toggle('selected');
+  if (btn.classList.contains('selected')) {
+    if (!state.goals.includes(val)) state.goals.push(val);
+  } else {
+    state.goals = state.goals.filter(g => g !== val);
   }
+  checkNextEnabled();
+}
 
-  function setThinking(on) {
-    if (on) {
-      const el = document.createElement('div');
-      el.className = 'message thinking';
-      el.id = 'thinking';
-      el.textContent = 'Thinking…';
-      chat.appendChild(el);
-      chat.scrollTop = chat.scrollHeight;
-    } else {
-      const el = document.getElementById('thinking');
-      if (el) el.remove();
-    }
+function goNext() {
+  if (state.step === 1) state.location = document.getElementById('location-input').value.trim();
+  if (state.step < state.totalSteps) {
+    showStep(state.step + 1);
+  } else {
+    submitProfile();
   }
+}
 
-  async function send() {
-    const text = input.value.trim();
-    if (!text || sendBtn.disabled) return;
+function goBack() {
+  if (state.step > 1) showStep(state.step - 1);
+}
 
-    addMessage('user', text);
-    history.push({ role: 'user', content: text });
-    input.value = '';
-    input.style.height = 'auto';
-    sendBtn.disabled = true;
-    setThinking(true);
+function showStep(n) {
+  document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+  document.querySelector(`[data-step="${n}"]`).classList.add('active');
+  state.step = n;
+  updateProgress();
+  updateNav();
+}
 
-    try {
-      const response = await fetch(WORKER_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-6',
-          max_tokens: 1024,
-          system: SYSTEM_PROMPT,
-          messages: history,
-        }),
-      });
+// ── Loading messages ──
+const loadingMessages = [
+  'Reading your garden...',
+  'Checking your soil and climate...',
+  'Finding plants that will thrive...',
+  'Putting your plan together...'
+];
+let loadingInterval;
+function cycleLoadingText() {
+  let i = 0;
+  const el = document.getElementById('loading-text');
+  loadingInterval = setInterval(() => {
+    i = (i + 1) % loadingMessages.length;
+    el.style.opacity = '0';
+    setTimeout(() => {
+      el.textContent = loadingMessages[i];
+      el.style.opacity = '1';
+    }, 300);
+  }, 2200);
+}
+const loadingEl = document.getElementById('loading-text');
+loadingEl.style.transition = 'opacity 0.3s';
 
-      const data = await response.json();
+// ── Submit to AI ──
+async function submitProfile() {
+  document.getElementById('wizard').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+  cycleLoadingText();
 
-      if (!response.ok) {
-        throw new Error(data?.error?.message || `HTTP ${response.status}`);
-      }
+  const soilLabels = { clay:'heavy clay', sandy:'sandy/light', loam:'rich loam', chalky:'chalky/stony', peaty:'peaty/boggy', unknown:'unknown (help me identify it)' };
+  const aspectLabels = { south:'south-facing (sun all day)', north:'north-facing (mostly shade)', east:'east-facing (morning sun)', west:'west-facing (afternoon sun)', mixed:'mixed/not sure' };
 
-      const reply = data.content?.[0]?.text ?? 'Sorry, I didn\'t get a response.';
-      history.push({ role: 'assistant', content: reply });
-      setThinking(false);
-      addMessage('wizard', reply);
-    } catch (err) {
-      setThinking(false);
-      addMessage('error', 'Something went wrong: ' + err.message);
-    } finally {
-      sendBtn.disabled = false;
-      input.focus();
-    }
+  const goalLabels = state.goals.map(g => ({
+    'colour':'colour and flowers','wildlife':'wildlife and pollinators','veg':'vegetables and herbs',
+    'low-maintenance':'low maintenance','privacy':'privacy and screening','entertaining':'outdoor entertaining',
+    'scent':'scent','year-round':'year-round interest'
+  }[g])).join(', ');
+
+  const systemPrompt = `You are a friendly, expert UK garden advisor with 25 years of horticultural knowledge. You know British soil types, hardiness zones, rainfall patterns, and the best plants for every situation.
+
+Your job is to give personalised, practical garden advice based on the user's specific conditions. Your recommendations must:
+- Be genuinely tailored to the combination of location + soil + aspect + goals they describe
+- Name specific plant varieties that will actually thrive (not generic categories)
+- Include a mix of structural plants, seasonal interest, and the user's specific goals
+- Mention UK hardiness zones, local climate nuances, or regional considerations where relevant
+- Be warm, encouraging, and written in plain English — no jargon without explanation
+- Feel like advice from a knowledgeable friend, not a textbook
+
+Format your response in clear sections with headers. Include:
+1. A brief, warm read of their garden conditions (2-3 sentences)
+2. Recommended plants (at least 8-10 named varieties with a brief note on each)
+3. Two or three key design ideas tailored to their goals
+4. One or two seasonal tips or things to avoid for their specific conditions
+
+Keep the total response focused and readable — they're likely reading this on a phone.`;
+
+  const userMessage = `My garden profile:
+- Location: ${state.location}
+- Soil type: ${soilLabels[state.soil]}
+- Aspect: ${aspectLabels[state.aspect]}
+- What I want: ${goalLabels}
+
+Please give me personalised plant recommendations and garden design ideas for my specific conditions.`;
+
+  try {
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1200,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: userMessage }]
+      })
+    });
+    const data = await res.json();
+    const responseText = data.content[0].text;
+
+    state.result = responseText;
+    showResult(responseText);
+
+  } catch (err) {
+    clearInterval(loadingInterval);
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('wizard').style.display = 'block';
+    showStep(4);
+    alert('Something went wrong. Please try again.');
+    console.error(err);
   }
+}
 
-  sendBtn.addEventListener('click', send);
+// ── Render result ──
+function showResult(text) {
+  clearInterval(loadingInterval);
+  document.getElementById('loading').style.display = 'none';
 
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      send();
-    }
+  const soilLabels = { clay:'Clay soil', sandy:'Sandy soil', loam:'Rich loam', chalky:'Chalky soil', peaty:'Peaty soil', unknown:'Unknown soil' };
+  const aspectLabels = { south:'South-facing ☀️', north:'North-facing 🌥️', east:'East-facing 🌅', west:'West-facing 🌇', mixed:'Mixed aspect 🔄' };
+  const goalIcons = { colour:'🌸', wildlife:'🦋', veg:'🥕', 'low-maintenance':'😌', privacy:'🌳', entertaining:'🍷', scent:'🌹', 'year-round':'📅' };
+  const goalNames = { colour:'Colour', wildlife:'Wildlife', veg:'Veg & herbs', 'low-maintenance':'Low maintenance', privacy:'Privacy', entertaining:'Entertaining', scent:'Scent', 'year-round':'Year-round' };
+
+  // Title
+  document.getElementById('result-title').textContent = 'Your ' + state.location + ' Garden Plan';
+  document.getElementById('result-subtitle').textContent =
+    `${soilLabels[state.soil]} · ${aspectLabels[state.aspect].replace(/[\u2600-\u27BF]/gu, '').trim()}`;
+
+  // Profile pills
+  const profileDiv = document.getElementById('result-profile');
+  profileDiv.innerHTML = '';
+  [
+    { icon: '📍', text: state.location },
+    { icon: '🌍', text: soilLabels[state.soil] },
+    { icon: '🧭', text: aspectLabels[state.aspect] },
+    ...state.goals.map(g => ({ icon: goalIcons[g], text: goalNames[g] }))
+  ].forEach(p => {
+    const pill = document.createElement('div');
+    pill.className = 'profile-pill';
+    pill.innerHTML = `<span>${p.icon}</span><span>${p.text}</span>`;
+    profileDiv.appendChild(pill);
   });
 
-  input.addEventListener('input', () => {
-    input.style.height = 'auto';
-    input.style.height = input.scrollHeight + 'px';
-  });
+  // Body — parse markdown-ish text
+  const bodyDiv = document.getElementById('result-body');
+  bodyDiv.innerHTML = renderMarkdown(text);
 
-  // Opening message
-  addMessage('wizard', 'Hello! I\'m your Green Gardening Wizard. Tell me a bit about your garden and I\'ll help you make the most of it — whether that\'s finding the right plants, solving a tricky spot, or just knowing where to start. What\'s your garden like?');
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderMarkdown(text) {
+  return text
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^# (.+)$/gm, '<h3>$1</h3>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^[\-\*] (.+)$/gm, '<li>$1</li>')
+    .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, m => '<ul>' + m + '</ul>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/^(?!<[hul])/gm, '')
+    .replace(/(<\/h3>|<\/ul>)\n/g, '$1')
+    .replace(/^([^<\n].+)$/gm, '<p>$1</p>')
+    .replace(/<p><\/p>/g, '')
+    .replace(/<p>(<[hul])/g, '$1')
+    .replace(/(<\/[hul][^>]*>)<\/p>/g, '$1');
+}
+
+// ── Share ──
+function shareResult() {
+  const soilLabels = { clay:'clay', sandy:'sandy', loam:'loam', chalky:'chalky', peaty:'peaty', unknown:'unknown' };
+  const aspectLabels = { south:'south-facing', north:'north-facing', east:'east-facing', west:'west-facing', mixed:'mixed aspect' };
+
+  const shareText = `🌿 My Garden Plan from Your Green Gardening Wizard
+
+📍 ${state.location} · ${soilLabels[state.soil]} soil · ${aspectLabels[state.aspect]}
+🎯 Goals: ${state.goals.join(', ')}
+
+${state.result.substring(0, 600)}...
+
+Get your own garden plan → ${window.location.href}`;
+
+  if (navigator.share) {
+    navigator.share({ title: 'My Garden Plan', text: shareText }).catch(() => copyToClipboard(shareText));
+  } else {
+    copyToClipboard(shareText);
+  }
+}
+
+function copyToClipboard(text) {
+  navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard ✓')).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast('Copied to clipboard ✓');
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ── Upgrade modal (fake door test) ──
+let upgradeClicked = false;
+function openUpgrade() {
+  document.getElementById('modal').classList.add('open');
+  if (!upgradeClicked) {
+    upgradeClicked = true;
+    console.log('[AARRR Revenue] Fake door clicked — upgrade intent registered');
+    // TODO: replace with your analytics event
+  }
+}
+function closeUpgrade() { document.getElementById('modal').classList.remove('open'); }
+function closeUpgradeIfOutside(e) { if (e.target === document.getElementById('modal')) closeUpgrade(); }
+function joinWaitlist() {
+  document.getElementById('waitlist-msg').style.display = 'block';
+  document.querySelector('.btn-modal-cta').style.display = 'none';
+  console.log('[AARRR Revenue] Waitlist joined — strong purchase intent');
+  // TODO: connect to your email capture (Mailchimp, ConvertKit, etc.)
+}
+
+// ── Restart ──
+function restartWizard() {
+  state.step = 1; state.location = ''; state.soil = ''; state.aspect = ''; state.goals = []; state.result = '';
+  document.getElementById('result').style.display = 'none';
+  document.getElementById('location-input').value = '';
+  document.querySelectorAll('.opt.selected, .goal-opt.selected').forEach(el => el.classList.remove('selected'));
+  document.getElementById('waitlist-msg').style.display = 'none';
+  document.querySelector('.btn-modal-cta').style.display = 'block';
+  upgradeClicked = false;
+  showStep(1);
+  document.getElementById('wizard').style.display = 'block';
+  document.getElementById('wizard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
 </script>
-
 </body>
 </html>
