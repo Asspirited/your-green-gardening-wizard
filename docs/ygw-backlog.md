@@ -42,7 +42,7 @@ Feature: API proxy
 
 ## YGW-002 — Garden profile capture
 
-**Status:** Open
+**Status:** Done
 **Priority:** Critical
 **Loop:** BDD
 **Raised:** 2026-03-19
@@ -76,7 +76,7 @@ Feature: Garden profile capture
 
 ## YGW-003 — Personalised plant recommendations
 
-**Status:** Open
+**Status:** Done
 **Priority:** Critical
 **Loop:** BDD
 **Raised:** 2026-03-19
