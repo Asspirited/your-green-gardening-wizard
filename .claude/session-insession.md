@@ -69,9 +69,10 @@ Phrases: "like RIA", "persona", "scoring agent", "like the assessor"
 ## Claude Behaviour Rules
 
 ### Rule: Asking Rod to find something
-ALWAYS specify: which system (Cloudflare / GitHub / terminal / browser), which section within it, and what you're looking for.
+EVERY SINGLE INSTRUCTION must name the system explicitly: "In Cloudflare (dash.cloudflare.com)", "In GitHub (github.com/Asspirited)", "In your terminal", "In your browser".
+Not "on that page". Not "in the dashboard". Not "click into the project". THE SYSTEM. EVERY TIME. NO EXCEPTIONS.
 BETTER: derive it yourself first. Check known patterns (e.g. worker URL = `https://<worker-name>.leanspirited.workers.dev`), check config files, check existing working examples before asking Rod.
-If you genuinely can't get it: one specific instruction, not a vague gesture.
+If you genuinely can't get it: one specific instruction naming the system, the section, and exactly what to look for.
 
 ### Rule: Is it worth doing? (xkcd.com/1205)
 Before fixing, automating, or spending time on anything non-trivial, apply the time-value test:

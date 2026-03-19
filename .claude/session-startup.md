@@ -39,6 +39,6 @@ Confirm with Rod before starting work.
 ## YGW-Specific Context to Confirm Each Session
 
 - Current phase: Phase 1 MVP (Consumer Advisor)
-- Live URL: https://your-green-gardening-wizard.pages.dev
+- Live URL: https://your-green-gardening-wizard.leanspirited.workers.dev
 - Any user feedback from previous sessions
 - Oz / Jerry inputs since last session
