@@ -327,6 +327,19 @@ Feature: Bulk developer API
 
 ---
 
+## EPIC I — Garden canvas tool (Phase 2 B2B)
+
+| ID | Title | Score | Status |
+|---|---|---|---|
+| YGW-039 | Garden canvas MVP (app.html) — boundary + plant placement + seasonal grid | 9.0 | 🔨 Building |
+| YGW-040 | Seasonal date override in canvas — preview garden at any calendar date | 5.5 | 📋 Open |
+| YGW-041 | Export canvas to PDF — proposal flow for landscapers | 8.5 | 📋 Open |
+| YGW-042 | Plant library phase 2 — landscaper builds own plant list | 6.0 | 📋 Open |
+| YGW-043 | Plant quantity estimator in canvas — auto-count from area + spread | 8.5 | 📋 Open |
+| YGW-044 | Pact contract test for Worker /messages endpoint | 7.0 | 📋 Open |
+
+---
+
 ## EPIC H — Phase 4+ ideas
 
 | ID | Title | Score | Status |

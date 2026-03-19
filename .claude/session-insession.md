@@ -64,6 +64,22 @@ Phrases: "like RIA", "persona", "scoring agent", "like the assessor"
 ## Pipeline Rule
 100% statement and branch coverage required. Full green before merge. No exceptions.
 
+Pipeline sequence (in order):
+1. `bash scripts/check-auth.sh` — auth canary, exit RED = stop everything
+2. Unit tests — 100% statement + branch coverage
+3. Contract verification — Pact provider verify against `.pact` files (once contract layer is built)
+4. `bash .claude/scripts/pipeline-report.sh` — full report
+
+### Trigger: New seam between browser and Worker
+Any new or changed API call from browser → Worker → run Gherkin gate AND define/update Pact contract first.
+Gherkin covers behaviour. Contract covers the API surface shape. Both required. Neither replaces the other.
+
+### Trigger: Worker API changed
+If Worker handler response shape changes: update `.pact` file AND run provider verification before deploying.
+A passing unit test suite does NOT mean the consumer is safe — only a passing contract verify does.
+
+Full testing standards: `.claude/testing-standards.md`
+
 ---
 
 ## Claude Behaviour Rules
@@ -73,6 +89,12 @@ EVERY SINGLE INSTRUCTION must name the system explicitly: "In Cloudflare (dash.c
 Not "on that page". Not "in the dashboard". Not "click into the project". THE SYSTEM. EVERY TIME. NO EXCEPTIONS.
 BETTER: derive it yourself first. Check known patterns (e.g. worker URL = `https://<worker-name>.leanspirited.workers.dev`), check config files, check existing working examples before asking Rod.
 If you genuinely can't get it: one specific instruction naming the system, the section, and exactly what to look for.
+
+### Rule: Clarify when Rod is ambiguous
+Rod talks fast and thinks out loud — instructions can be unclear, contradictory, or mid-thought.
+If an instruction is genuinely ambiguous: ask one specific clarifying question before doing any work.
+Don't guess and build the wrong thing. Don't ask multiple questions at once. One question, then build.
+This is not "questioning Rod" — it's how good work gets done.
 
 ### Rule: Is it worth doing? (xkcd.com/1205)
 Before fixing, automating, or spending time on anything non-trivial, apply the time-value test:

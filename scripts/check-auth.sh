@@ -18,7 +18,7 @@ fi
 # Check 2: Wrangler can reach Cloudflare
 if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
   WHOAMI=$(CLOUDFLARE_API_TOKEN="$CLOUDFLARE_API_TOKEN" wrangler whoami 2>&1)
-  if echo "$WHOAMI" | grep -q "leanspirited@gmail.com"; then
+  if echo "$WHOAMI" | grep -qi "leanspirited@gmail.com"; then
     echo "GREEN: Cloudflare auth valid (leanspirited@gmail.com)"
   else
     echo "RED: Cloudflare auth failed — token may be expired"
@@ -29,19 +29,8 @@ else
   echo "SKIP: Cloudflare whoami skipped (no token)"
 fi
 
-# Check 3: ANTHROPIC_API_KEY secret exists in worker
-if [ -n "$CLOUDFLARE_API_TOKEN" ]; then
-  SECRETS=$(CLOUDFLARE_API_TOKEN="$CLOUDFLARE_API_TOKEN" wrangler secret list --name ygw-api-proxy 2>&1)
-  if echo "$SECRETS" | grep -q "ANTHROPIC_API_KEY"; then
-    echo "GREEN: ANTHROPIC_API_KEY secret present in ygw-api-proxy worker"
-  else
-    echo "RED: ANTHROPIC_API_KEY secret missing from ygw-api-proxy worker"
-    echo "     Fix: CLOUDFLARE_API_TOKEN=<token> wrangler secret put ANTHROPIC_API_KEY --name ygw-api-proxy"
-    ERRORS=$((ERRORS+1))
-  fi
-else
-  echo "SKIP: Secret check skipped (no token)"
-fi
+# Check 3: ANTHROPIC_API_KEY — validated via live ping in Check 4 (wrangler secret list
+# does not work with cfat_ Account API Tokens — use worker HTTP response as proxy)
 
 # Check 4: Worker live ping (catches silent Anthropic key revocation)
 WORKER_URL="https://ygw-api-proxy.leanspirited.workers.dev"

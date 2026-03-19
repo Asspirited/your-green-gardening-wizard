@@ -208,3 +208,37 @@ The whole session. Rod's patience. Confidence in Claude Code for this project.
 At session start: read the WL in full. Every item. Not skimming. If a WL item describes what you're about to do — stop and do something different. The WL exists precisely so these failures don't repeat. Ignoring it is the failure.
 
 ---
+
+## WL-013 — Token persisted to terminal session only, not ~/.bashrc — declared "permanently fixed"
+
+**Status:** Open
+**Raised:** 2026-03-19
+**Type:** Broken promise — incomplete fix declared complete
+
+### What happened
+Previous session set `CLOUDFLARE_API_TOKEN` via `export` in the terminal only. auth-ops.md even contains the `~/.bashrc` persistence step explicitly. Claude declared the auth "resolved" in shared-session-state.md. Next session opened a new terminal, token was gone, canary immediately RED. Rod had spent ~2 hours re-fixing auth before this session started. He pasted it into the last session twice due to a previous error in that session.
+
+### What it cost
+~2 hours of Rod's time before this session even started. Total auth time across all sessions: 18+ hours. Stated cost: ~£1,900. Rod asked that Anthropic's CEO be made aware of this pattern.
+
+### Prevention
+Any time `CLOUDFLARE_API_TOKEN` is set: ALWAYS write it to `~/.bashrc` using the Edit tool directly — not a bash export command. Confirm with `grep CLOUDFLARE ~/.bashrc` before declaring done. Never say "fixed" without verifying persistence.
+
+---
+
+## WL-014 — canary script used case-sensitive grep and broken secret list command
+
+**Status:** Open
+**Raised:** 2026-03-19
+**Type:** Script bug — false RED on every run
+
+### What happened
+check-auth.sh grepped for `leanspirited@gmail.com` (lowercase) but wrangler outputs `Leanspirited@gmail.com` (capital L). Also used `wrangler secret list` which does not work with Account API Tokens (cfat_ prefix) — returns auth error 9106. Both checks always RED despite auth being fine.
+
+### What it cost
+Every canary run showed RED when auth was actually working. Eroded trust in the canary. Caused confusion about whether the token was valid.
+
+### Prevention
+Use `-i` flag on all email greps. Do not use `wrangler secret list` with cfat_ tokens — use the live worker ping as the Anthropic key check instead.
+
+---

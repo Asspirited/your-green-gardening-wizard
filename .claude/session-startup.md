@@ -9,8 +9,9 @@
 ### Step 1: Orientation
 State the current date and confirm which product we're working on (YGW).
 
-### Step 2: Read claude.md
+### Step 2: Read claude.md and testing standards
 Fetch and read `.claude/claude.md` in full.
+Fetch and read `.claude/testing-standards.md` in full.
 
 ### Step 3: Backlog review
 Fetch `/docs/ygw-backlog.md`. Identify:

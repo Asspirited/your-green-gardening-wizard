@@ -1,0 +1,43 @@
+/* seasons.css — per-season CSS variables shared across landing and canvas */
+/* Set via data-season attribute on <html> or <body> */
+
+:root {
+  /* Default: summer */
+  --season-ground:   #e6efdc;
+  --season-minor:    #c8d9a4;
+  --season-major:    #9dbc58;
+  --season-boundary: #5a7c1e;
+  --season-cta:      #1b4332;
+}
+
+[data-season="spring"] {
+  --season-ground:   #e8f5e0;
+  --season-minor:    #b8e0a0;
+  --season-major:    #7bc860;
+  --season-boundary: #3a8c1e;
+  --season-cta:      #1a5c2a;
+}
+
+[data-season="summer"] {
+  --season-ground:   #e6efdc;
+  --season-minor:    #c8d9a4;
+  --season-major:    #9dbc58;
+  --season-boundary: #5a7c1e;
+  --season-cta:      #1b4332;
+}
+
+[data-season="autumn"] {
+  --season-ground:   #f5ede0;
+  --season-minor:    #e0c090;
+  --season-major:    #c07840;
+  --season-boundary: #8b4513;
+  --season-cta:      #5c1e05;
+}
+
+[data-season="winter"] {
+  --season-ground:   #f0f4f8;
+  --season-minor:    #d0dce8;
+  --season-major:    #9ab0c8;
+  --season-boundary: #4a6880;
+  --season-cta:      #1a2a4a;
+}

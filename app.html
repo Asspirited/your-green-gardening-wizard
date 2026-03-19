@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Garden Canvas — Your Green Gardening Wizard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/seasons.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --forest: #1a3a2a;
+    --moss:   #2d6a4f;
+    --sage:   #52b788;
+    --mint:   #b7e4c7;
+    --cream:  #faf6f0;
+    --parch:  #f0e8d8;
+    --ink:    #1c1c1c;
+    --radius: 12px;
+    --font-display: 'Playfair Display', Georgia, serif;
+    --font-ui: 'DM Sans', system-ui, sans-serif;
+    --toolbar-h: 56px;
+    --palette-w: 200px;
+    --info-w: 220px;
+  }
+
+  html, body { height: 100%; overflow: hidden; }
+
+  body {
+    font-family: var(--font-ui);
+    background: #f0f0ec;
+    color: var(--ink);
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── Header ── */
+  header {
+    background: var(--forest);
+    height: var(--toolbar-h);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 16px;
+    flex-shrink: 0;
+    z-index: 10;
+  }
+  .logo-mark { font-size: 20px; }
+  .brand {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--cream);
+    flex: 1;
+  }
+  .brand span { color: var(--sage); font-style: italic; }
+  .back-link {
+    color: var(--mint);
+    font-size: 0.8rem;
+    text-decoration: none;
+    opacity: 0.7;
+  }
+  .back-link:hover { opacity: 1; }
+
+  /* ── Toolbar ── */
+  .toolbar {
+    background: white;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    height: 44px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 12px;
+    flex-shrink: 0;
+    z-index: 9;
+  }
+  .tool-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    font-family: var(--font-ui);
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: none;
+    color: #555;
+    transition: all 0.12s;
+    white-space: nowrap;
+  }
+  .tool-btn:hover { background: #f0f0ec; color: var(--forest); }
+  .tool-btn.active { background: var(--forest); color: white; border-color: var(--forest); }
+  .tool-btn.view-active { background: var(--moss); color: white; border-color: var(--moss); }
+  .toolbar-sep {
+    width: 1px;
+    height: 24px;
+    background: #ddd;
+    margin: 0 4px;
+  }
+  .toolbar-right { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+  .season-indicator {
+    font-size: 0.75rem;
+    color: #888;
+    padding: 4px 8px;
+    background: #f5f5f0;
+    border-radius: 4px;
+  }
+
+  /* ── App body ── */
+  .app-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+  }
+
+  /* ── Plant palette sidebar ── */
+  .plant-palette {
+    width: var(--palette-w);
+    background: white;
+    border-right: 1px solid rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .palette-header {
+    padding: 10px 12px 8px;
+    border-bottom: 1px solid var(--parch);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--moss);
+  }
+  .palette-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+  .plant-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 10px;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.12s;
+    margin-bottom: 4px;
+  }
+  .plant-item:hover { background: #f5f5f0; border-color: #ddd; }
+  .plant-item.selected { background: #eaf7ef; border-color: var(--sage); }
+  .plant-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    opacity: 0.85;
+    border: 1.5px solid rgba(0,0,0,0.15);
+  }
+  .plant-info { flex: 1; min-width: 0; }
+  .plant-name {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--forest);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .plant-meta { font-size: 0.68rem; color: #888; }
+
+  /* ── Canvas area ── */
+  .canvas-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    cursor: crosshair;
+  }
+  .canvas-area.mode-place { cursor: cell; }
+  .canvas-area.mode-select { cursor: default; }
+  #garden-canvas { display: block; }
+
+  /* ── Info panel ── */
+  .info-panel {
+    width: var(--info-w);
+    background: white;
+    border-left: 1px solid rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+  .info-section {
+    padding: 12px;
+    border-bottom: 1px solid var(--parch);
+  }
+  .info-label {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--moss);
+    margin-bottom: 6px;
+  }
+  .info-value {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--forest);
+  }
+  .info-value-sub { font-size: 0.75rem; color: #888; margin-top: 2px; }
+  .info-hint {
+    font-size: 0.75rem;
+    color: #888;
+    line-height: 1.5;
+  }
+  .plant-count-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .plant-count-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: #444;
+    padding: 3px 0;
+  }
+  .plant-count-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ── Toast ── */
+  .toast {
+    position: absolute;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%) translateY(60px);
+    background: var(--forest);
+    color: var(--cream);
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    z-index: 50;
+    transition: transform 0.25s ease;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ── Season override ── */
+  .season-btns {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+  }
+  .season-btn {
+    font-size: 0.68rem;
+    padding: 3px 8px;
+    border: 1px solid #ddd;
+    border-radius: 100px;
+    cursor: pointer;
+    background: white;
+    color: #666;
+    font-family: var(--font-ui);
+    transition: all 0.12s;
+  }
+  .season-btn:hover { border-color: var(--sage); color: var(--forest); }
+  .season-btn.active { background: var(--season-cta, var(--forest)); color: white; border-color: transparent; }
+
+  @media (max-width: 700px) {
+    .plant-palette { width: 160px; --palette-w: 160px; }
+    .info-panel { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark">🌿</div>
+  <div class="brand">Garden Canvas · <span>Your Green Gardening Wizard</span></div>
+  <a href="index.html" class="back-link">← Back to advisor</a>
+</header>
+
+<div class="toolbar">
+  <button class="tool-btn active" id="btn-draw" onclick="setMode('draw')">
+    ✏️ Draw boundary
+  </button>
+  <button class="tool-btn" id="btn-place" onclick="setMode('place')">
+    🌱 Place plants
+  </button>
+  <button class="tool-btn" id="btn-select" onclick="setMode('select')">
+    ↖ Select
+  </button>
+  <div class="toolbar-sep"></div>
+  <button class="tool-btn" id="btn-clear-boundary" onclick="clearBoundary()">
+    🗑 Clear boundary
+  </button>
+  <button class="tool-btn" id="btn-undo" onclick="undoLast()">
+    ↩ Undo
+  </button>
+  <div class="toolbar-sep"></div>
+  <button class="tool-btn" id="btn-plan" onclick="setView('plan')">
+    📐 Plan
+  </button>
+  <button class="tool-btn view-active" id="btn-proposal" onclick="setView('proposal')">
+    🖼 Proposal
+  </button>
+  <div class="toolbar-right">
+    <span class="season-indicator" id="season-indicator">Spring</span>
+  </div>
+</div>
+
+<div class="app-body">
+
+  <!-- Plant palette -->
+  <aside class="plant-palette">
+    <div class="palette-header">Plants</div>
+    <div class="palette-scroll" id="palette-list"></div>
+  </aside>
+
+  <!-- Canvas -->
+  <div class="canvas-area" id="canvas-area">
+    <canvas id="garden-canvas"></canvas>
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <!-- Info panel -->
+  <aside class="info-panel">
+    <div class="info-section">
+      <div class="info-label">Garden area</div>
+      <div class="info-value" id="info-area">—</div>
+      <div class="info-value-sub" id="info-area-sub"></div>
+    </div>
+    <div class="info-section">
+      <div class="info-label">Plants placed</div>
+      <ul class="plant-count-list" id="plant-count-list"></ul>
+    </div>
+    <div class="info-section">
+      <div class="info-label">Season</div>
+      <div class="season-btns" id="season-btns"></div>
+    </div>
+    <div class="info-section" style="flex:1">
+      <div class="info-label">How to use</div>
+      <div class="info-hint" id="mode-hint">Click <strong>Draw boundary</strong> then click on the canvas to mark your garden corners. Double-click or click the first point to close.</div>
+    </div>
+  </aside>
+
+</div>
+
+<script type="module">
+import { getCurrentUKSeason } from './domain.js';
+import { SEASON_THEMES, applySeasonTheme } from './js/seasons.js';
+
+// ── Load plants ──
+const PLANTS = await fetch('./data/plants.json').then(r => r.json());
+
+// ── State ──
+const state = {
+  mode: 'draw',          // 'draw' | 'place' | 'select'
+  view: 'proposal',      // 'plan' | 'proposal'
+  season: getCurrentUKSeason().season,
+  boundary: [],          // [{x,y}] in metres
+  boundaryClosed: false,
+  plants: [],            // [{plantId, x, y}] in metres
+  selectedPlantId: null,
+  selectedPlantIndex: null,
+  scale: 60,             // px per metre
+  offsetX: 0,
+  offsetY: 0,
+  dragging: false,
+  dragStart: null,
+  dragOffset: null
+};
+
+// ── Canvas setup ──
+const canvas = document.getElementById('garden-canvas');
+const ctx = canvas.getContext('2d');
+const area = document.getElementById('canvas-area');
+
+function resizeCanvas() {
+  canvas.width  = area.clientWidth;
+  canvas.height = area.clientHeight;
+  // Centre origin on first resize
+  if (state.offsetX === 0 && state.offsetY === 0) {
+    state.offsetX = canvas.width  / 2;
+    state.offsetY = canvas.height / 2;
+  }
+  render();
+}
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// ── Season init ──
+applySeasonTheme(state.season);
+document.getElementById('season-indicator').textContent =
+  state.season.charAt(0).toUpperCase() + state.season.slice(1);
+buildSeasonBtns();
+
+// ── Build palette ──
+const paletteList = document.getElementById('palette-list');
+PLANTS.forEach(plant => {
+  const el = document.createElement('div');
+  el.className = 'plant-item';
+  el.dataset.id = plant.id;
+  el.innerHTML = `
+    <div class="plant-dot" style="background:${plant.dotColour}"></div>
+    <div class="plant-info">
+      <div class="plant-name">${plant.name}</div>
+      <div class="plant-meta">${plant.type} · ${plant.spread}m spread</div>
+    </div>`;
+  el.addEventListener('click', () => selectPlant(plant.id));
+  paletteList.appendChild(el);
+});
+
+function selectPlant(id) {
+  state.selectedPlantId = id;
+  document.querySelectorAll('.plant-item').forEach(el => {
+    el.classList.toggle('selected', el.dataset.id === id);
+  });
+  if (state.mode !== 'place') setMode('place');
+}
+
+// ── Coordinate helpers ──
+function toCanvas(mx, my) {
+  return {
+    x: mx * state.scale + state.offsetX,
+    y: my * state.scale + state.offsetY
+  };
+}
+function toMetres(cx, cy) {
+  return {
+    x: (cx - state.offsetX) / state.scale,
+    y: (cy - state.offsetY) / state.scale
+  };
+}
+
+// ── Grid rendering ──
+function drawGrid() {
+  const theme = SEASON_THEMES[state.season];
+  const g = theme.grid;
+  const W = canvas.width, H = canvas.height;
+
+  // Ground fill
+  ctx.fillStyle = g.ground;
+  ctx.fillRect(0, 0, W, H);
+
+  // Determine metre range visible
+  const minM = toMetres(0, 0);
+  const maxM = toMetres(W, H);
+
+  const startX = Math.floor(minM.x);
+  const endX   = Math.ceil(maxM.x);
+  const startY = Math.floor(minM.y);
+  const endY   = Math.ceil(maxM.y);
+
+  // Minor grid (1m)
+  ctx.strokeStyle = g.minor;
+  ctx.lineWidth = 0.5;
+  ctx.beginPath();
+  for (let mx = startX; mx <= endX; mx++) {
+    if (mx % 5 === 0) continue;
+    const cx = toCanvas(mx, 0).x;
+    ctx.moveTo(cx, 0);
+    ctx.lineTo(cx, H);
+  }
+  for (let my = startY; my <= endY; my++) {
+    if (my % 5 === 0) continue;
+    const cy = toCanvas(0, my).y;
+    ctx.moveTo(0, cy);
+    ctx.lineTo(W, cy);
+  }
+  ctx.stroke();
+
+  // Major grid (5m)
+  ctx.strokeStyle = g.major;
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  for (let mx = Math.floor(startX / 5) * 5; mx <= endX; mx += 5) {
+    const cx = toCanvas(mx, 0).x;
+    ctx.moveTo(cx, 0);
+    ctx.lineTo(cx, H);
+  }
+  for (let my = Math.floor(startY / 5) * 5; my <= endY; my += 5) {
+    const cy = toCanvas(0, my).y;
+    ctx.moveTo(0, cy);
+    ctx.lineTo(W, cy);
+  }
+  ctx.stroke();
+
+  // Dimension labels (every 5m)
+  ctx.fillStyle = '#888';
+  ctx.font = '11px DM Sans, system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  for (let mx = Math.floor(startX / 5) * 5; mx <= endX; mx += 5) {
+    if (mx === 0) continue;
+    const cx = toCanvas(mx, 0).x;
+    const labelY = Math.max(14, Math.min(H - 4, toCanvas(0, 0).y + 3));
+    ctx.fillText(mx + 'm', cx, labelY);
+  }
+  ctx.textAlign = 'right';
+  for (let my = Math.floor(startY / 5) * 5; my <= endY; my += 5) {
+    if (my === 0) continue;
+    const cy = toCanvas(0, my).y;
+    const labelX = Math.max(28, Math.min(W, toCanvas(0, 0).x - 3));
+    ctx.fillText(my + 'm', labelX, cy + 4);
+  }
+}
+
+// ── Boundary rendering ──
+function drawBoundary() {
+  const pts = state.boundary;
+  if (pts.length === 0) return;
+  const theme = SEASON_THEMES[state.season];
+
+  if (state.boundaryClosed) {
+    // Filled polygon
+    ctx.beginPath();
+    const first = toCanvas(pts[0].x, pts[0].y);
+    ctx.moveTo(first.x, first.y);
+    for (let i = 1; i < pts.length; i++) {
+      const p = toCanvas(pts[i].x, pts[i].y);
+      ctx.lineTo(p.x, p.y);
+    }
+    ctx.closePath();
+
+    if (state.view === 'proposal') {
+      ctx.fillStyle = theme.grid.ground;
+      ctx.fill();
+    }
+    ctx.strokeStyle = theme.grid.boundary;
+    ctx.lineWidth = 2.5;
+    ctx.stroke();
+
+    // Area label inside
+    const centroid = computeCentroid(pts);
+    const c = toCanvas(centroid.x, centroid.y);
+    const areaM2 = polygonArea(pts);
+    ctx.fillStyle = theme.grid.boundary;
+    ctx.font = 'bold 13px DM Sans, system-ui, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(areaM2.toFixed(1) + ' m²', c.x, c.y);
+
+  } else {
+    // In-progress: dashed line
+    ctx.setLineDash([5, 4]);
+    ctx.beginPath();
+    const first = toCanvas(pts[0].x, pts[0].y);
+    ctx.moveTo(first.x, first.y);
+    for (let i = 1; i < pts.length; i++) {
+      const p = toCanvas(pts[i].x, pts[i].y);
+      ctx.lineTo(p.x, p.y);
+    }
+    ctx.strokeStyle = theme.grid.boundary;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Vertex dots
+    pts.forEach((pt, i) => {
+      const p = toCanvas(pt.x, pt.y);
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, i === 0 ? 7 : 5, 0, Math.PI * 2);
+      ctx.fillStyle = i === 0 ? theme.grid.boundary : 'white';
+      ctx.fill();
+      ctx.strokeStyle = theme.grid.boundary;
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+  }
+}
+
+// ── Plant rendering ──
+function drawPlants() {
+  state.plants.forEach((placed, idx) => {
+    const plant = PLANTS.find(p => p.id === placed.plantId);
+    if (!plant) return;
+    const c = toCanvas(placed.x, placed.y);
+    const r = (plant.spread / 2) * state.scale;
+
+    if (state.view === 'proposal') {
+      // Soft radial gradient fill
+      const grad = ctx.createRadialGradient(c.x, c.y, r * 0.1, c.x, c.y, r);
+      grad.addColorStop(0, plant.dotColour + 'dd');
+      grad.addColorStop(0.7, plant.dotColour + '88');
+      grad.addColorStop(1, plant.dotColour + '22');
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = grad;
+      ctx.fill();
+      ctx.strokeStyle = plant.dotColour + 'aa';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    } else {
+      // Plan: solid circle with border
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, r, 0, Math.PI * 2);
+      ctx.fillStyle = plant.dotColour + '55';
+      ctx.fill();
+      ctx.strokeStyle = plant.dotColour;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+
+    // Selected indicator
+    if (idx === state.selectedPlantIndex) {
+      ctx.beginPath();
+      ctx.arc(c.x, c.y, r + 4, 0, Math.PI * 2);
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 3]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Label (proposal view, if space)
+    if (r > 20) {
+      ctx.fillStyle = 'rgba(26,58,42,0.85)';
+      ctx.font = `${Math.min(12, Math.max(9, r / 4))}px DM Sans, system-ui, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.fillText(plant.name, c.x, c.y + 3);
+    }
+  });
+}
+
+// ── Main render ──
+function render() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawGrid();
+  drawBoundary();
+  drawPlants();
+  updateInfoPanel();
+}
+
+// ── Info panel ──
+function updateInfoPanel() {
+  const areaEl   = document.getElementById('info-area');
+  const areaSubEl = document.getElementById('info-area-sub');
+  const countEl  = document.getElementById('plant-count-list');
+
+  if (state.boundaryClosed && state.boundary.length >= 3) {
+    const m2 = polygonArea(state.boundary);
+    areaEl.textContent = m2.toFixed(1) + ' m²';
+    areaSubEl.textContent = (m2 * 10.764).toFixed(0) + ' sq ft';
+  } else {
+    areaEl.textContent = '—';
+    areaSubEl.textContent = '';
+  }
+
+  // Plant counts
+  const counts = {};
+  state.plants.forEach(p => { counts[p.plantId] = (counts[p.plantId] || 0) + 1; });
+  countEl.innerHTML = '';
+  if (Object.keys(counts).length === 0) {
+    countEl.innerHTML = '<li class="info-hint">No plants placed yet</li>';
+  } else {
+    Object.entries(counts).forEach(([id, n]) => {
+      const plant = PLANTS.find(p => p.id === id);
+      if (!plant) return;
+      const li = document.createElement('li');
+      li.className = 'plant-count-item';
+      li.innerHTML = `<div class="plant-count-dot" style="background:${plant.dotColour}"></div>${n}× ${plant.name}`;
+      countEl.appendChild(li);
+    });
+  }
+}
+
+// ── Mode ──
+const MODE_HINTS = {
+  draw:   'Click on the canvas to add boundary corners. Double-click or click the first point to close the shape.',
+  place:  'Select a plant from the palette, then click inside your boundary to place it.',
+  select: 'Click a plant to select it. Delete key removes it.'
+};
+
+function setMode(mode) {
+  state.mode = mode;
+  ['draw','place','select'].forEach(m => {
+    document.getElementById('btn-' + m).classList.toggle('active', m === mode);
+  });
+  area.className = 'canvas-area mode-' + mode;
+  document.getElementById('mode-hint').innerHTML = MODE_HINTS[mode];
+}
+window.setMode = setMode;
+
+function setView(view) {
+  state.view = view;
+  document.getElementById('btn-plan').classList.toggle('view-active', view === 'plan');
+  document.getElementById('btn-plan').classList.toggle('active', false);
+  document.getElementById('btn-proposal').classList.toggle('view-active', view === 'proposal');
+  document.getElementById('btn-proposal').classList.toggle('active', false);
+  render();
+}
+window.setView = setView;
+
+// ── Season buttons ──
+function buildSeasonBtns() {
+  const container = document.getElementById('season-btns');
+  ['spring','summer','autumn','winter'].forEach(s => {
+    const btn = document.createElement('button');
+    btn.className = 'season-btn' + (s === state.season ? ' active' : '');
+    btn.textContent = s.charAt(0).toUpperCase() + s.slice(1);
+    btn.addEventListener('click', () => setSeason(s));
+    container.appendChild(btn);
+  });
+}
+
+function setSeason(s) {
+  state.season = s;
+  applySeasonTheme(s);
+  document.getElementById('season-indicator').textContent = s.charAt(0).toUpperCase() + s.slice(1);
+  document.querySelectorAll('.season-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.toLowerCase() === s);
+  });
+  render();
+}
+
+// ── Canvas pointer events ──
+let pointerDown = false;
+let panStart = null;
+
+canvas.addEventListener('pointerdown', e => {
+  const rect = canvas.getBoundingClientRect();
+  const cx = e.clientX - rect.left;
+  const cy = e.clientY - rect.top;
+
+  if (e.button === 1 || (e.button === 0 && e.altKey)) {
+    // Middle button or alt+click → pan
+    pointerDown = true;
+    panStart = { cx, cy, ox: state.offsetX, oy: state.offsetY };
+    return;
+  }
+
+  if (state.mode === 'draw') {
+    handleDrawClick(cx, cy);
+  } else if (state.mode === 'place') {
+    handlePlaceClick(cx, cy);
+  } else if (state.mode === 'select') {
+    handleSelectClick(cx, cy);
+    pointerDown = true;
+    panStart = { cx, cy, ox: state.offsetX, oy: state.offsetY };
+  }
+});
+
+canvas.addEventListener('pointermove', e => {
+  if (!pointerDown || !panStart) return;
+  const rect = canvas.getBoundingClientRect();
+  const cx = e.clientX - rect.left;
+  const cy = e.clientY - rect.top;
+  state.offsetX = panStart.ox + (cx - panStart.cx);
+  state.offsetY = panStart.oy + (cy - panStart.cy);
+  render();
+});
+
+canvas.addEventListener('pointerup', () => {
+  pointerDown = false;
+  panStart = null;
+});
+
+canvas.addEventListener('wheel', e => {
+  e.preventDefault();
+  const rect = canvas.getBoundingClientRect();
+  const cx = e.clientX - rect.left;
+  const cy = e.clientY - rect.top;
+
+  // Zoom towards cursor
+  const factor = e.deltaY < 0 ? 1.1 : 0.9;
+  const newScale = Math.max(10, Math.min(200, state.scale * factor));
+  const ratio = newScale / state.scale;
+  state.offsetX = cx - (cx - state.offsetX) * ratio;
+  state.offsetY = cy - (cy - state.offsetY) * ratio;
+  state.scale = newScale;
+  render();
+}, { passive: false });
+
+canvas.addEventListener('dblclick', e => {
+  if (state.mode !== 'draw') return;
+  closeBoundary();
+});
+
+// ── Draw mode ──
+function handleDrawClick(cx, cy) {
+  if (state.boundaryClosed) return;
+  const m = toMetres(cx, cy);
+
+  if (state.boundary.length >= 3) {
+    // Check if clicking near start point to close
+    const first = toCanvas(state.boundary[0].x, state.boundary[0].y);
+    const dist = Math.hypot(cx - first.x, cy - first.y);
+    if (dist < 12) {
+      closeBoundary();
+      return;
+    }
+  }
+
+  state.boundary.push({ x: parseFloat(m.x.toFixed(2)), y: parseFloat(m.y.toFixed(2)) });
+  render();
+}
+
+function closeBoundary() {
+  if (state.boundary.length < 3) { showToast('Need at least 3 points'); return; }
+  state.boundaryClosed = true;
+  const m2 = polygonArea(state.boundary);
+  showToast('Boundary closed · ' + m2.toFixed(1) + ' m²');
+  setMode('place');
+  render();
+}
+
+// ── Place mode ──
+function handlePlaceClick(cx, cy) {
+  if (!state.selectedPlantId) { showToast('Select a plant first'); return; }
+  if (!state.boundaryClosed)  { showToast('Draw your boundary first'); return; }
+  const m = toMetres(cx, cy);
+  if (!pointInPolygon(m, state.boundary)) { showToast('Place plants inside your boundary'); return; }
+  state.plants.push({ plantId: state.selectedPlantId, x: parseFloat(m.x.toFixed(2)), y: parseFloat(m.y.toFixed(2)) });
+  render();
+}
+
+// ── Select mode ──
+function handleSelectClick(cx, cy) {
+  const m = toMetres(cx, cy);
+  let found = -1;
+  for (let i = state.plants.length - 1; i >= 0; i--) {
+    const pl = state.plants[i];
+    const plant = PLANTS.find(p => p.id === pl.plantId);
+    if (!plant) continue;
+    const dist = Math.hypot(m.x - pl.x, m.y - pl.y);
+    if (dist <= plant.spread / 2) { found = i; break; }
+  }
+  state.selectedPlantIndex = found >= 0 ? found : null;
+  render();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Delete' || e.key === 'Backspace') {
+    if (state.selectedPlantIndex !== null) {
+      state.plants.splice(state.selectedPlantIndex, 1);
+      state.selectedPlantIndex = null;
+      render();
+    }
+  }
+});
+
+// ── Clear / undo ──
+function clearBoundary() {
+  state.boundary = [];
+  state.boundaryClosed = false;
+  state.plants = [];
+  setMode('draw');
+  render();
+}
+window.clearBoundary = clearBoundary;
+
+function undoLast() {
+  if (!state.boundaryClosed) {
+    if (state.boundary.length > 0) {
+      state.boundary.pop();
+      render();
+    }
+  } else {
+    if (state.plants.length > 0) {
+      state.plants.pop();
+      render();
+    }
+  }
+}
+window.undoLast = undoLast;
+
+// ── Geometry ──
+function polygonArea(pts) {
+  let area = 0;
+  const n = pts.length;
+  for (let i = 0; i < n; i++) {
+    const j = (i + 1) % n;
+    area += pts[i].x * pts[j].y;
+    area -= pts[j].x * pts[i].y;
+  }
+  return Math.abs(area) / 2;
+}
+
+function computeCentroid(pts) {
+  let cx = 0, cy = 0;
+  pts.forEach(p => { cx += p.x; cy += p.y; });
+  return { x: cx / pts.length, y: cy / pts.length };
+}
+
+function pointInPolygon(pt, poly) {
+  let inside = false;
+  for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+    const xi = poly[i].x, yi = poly[i].y;
+    const xj = poly[j].x, yj = poly[j].y;
+    const intersect = ((yi > pt.y) !== (yj > pt.y)) &&
+      (pt.x < (xj - xi) * (pt.y - yi) / (yj - yi) + xi);
+    if (intersect) inside = !inside;
+  }
+  return inside;
+}
+
+// ── Toast ──
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+// Initial render
+render();
+</script>
+</body>
+</html>

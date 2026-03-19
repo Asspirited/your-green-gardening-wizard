@@ -5,8 +5,11 @@
   "type": "module",
   "scripts": {
     "test": "node --test tests/domain.test.js",
+    "test:contract": "node --test tests/contract.verify.test.js",
+    "test:all": "node --test tests/domain.test.js tests/contract.verify.test.js",
     "test:watch": "node --test --watch tests/domain.test.js",
     "test:coverage": "node --test --experimental-test-coverage tests/domain.test.js",
+    "pipeline": "bash scripts/pipeline-report.sh",
     "check": "node --check domain.js && node --check worker/index.js",
     "dev": "wrangler dev --local",
     "deploy:worker": "wrangler deploy",

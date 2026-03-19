@@ -1,0 +1,67 @@
+{
+  "consumer": { "name": "ygw-browser" },
+  "provider": { "name": "ygw-worker" },
+  "interactions": [
+    {
+      "description": "a POST /messages request returns AI recommendation content",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "headers": {
+          "Content-Type": "application/json",
+          "Origin": "https://asspirited.github.io"
+        },
+        "body": {
+          "model": "claude-sonnet-4-6",
+          "max_tokens": 1200,
+          "system": "You are a UK garden advisor.",
+          "messages": [
+            { "role": "user", "content": "My garden is in Bristol, clay soil, south-facing." }
+          ]
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "content": [
+            { "type": "text", "text": "<non-empty string>" }
+          ]
+        },
+        "matchingRules": {
+          "$.body.content[0].text": { "match": "type", "min": 1 },
+          "$.body.content[0].type": { "match": "equality" }
+        }
+      }
+    },
+    {
+      "description": "a POST /messages with missing ANTHROPIC_API_KEY returns 500",
+      "request": {
+        "method": "POST",
+        "path": "/messages",
+        "headers": {
+          "Content-Type": "application/json",
+          "Origin": "https://asspirited.github.io"
+        },
+        "body": {
+          "model": "claude-sonnet-4-6",
+          "max_tokens": 1200,
+          "system": "You are a UK garden advisor.",
+          "messages": [
+            { "role": "user", "content": "ping" }
+          ]
+        }
+      },
+      "response": {
+        "status": 500
+      }
+    }
+  ],
+  "metadata": {
+    "pactSpecification": { "version": "2.0.0" },
+    "created": "2026-03-19",
+    "note": "Phase 1 — manually authored contract. Upgrade to Pact JS consumer tests in YGW-044 phase 2."
+  }
+}
