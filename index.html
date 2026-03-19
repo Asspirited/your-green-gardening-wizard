@@ -66,20 +66,59 @@
 
   /* ── Hero ── */
   .hero {
-    background: linear-gradient(160deg, var(--forest) 0%, var(--moss) 100%);
+    background: linear-gradient(160deg, #1a5c2a 0%, #2d8a42 40%, #4db870 80%, #85d4a0 100%);
     padding: 48px 24px 56px;
     text-align: center;
     position: relative;
     overflow: hidden;
+    transition: background 0.8s ease;
   }
-  .hero::before {
-    content: '';
+  /* Particle canvas — full hero overlay, pointer-events none so clicks pass through */
+  #particle-canvas {
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(ellipse at 20% 80%, rgba(82,183,136,0.15) 0%, transparent 60%),
-                      radial-gradient(ellipse at 80% 20%, rgba(183,228,199,0.1) 0%, transparent 50%);
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
   }
-  .hero-content { position: relative; max-width: 600px; margin: 0 auto; }
+  .hero-content { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+
+  /* Season controls — AUTO/MANUAL indicator + override buttons */
+  .season-controls {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 2;
+  }
+  .season-mode-badge {
+    font-size: 0.62rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    padding: 2px 6px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    cursor: default;
+  }
+  .season-override-btn {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.55);
+    background: none;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 100px;
+    padding: 2px 8px;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    transition: all 0.15s;
+  }
+  .season-override-btn:hover { color: white; border-color: rgba(255,255,255,0.5); }
+  .season-override-btn.active { color: white; border-color: white; background: rgba(255,255,255,0.15); }
   .hero h1 {
     font-family: var(--font-display);
     font-size: clamp(2rem, 6vw, 3rem);
@@ -659,6 +698,14 @@
 </header>
 
 <div class="hero" id="hero">
+  <canvas id="particle-canvas"></canvas>
+  <div class="season-controls" id="season-controls">
+    <span class="season-mode-badge" id="season-mode-badge">AUTO</span>
+    <button class="season-override-btn" data-season="spring" onclick="overrideSeason('spring')">Spr</button>
+    <button class="season-override-btn" data-season="summer" onclick="overrideSeason('summer')">Sum</button>
+    <button class="season-override-btn" data-season="autumn" onclick="overrideSeason('autumn')">Aut</button>
+    <button class="season-override-btn" data-season="winter" onclick="overrideSeason('winter')">Win</button>
+  </div>
   <div class="hero-content">
     <h1 id="hero-headline">A garden that's <em>yours,</em><br>not just any garden</h1>
     <p id="hero-sub">Tell us about your plot in a minute or two. We'll tell you exactly what to grow — based on your soil, your light, and your climate.</p>
@@ -996,6 +1043,8 @@ import {
   GOAL_ICONS,
   STYLE_LABELS
 } from './domain.js';
+import { SEASON_THEMES } from './js/seasons.js';
+import { startParticles, stopParticles, resizeParticleCanvas } from './js/particles.js';
 
 // Knowledge loader for browser — fetch from /knowledge/ path
 async function loadKnowledge(path) {
@@ -1153,6 +1202,45 @@ function applySeasonalUI() {
   document.getElementById('result-tag').textContent = copy.tag;
   loadingMessages[0] = copy.loading;
 }
+// ── Seasonal hero gradient + particles ──
+const particleCanvas = document.getElementById('particle-canvas');
+let currentSeason = getCurrentUKSeason().season;
+let seasonIsAuto = true;
+
+function applyHeroSeason(season) {
+  const theme = SEASON_THEMES[season];
+  if (!theme) return;
+  const stops = theme.gradient;
+  const grad = stops.map((c, i) => `${c} ${Math.round((i / (stops.length - 1)) * 100)}%`).join(', ');
+  document.getElementById('hero').style.background = `linear-gradient(160deg, ${grad})`;
+
+  // Particles
+  particleCanvas.width  = particleCanvas.offsetWidth  || document.getElementById('hero').offsetWidth;
+  particleCanvas.height = particleCanvas.offsetHeight || document.getElementById('hero').offsetHeight;
+  startParticles(particleCanvas, season);
+
+  // Override button states
+  document.querySelectorAll('.season-override-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.season === season);
+  });
+  document.getElementById('season-mode-badge').textContent = seasonIsAuto ? 'AUTO' : 'MANUAL';
+}
+
+function overrideSeason(season) {
+  seasonIsAuto = false;
+  currentSeason = season;
+  applyHeroSeason(season);
+  applySeasonalUI();
+}
+window.overrideSeason = overrideSeason;
+
+window.addEventListener('resize', () => {
+  resizeParticleCanvas(particleCanvas);
+  startParticles(particleCanvas, currentSeason);
+});
+
+applyHeroSeason(currentSeason);
+
 applySeasonalUI();
 let loadingInterval;
 function cycleLoadingText() {
