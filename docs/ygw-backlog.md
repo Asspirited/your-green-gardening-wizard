@@ -1,824 +1,376 @@
-# YGW Backlog
-**Product:** Your Green Gardening Wizard
-**Prefix:** YGW-
-**Format standard:** github.com/Asspirited/leanspirited-standards/standards/backlog-format.md
+# YGW Product Backlog
+# Prefix: YGW- | Version: 2.0 | Date: 2026-03-19
+# CD3+SWOT scored. Score = (Cust + Dep - Comp) + (SWOT × 1.5)
 
 ---
 
-## YGW-001 — Cloudflare Worker API proxy
+## Status legend
+- ✅ Done     — shipped, tests green
+- 🔨 Building — Claude Code active
+- 📋 Open     — ready to implement
+- 💡 Idea     — future, not yet spec'd
 
-**Status:** Done
-**Priority:** Critical
-**Loop:** TDD
-**Raised:** 2026-03-19
+---
 
-### User Story
-As the frontend,
-I want to POST a garden conversation to a secure proxy,
-So that the Anthropic API key is never exposed client-side.
+## EPIC A — Core advisor engine (Phase 1)
 
-### Acceptance Criteria
+| ID | Title | Score | Status |
+|---|---|---|---|
+| YGW-001 | 4-step garden profile wizard | 11.0 | ✅ Done |
+| YGW-002 | Cultivar-level AI recommendations | 11.0 | ✅ Done |
+| YGW-003 | Share button + clipboard text | 7.5 | ✅ Done |
+| YGW-004 | Fake-door revenue test (£9.99 modal) | 5.5 | ✅ Done |
+| YGW-005 | Cloudflare Worker API proxy | 11.0 | ✅ Done |
 
+---
+
+## EPIC B — Knowledge enrichment (Phase 1.5)
+
+| ID | Title | Score | Status |
+|---|---|---|---|
+| YGW-006 | Companion planting + bad combinations | 7.5 | ✅ Done |
+| YGW-007 | Garden style archetypes (6 styles) | 7.5 | ✅ Done |
+| YGW-008 | Colour palette preferences | 4.5 | ✅ Done |
+| YGW-009 | Pet/child/allergy safety filters | 10.0 | ✅ Done |
+| YGW-010 | Plant type filter | 3.0 | ✅ Done |
+| YGW-011 | Invasive species warnings | 5.5 | ✅ Done |
+| YGW-012 | Domain layer extraction (domain.js) | 8.5 | ✅ Done |
+| YGW-013 | Tests for buildAugmentedSystemPrompt() | 6.0 | ✅ Done |
+| YGW-014 | Pre-commit hook + pipeline enforcement | 6.0 | ✅ Done |
+| YGW-025 | Year-round interest planner | 5.5 | 📋 Open |
+
+---
+
+## EPIC C — Knowledge base files (Phase 1.5)
+
+| ID | Title | Score | Status |
+|---|---|---|---|
+| YGW-015 | hardiness-zones.md (Tier 1) | 8.0 | ✅ Done |
+| YGW-016 | seasonal-calendar.md (Tier 1) | 11.5 | ✅ Done |
+| YGW-017 | 5 remaining Tier 2 style files | 8.0 | ✅ Done |
+
+---
+
+## EPIC D — Viral growth engine (Phase 2)
+
+| ID | Title | Score | Status | Notes |
+|---|---|---|---|---|
+| YGW-018 | **Shareable visual plan card (SVG/canvas)** | **8.5** | ✅ Done | Unlocks Instagram/Pinterest. Full spec below. |
+
+### YGW-018 — Shareable visual plan card: full spec
+
+**Epic:** D — Viral growth engine
+**HDD hypothesis:** H1 — shareable output drives referral. Instagram/Pinterest acquisition currently zero.
+
+**User story:**
+As a gardener who has received recommendations, I want to share a beautiful visual card showing my garden plan so that friends discover the wizard through my social media.
+
+**Acceptance criteria:**
 ```gherkin
-Feature: API proxy
+Feature: Shareable visual plan card
 
-  Scenario: Valid garden query is proxied
-    Given the worker receives a POST with a valid JSON body
-    When it forwards the request to the Anthropic API
-    Then it returns the Anthropic response to the caller
+  Scenario: User shares as image on mobile
+    Given a user has received recommendations
+    When they click "Share as image"
+    Then a 1080x1080 PNG card is generated
+    And the card shows their location, soil, aspect as pills
+    And the card shows 5 plant names extracted from recommendations
+    And the native share sheet opens with the image file
+    And the card includes the YGW URL
 
-  Scenario: Missing body is rejected
-    Given the worker receives a POST with no body
-    When it processes the request
-    Then it returns a 400 status
+  Scenario: User downloads card on desktop
+    Given a user on desktop clicks "Share as image"
+    Then the PNG downloads automatically
+    And the filename is "my-garden-plan.png"
+
+  Scenario: Card extracted plants match recommendations
+    Given recommendations contain bold plant names (**Rosa 'Gertrude Jekyll'**)
+    When generateShareCard() extracts plant names
+    Then the top 5 bolded names are identified correctly
+    And names longer than 30 chars are truncated with ellipsis
+
+  Scenario: Fallback when Canvas not supported
+    Given the browser does not support Canvas
+    When user clicks "Share as image"
+    Then the text share fallback is used silently
 ```
 
-### Notes
-- Worker: `worker/index.js`
-- Deploy as: `ygw-api-proxy` on Cloudflare Workers
-- Secret: `ANTHROPIC_API_KEY`
+**Card design spec:**
+- Dimensions: 1080×1080px square (Instagram) or 1200×630px landscape (Twitter/OG)
+- Background: Deep forest green (#1a3a2a), subtle diagonal leaf pattern
+- Top: YGW logo mark + brand name in Playfair Display italic, cream
+- Pills: Location, soil, aspect in sage green (#52b788) on dark green
+- Style badge (if selected): archetype badge top-right, warm parchment
+- Plant list: Top 5 — plant name DM Sans 500 cream, Latin name italic mint green, leaf bullet
+- Bottom bar: "Get your free garden plan" + ygw.pages.dev in sage
+
+**Implementation notes:**
+- New function: `generateShareCard(profile, result, refinements)` → `Promise<Blob>`
+- Offscreen `<canvas>` 1080×1080, Canvas 2D API
+- Extract top 5 plant names via regex on `**bold**` markdown
+- Export: `canvas.toBlob('image/png')` → `navigator.share({files})` mobile / `<a download>` desktop
+- Add to domain.js exports + tests
+- Two share buttons: `📋 Copy text` (existing) + `🖼️ Share as image` (new)
+
+**AARRR:** Referral — share-as-image click rate vs share-as-text. Target: 2× baseline.
 
 ---
 
-## YGW-002 — Garden profile capture
+## EPIC E — Seasonal retention engine (Phase 2)
 
-**Status:** Done
-**Priority:** Critical
-**Loop:** BDD
-**Raised:** 2026-03-19
+| ID | Title | Score | Status |
+|---|---|---|---|
+| YGW-019 | Seasonal UI awareness (client-side) | 9.5 | ✅ Done |
+| YGW-020 | Seasonal context in AI prompt | 10.5 | ✅ Done |
+| YGW-022 | Seasonal re-engagement email (cron) | 10.5 | ⏸ Parked |
+| YGW-024 | Chelsea/garden event hooks | 6.0 | 📋 Open |
 
-### User Story
-As a homeowner,
-I want to describe my garden's location, soil, aspect, and goals,
-So that the advisor can give me personalised recommendations.
+### YGW-019 — Seasonal UI awareness
 
-### Acceptance Criteria
+**User story:** As a gardener returning in autumn, I want the app to feel relevant to right now.
 
 ```gherkin
-Feature: Garden profile capture
+Feature: Seasonal UI awareness
 
-  Scenario: User provides full profile
-    Given the user opens the advisor
-    When they provide location, soil type, aspect, and goals
-    Then the advisor acknowledges the profile and offers recommendations
+  Scenario: App reflects current season on load
+    Given a user opens the app in October
+    When the hero section loads
+    Then the headline reflects autumn
+    And the CTA reads "Get your autumn garden plan"
+    And loading messages reference the season
 
-  Scenario: User does not know their soil type
-    Given the user opens the advisor
-    When they say they don't know their soil type
-    Then the advisor asks guided diagnostic questions to determine it
+  Scenario: getCurrentUKSeason() returns correct values for all months
+    Given today is any UK date
+    When getCurrentUKSeason() is called
+    Then it returns { season, label, cta, loading }
+    And season is one of: spring | summer | autumn | winter
 ```
 
-### Notes
-- UK-first: hardiness zones from postcode/region
-- Aspect: N/S/E/W/mixed
+**Implementation:** Pure client-side. `getCurrentUKSeason(date = new Date())` exported from domain.js. Fully testable with mocked dates. Zero infrastructure.
 
----
-
-## YGW-003 — Personalised plant recommendations
-
-**Status:** Done
-**Priority:** Critical
-**Loop:** BDD
-**Raised:** 2026-03-19
-
-### User Story
-As a homeowner with a captured garden profile,
-I want personalised plant recommendations,
-So that I can make informed planting decisions without hiring a designer.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Plant recommendations
-
-  Scenario: Recommendations match profile
-    Given a user has provided a complete garden profile
-    When they ask for plant recommendations
-    Then the advisor returns plants suited to their soil, aspect, and climate zone
-
-  Scenario: Recommendations explain reasoning
-    Given a user has provided a complete garden profile
-    When they ask for plant recommendations
-    Then each recommendation includes a brief reason tied to their profile
+```javascript
+export function getCurrentUKSeason(date = new Date()) {
+  const month = date.getMonth() + 1;
+  if (month >= 3 && month <= 5)  return { season:'spring', label:'Spring', cta:'Get your spring garden plan', loading:"Checking what's emerging..." };
+  if (month >= 6 && month <= 8)  return { season:'summer', label:'Summer', cta:'Get your summer garden plan', loading:"Finding what loves the heat..." };
+  if (month >= 9 && month <= 11) return { season:'autumn', label:'Autumn', cta:'Get your autumn garden plan', loading:"Checking what needs doing before frost..." };
+  return { season:'winter', label:'Winter', cta:'Plan your spring garden now', loading:"Thinking ahead to spring..." };
+}
 ```
 
-### Notes
-- Phase 1: AI-generated recommendations (system prompt + garden profile)
-- Phase 2: Planting matrix (expert-curated combinations)
-
 ---
 
-## YGW-004 — Domain layer extraction
+### YGW-020 — Seasonal context in AI prompt
 
-**Status:** Done
-**Priority:** High
-**Loop:** TDD
-**Raised:** 2026-03-19
-**Epic:** Phase 1.5 — Refine
-
-### User Story
-As the codebase,
-I want all prompt-construction logic extracted to a pure domain module,
-So that it can be tested in isolation and reused across Phase 2 and Phase 3 products.
-
-### Acceptance Criteria
+**User story:** As a gardener getting recommendations in November, I want advice for what to do NOW — not May.
 
 ```gherkin
-Feature: Domain layer
+Feature: Seasonal context in AI prompt
 
-  Scenario: domain.js exports are pure functions
-    Given domain.js is imported
-    When any exported function is called
-    Then it returns a value without touching the DOM or making API calls
+  Scenario: November recommendations prioritise autumn actions
+    Given a user submits their profile in November
+    When recommendations are generated
+    Then the output prioritises: planting bulbs/garlic/bare-root, cutting back, frost protection
 
-  Scenario: Tests cover all exported functions
-    Given domain.test.js is run
-    When all 95 tests execute
-    Then all pass with 0 failures
-
-  Scenario: index.html imports from domain.js
-    Given index.html loads in a browser
-    When the ES module resolves
-    Then buildSystemPrompt and all clause builders come from domain.js
+  Scenario: buildSeasonalContext() adds correct season
+    Given any UK date and location
+    When buildSeasonalContext(location, date) is called
+    Then it returns a prompt fragment referencing the current season
+    And names month-appropriate tasks for UK gardens
 ```
 
-### Notes
-- `domain.js` — 636 lines, `export type="module"` in index.html
-- 95 tests across 13 suites in `tests/domain.test.js`
-- Run: `npm test`
+**Implementation:**
+```javascript
+export function buildSeasonalContext(location, date = new Date()) {
+  const { season } = getCurrentUKSeason(date);
+  const month = date.toLocaleString('en-GB', { month: 'long' });
+  return `\n\nSEASONAL CONTEXT: It is currently ${month} in the UK (${season}). Weight all recommendations toward what the gardener should DO NOW and PLANT NOW for their conditions. Include specific timing (e.g. "plant tulip bulbs before ground freezes", "cut back now before new growth"). Do not give advice that was relevant in a different season.`;
+}
+```
+Injected into `buildSystemPrompt()`. Pass `new Date()` from client — don't use server time.
 
 ---
 
-## YGW-005 — Refine panel: style archetype
+### YGW-022 — Seasonal re-engagement email (cron)
 
-**Status:** Done
-**Priority:** High
-**Loop:** BDD
-**Raised:** 2026-03-19
-**Epic:** Phase 1.5 — Refine
+**Depends on:** YGW-021 (email capture)
 
-### User Story
-As a homeowner who has received recommendations,
-I want to choose a garden style archetype,
-So that the plan reflects my aesthetic preferences.
-
-### Acceptance Criteria
+**User story:** As a gardener who saved their plan, I want a personalised seasonal update when my garden needs attention.
 
 ```gherkin
-Feature: Style archetype refinement
+Feature: Seasonal re-engagement email
 
-  Scenario: User selects a style
-    Given the user has received their initial plan
-    When they open the refine panel and select "Natural & wild"
-    Then the follow-up recommendation emphasises Oudolf-style planting
+  Scenario: Seasonal email sent at season change
+    Given a user has a saved garden profile
+    When the UK season changes (March, June, September, December)
+    Then they receive an email personalised to their garden:
+      - Location, soil, aspect referenced
+      - 3 specific actions for this season
+      - 1 plant recommendation for right now
+      - Link back to their saved plan
+    And the email is plain text
+    And it includes a one-click unsubscribe
 
-  Scenario: All six styles are available
-    Given the refine panel is open
-    Then the options include: Natural & wild, Meticulous, Cottage, Mediterranean, Modern & minimal, Japanese & Zen
+  Scenario: Unsubscribed user receives no further emails
+    Given a user has unsubscribed
+    Then no further emails are sent
+    And preference is stored
 ```
 
-### Notes
-- Six styles: natural-wild, meticulous, cottage, mediterranean, modern-minimal, japanese-zen
-- `buildStyleClause()` in domain.js handles prompt injection
+**Implementation:** Cloudflare Cron `0 8 1 3,6,9,12 *`. `buildSeasonalPrompt()` already in domain.js. Resend API for send. Plain text only — 3 bullet points max.
 
 ---
 
-## YGW-006 — Refine panel: colour palette
+## EPIC F — Retention infrastructure (Phase 2)
 
-**Status:** Done
-**Priority:** Medium
-**Loop:** BDD
-**Raised:** 2026-03-19
-**Epic:** Phase 1.5 — Refine
+| ID | Title | Score | Status |
+|---|---|---|---|
+| YGW-021 | Email capture + profile save (KV) | 9.0 | ⏸ Parked |
+| YGW-023 | Affiliate plant links (nursery CTAs) | 6.5 | 📋 Open |
+| YGW-026 | Basic bed planner (list-based) | 5.0 | 📋 Open |
 
-### User Story
-As a homeowner,
-I want to specify preferred colour palettes,
-So that recommendations match my taste.
+### YGW-021 — Email capture + profile save
 
-### Acceptance Criteria
+**User story:** As a gardener, I want to save my plan with my email so I can return without re-entering everything.
 
 ```gherkin
-Feature: Colour palette refinement
-
-  Scenario: User selects a palette
-    Given the refine panel is open
-    When the user selects "Hot & bold"
-    Then the recommendation emphasises reds, oranges, and yellows
-
-  Scenario: Multiple palettes can be combined
-    Given the refine panel is open
-    When the user selects "White & silver" and "Pastel"
-    Then the recommendation blends both palettes
-```
-
-### Notes
-- `buildColourClause()` in domain.js
-- Palettes: white-silver, pastel, hot-bold, cool-blues, natural-green
-
----
-
-## YGW-007 — Refine panel: plant type filter
-
-**Status:** Done
-**Priority:** Medium
-**Loop:** BDD
-**Raised:** 2026-03-19
-**Epic:** Phase 1.5 — Refine
-
-### User Story
-As a homeowner,
-I want to specify what types of plants I prefer,
-So that recommendations focus on the right categories.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Plant type filter
-
-  Scenario: User selects evergreen preference
-    Given the refine panel is open
-    When the user selects "Evergreen"
-    Then the plan prioritises year-round foliage plants
-
-  Scenario: Fast-growing filter adds timing requirement
-    Given the user selects "Fast-growing"
-    Then the plan notes establishment timings
-```
-
-### Notes
-- `buildPlantTypeClause()` in domain.js
-- Types: perennials, shrubs, climbers, bulbs, annuals, evergreen, fast-growing, trees
-
----
-
-## YGW-008 — Refine panel: safety constraints
-
-**Status:** Done
-**Priority:** High
-**Loop:** BDD
-**Raised:** 2026-03-19
-**Epic:** Phase 1.5 — Refine
-
-### User Story
-As a homeowner with dogs, cats, or children,
-I want the plan to exclude plants toxic to them,
-So that recommendations are safe for my household.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Safety constraints
-
-  Scenario: Dog owner receives safe-only recommendations
-    Given the user has selected "Dogs" in safety constraints
-    When the plan is generated
-    Then it excludes Foxglove, Yew, Laburnum, and Daffodil bulbs
-
-  Scenario: Cat owner receives lily-free recommendations
-    Given the user has selected "Cats" in safety constraints
-    When the plan is generated
-    Then it excludes all Lilium species
-
-  Scenario: Children constraint excludes Monkshood
-    Given the user has selected "Children" in safety constraints
-    Then the plan excludes Monkshood (Aconitum) and other acutely toxic genera
-```
-
-### Notes
-- `buildSafetyClause()` in domain.js
-- Constraints: dogs, cats, children, hayfever, skin-irritants, bees-important
-- Knowledge base: `knowledge/tier1/hazardous-plants.md`
-
----
-
-## YGW-009 — Refine panel: companion planting extras
-
-**Status:** Done
-**Priority:** Medium
-**Loop:** BDD
-**Raised:** 2026-03-19
-**Epic:** Phase 1.5 — Refine
-
-### User Story
-As a homeowner who wants to go deeper,
-I want extras like companion planting suggestions and invasive plant warnings,
-So that my plan has more depth and avoids mistakes.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Companion planting and extras
-
-  Scenario: Companion planting extra requested
-    Given the user has selected "Companion planting" in extras
-    When the plan is generated
-    Then it includes named plant pairs with reasons
-
-  Scenario: Invasive warning extra requested
-    Given the user has selected "Flag invasive plants" in extras
-    Then the plan warns about Buddleja and other garden-invasive species
-```
-
-### Notes
-- `buildExtrasClause()` in domain.js
-- Extras: companion-planting, avoid-combinations, invasive-warning, seasonal-succession
-- Knowledge base: `knowledge/tier1/companion-planting.md`, `knowledge/tier1/invasive-species.md`
-
----
-
-## YGW-010 — Knowledge base: Tier 1 core files
-
-**Status:** Done
-**Priority:** High
-**Loop:** DDD
-**Raised:** 2026-03-19
-**Epic:** Knowledge Engine
-
-### User Story
-As the knowledge engine,
-I want authoritative Tier 1 files for hazards, companions, aspect, and invasives,
-So that `buildAugmentedSystemPrompt()` can inject grounded horticultural knowledge.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Tier 1 knowledge files
-
-  Scenario: All four initial Tier 1 files exist and are non-empty
-    Given the knowledge/tier1/ directory
-    Then the following files exist with content > 1000 bytes each:
-      hazardous-plants.md, companion-planting.md, aspect-effects.md, invasive-species.md
-```
-
-### Notes
-- Files written 2026-03-19
-- Two remaining: hardiness-zones.md, seasonal-calendar.md (YGW-015, YGW-016)
-
----
-
-## YGW-011 — Knowledge base: Tier 2 style files
-
-**Status:** Partial
-**Priority:** Medium
-**Loop:** DDD
-**Raised:** 2026-03-19
-**Epic:** Knowledge Engine
-
-### User Story
-As the knowledge engine,
-I want Tier 2 style files for all six archetypes,
-So that style-aware prompts are grounded in concrete planting approaches.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Tier 2 style knowledge files
-
-  Scenario: All six style files exist
-    Given the knowledge/tier2/ directory
-    Then the following files exist:
-      style-natural-wild.md, style-cottage.md, style-mediterranean.md,
-      style-modern-minimal.md, style-meticulous.md, style-japanese-zen.md
-    And planting-matrices.md exists
-```
-
-### Notes
-- Done: style-natural-wild.md, planting-matrices.md
-- Remaining (5): cottage, mediterranean, modern-minimal, meticulous, japanese-zen — see YGW-017
-
----
-
-## YGW-012 — Augmented system prompt with knowledge injection
-
-**Status:** Done
-**Priority:** High
-**Loop:** TDD
-**Raised:** 2026-03-19
-**Epic:** Knowledge Engine
-
-### User Story
-As the AI advisor,
-I want relevant knowledge sections injected into my system prompt,
-So that my recommendations are grounded in curated horticultural data, not just training data.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Augmented system prompt
-
-  Scenario: Knowledge is injected for matching profile
-    Given a garden profile with clay soil, north-facing aspect, and dogs safety constraint
-    When buildAugmentedSystemPrompt() is called
-    Then the system prompt includes clay soil guidance from tier1/soil-types.md
-    And includes north-facing plant list from tier1/aspect-effects.md
-    And includes the dog-safe exclusion list from tier1/hazardous-plants.md
-
-  Scenario: Graceful fallback when knowledge file missing
-    Given a knowledge file does not exist
-    When buildAugmentedSystemPrompt() is called
-    Then it returns a valid prompt using buildSystemPrompt() base
-    And does not throw
-```
-
-### Notes
-- `buildAugmentedSystemPrompt()` in domain.js (async, takes loadKnowledge callback)
-- Tests for this function needed: see YGW-013
-
----
-
-## YGW-013 — Tests for buildAugmentedSystemPrompt
-
-**Status:** Open
-**Priority:** High
-**Loop:** TDD
-**Raised:** 2026-03-19
-**Epic:** Knowledge Engine
-
-### User Story
-As the test suite,
-I want tests for buildAugmentedSystemPrompt() with a mock knowledge loader,
-So that knowledge injection logic is covered without reading real files.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: buildAugmentedSystemPrompt tests
-
-  Scenario: Knowledge content appears in output
-    Given a mock loadKnowledge that returns controlled content
-    When buildAugmentedSystemPrompt() is called with a valid profile
-    Then the returned prompt contains the injected knowledge content
-
-  Scenario: Fallback on null loadKnowledge
-    Given loadKnowledge is null
-    When buildAugmentedSystemPrompt() is called
-    Then it returns the base system prompt without throwing
-
-  Scenario: Fallback on rejected promise
-    Given loadKnowledge throws for a specific file
-    When buildAugmentedSystemPrompt() is called
-    Then it gracefully omits that section and returns a valid prompt
-```
-
-### Notes
-- Add to `tests/domain.test.js` as a new describe block
-- Use a mock: `const mockLoad = async (path) => mockFiles[path] ?? null`
-- This will push test count above 95
-
----
-
-## YGW-014 — Email capture UI (waitlist → Formspree)
-
-**Status:** Open
-**Priority:** High
-**Loop:** BDD
-**Raised:** 2026-03-19
-**Epic:** Phase 2 — Retention
-
-### User Story
-As a user who clicks "Join the waitlist",
-I want my email address captured,
-So that LeanSpirited can contact me when the paid plan launches.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Email capture
-
-  Scenario: User submits email in upgrade modal
-    Given the upgrade modal is open
-    When the user enters their email and clicks "Join the waitlist"
-    Then the email is POSTed to the Formspree endpoint
-    And the user sees a confirmation message
-    And the AARRR Revenue event fires
+Feature: Email capture and profile save
+
+  Scenario: User saves profile after receiving plan
+    Given a user has received recommendations
+    When they enter their email and click "Save my garden"
+    Then their profile and result are stored in Cloudflare KV
+    And they receive a confirmation email with a retrieval link
+    And the link restores their full profile and recommendations
+
+  Scenario: Returning user loads saved profile
+    Given a user visits with ?profile={uuid}
+    Then their saved plan loads immediately
+    And profile pills are shown
+    And they can refine or update
 
   Scenario: Invalid email is rejected client-side
-    Given the upgrade modal is open
-    When the user enters "notanemail" and clicks submit
-    Then the form shows an inline error without submitting
+    Given the save form is visible
+    When the user enters "notanemail" and clicks save
+    Then an inline error is shown without submitting
 ```
 
-### Notes
-- **No Cloudflare KV needed** — use Formspree (formspree.io)
-- Setup (one-off, 2 minutes): Sign up at formspree.io → New Form → copy the endpoint URL
-- Client: add email input to modal, POST to `https://formspree.io/f/YOUR_FORM_ID`
-- Formspree free tier: 50 submissions/month — more than enough for waitlist validation
-- No backend changes needed — pure client-side
+**Implementation notes:**
+- Worker `/save-profile` route already built
+- KV binding needed in wrangler.toml (`YGW_PROFILES`)
+- Email via Resend (free tier: 100/day)
+- UUID: `crypto.randomUUID()` client-side
+- UI: form appears below result card, above refine panel
 
 ---
 
-## YGW-015 — Knowledge base: hardiness-zones.md
+### YGW-023 — Affiliate plant links
 
-**Status:** Open
-**Priority:** Medium
-**Loop:** DDD
-**Raised:** 2026-03-19
-**Epic:** Knowledge Engine
-
-### User Story
-As the knowledge engine,
-I want a UK hardiness zone reference file,
-So that location-based advice is grounded in accurate frost risk data.
-
-### Acceptance Criteria
+**User story:** As a gardener with recommendations, I want links to buy the specific cultivars.
 
 ```gherkin
-Feature: Hardiness zones knowledge
+Feature: Affiliate plant links
 
-  Scenario: File exists and covers UK zones
-    Given knowledge/tier1/hardiness-zones.md
-    Then it covers H1-H7 RHS ratings
-    And maps regions (Scotland Highlands, SW England, etc.) to zones
-    And gives typical minimum temperatures per zone
+  Scenario: Named cultivar is linked
+    Given recommendations include Rosa 'Gertrude Jekyll'
+    When the result card renders
+    Then the plant name is linked to a UK nursery stocking that cultivar
+    And the link opens in a new tab
+    And the click is tracked as an affiliate event
+
+  Scenario: Unknown plant renders as plain text
+    Given a plant is not in the affiliate lookup
+    Then no link is shown
+    And the plant name renders as plain text
 ```
 
-### Notes
-- RHS H1–H7 scale, not USDA
-- Include key cities/regions as reference points
-- ~150–200 lines target
+**Implementation:**
+- Programmes: Crocus (8%), Sarah Raven (8-10%), Thompson & Morgan (10%), Beth Chatto's Plants
+- Curated lookup in domain.js: `AFFILIATE_LINKS` — 50 most-recommended cultivars → affiliate URL
+- Feature-flagged off until first partner signed
 
 ---
 
-## YGW-016 — Knowledge base: seasonal-calendar.md
+## EPIC G — B2B revenue (Phase 3)
 
-**Status:** Open
-**Priority:** Medium
-**Loop:** DDD
-**Raised:** 2026-03-19
-**Epic:** Knowledge Engine
+| ID | Title | Score | Status |
+|---|---|---|---|
+| YGW-027 | Landscaper client plan PDF export | 9.0 | ✅ Done |
+| YGW-028 | Plant quantity estimator | 8.5 | 📋 Open |
+| YGW-029 | Designer documentation automation | 6.5 | 📋 Open |
+| YGW-030 | New-build developer bulk API | 4.5 | 📋 Open |
+| YGW-031 | Garden centre white-label | 6.0 | 📋 Open |
 
-### User Story
-As the knowledge engine,
-I want a UK seasonal task calendar,
-So that `buildSeasonalPrompt()` (Phase 2) has grounded timing data.
+### YGW-027 notes
+`landscaper.html` already built. Needs billing (Stripe) + trial gate + PDF print CSS.
+`buildLandscaperSystemPrompt()` already in domain.js.
 
-### Acceptance Criteria
+### YGW-030 — New-build developer bulk API
+
+**HDD hypothesis:** H-new — 200 plots × £5-15/plot = £1,000-3,000 per development. Jerry's network is the channel.
+
+**User story:** As a new-build developer, I want a garden pack per plot (soil, aspect, planting list, maintenance guide) as a buyer value-add.
 
 ```gherkin
-Feature: Seasonal calendar knowledge
+Feature: Bulk developer API
 
-  Scenario: File covers all four seasons
-    Given knowledge/tier1/seasonal-calendar.md
-    Then it includes planting windows, pruning timings, and frost risk by season
-    And covers spring, summer, autumn, and winter sections
+  Scenario: Bulk plot upload generates packs
+    Given a developer provides a spreadsheet of plots with aspect/soil per plot
+    When they upload to the bulk API
+    Then a garden pack is generated for each plot
+    And packs can be downloaded as a ZIP of PDFs
+
+  Scenario: Output is brandable
+    Given developer branding is configured
+    Then all PDFs include developer logo and contact
 ```
-
-### Notes
-- UK-specific (not RHS general)
-- Feeds `buildSeasonalPrompt()` in domain.js
-- ~150–200 lines target
 
 ---
 
-## YGW-017 — Knowledge base: remaining Tier 2 style files (5)
+## EPIC H — Phase 4+ ideas
 
-**Status:** Open
-**Priority:** Medium
-**Loop:** DDD
-**Raised:** 2026-03-19
-**Epic:** Knowledge Engine
-
-### User Story
-As the knowledge engine,
-I want style files for all six archetypes,
-So that style-aware prompts are fully grounded.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Remaining style knowledge files
-
-  Scenario: All five files exist and are non-empty
-    Given the knowledge/tier2/ directory
-    Then the following files exist with content > 3000 bytes each:
-      style-cottage.md
-      style-mediterranean.md
-      style-modern-minimal.md
-      style-meticulous.md
-      style-japanese-zen.md
-```
-
-### Notes
-- natural-wild already done
-- Each file: philosophy + characteristic plants + do/don't list
-- ~80–120 lines each
+| ID | Title | Score | Status |
+|---|---|---|---|
+| YGW-032 | Photo-based plant ID | 7.0 | 💡 Idea |
+| YGW-033 | 2D spatial bed planner | 8.0 | 💡 Idea |
+| YGW-034 | Garden-in-a-box fulfilment | 7.0 | 💡 Idea |
+| YGW-035 | RHS plant database integration | 9.0 | 💡 Idea |
+| YGW-036 | Social/community garden sharing | 6.5 | 💡 Idea |
+| YGW-037 | Therapeutic horticulture module | 4.0 | 💡 Idea |
+| YGW-038 | School gardens module | 4.0 | 💡 Idea |
 
 ---
 
-## YGW-018 — Real analytics events (AARRR)
+## Priority queue — next 10 to build
 
-**Status:** Open
-**Priority:** Medium
-**Loop:** TDD
-**Raised:** 2026-03-19
-**Epic:** Phase 2 — Retention
+Ranked by CD3+SWOT score after current build completes:
 
-### User Story
-As the product team,
-I want real analytics events rather than console.log stubs,
-So that we can measure AARRR metrics without manual log inspection.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Analytics events
-
-  Scenario: Profile submitted event fires
-    Given a user completes the wizard
-    When the plan is generated
-    Then an Acquisition event is POSTed to /analytics on the Worker
-
-  Scenario: Upgrade modal click event fires
-    Given the user clicks "Full plan — £9.99"
-    Then a Revenue intent event is POSTed to /analytics
-
-  Scenario: Worker stores analytics event in KV
-    Given the /analytics route receives a POST
-    Then the event is stored in YGW_ANALYTICS KV namespace with a timestamp key
-```
-
-### Notes
-- Replace all `console.log('[AARRR ...]')` stubs in index.html
-- Worker `/analytics` route already built
-- Consider Cloudflare Analytics Engine as alternative to KV for events
+| Rank | ID | Title | Score |
+|---|---|---|---|
+| 1 | YGW-020 | Seasonal context in AI prompt | 10.5 |
+| 2 | YGW-022 | Seasonal re-engagement email | 10.5 |
+| 3 | YGW-019 | Seasonal UI awareness | 9.5 |
+| 4 | YGW-021 | Email capture + profile save | 9.0 |
+| 5 | YGW-027 | Landscaper PDF export | 9.0 |
+| 6 | YGW-018 | Shareable visual plan card | 8.5 |
+| 7 | YGW-028 | Plant quantity estimator | 8.5 |
+| 8 | YGW-025 | Year-round interest planner | 7.0 |
+| 9 | YGW-023 | Affiliate plant links | 6.5 |
+| 10 | YGW-029 | Designer documentation automation | 6.5 |
 
 ---
 
-## YGW-019 — Seasonal advice follow-up (Phase 2)
+## HDD hypotheses × backlog mapping
 
-**Status:** Open
-**Priority:** Low
-**Loop:** BDD
-**Raised:** 2026-03-19
-**Epic:** Phase 2 — Retention
-
-### User Story
-As a returning user,
-I want to ask what I should be doing in my garden right now,
-So that I get timely seasonal advice without starting over.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Seasonal advice
-
-  Scenario: User requests seasonal follow-up
-    Given the user has a plan displayed
-    When they click "What should I do this month?"
-    Then the advisor returns month-specific tasks for their profile
-    And uses buildSeasonalPrompt() from domain.js
-```
-
-### Notes
-- `buildSeasonalPrompt()` already in domain.js — needs UI trigger
-- Requires seasonal-calendar.md (YGW-016) for augmented version
+| Hypothesis | Items | Validation target |
+|---|---|---|
+| H1 — profile completion + sharing | YGW-001,002,003,018 | 60% completion, 5% share |
+| H2 — willingness to pay £9.99 | YGW-004 | 5% fake-door click |
+| H3 — refinement increases engagement | YGW-006-011,015-017 | 25% open refine panel |
+| H4 — seasonal retention | YGW-019,020,021,022 | 20% return within 30 days |
+| H5 — landscapers pay £30-100/mo | YGW-027,028 | 15% trial-to-paid |
+| H6 — designers pay £50-150/mo | YGW-029 | 80% 90-day retention |
+| H-new — developer bulk API | YGW-030 | 1 pilot partnership |
 
 ---
-
-## YGW-020 — Saved garden profiles (Phase 2)
-
-**Status:** Open
-**Priority:** Low
-**Loop:** BDD
-**Raised:** 2026-03-19
-**Epic:** Phase 2 — Retention
-
-### User Story
-As a returning user,
-I want my garden profile saved so I don't re-enter it each time,
-So that follow-up questions are personalised without re-running the wizard.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Saved profiles
-
-  Scenario: Profile is saved after plan generation
-    Given the user has received their plan
-    Then their profile is stored via /save-profile and a token returned
-    And the token is saved to localStorage
-
-  Scenario: Returning user loads their profile
-    Given the user returns and a localStorage token exists
-    When the page loads
-    Then the wizard is pre-filled with their saved profile
-    And they can jump straight to plan generation
-```
-
-### Notes
-- Worker `/save-profile` and `/load-profile` routes already built
-- KV binding needed: `YGW_PROFILES` namespace
-
----
-
-## YGW-021 — Landscaper B2B entry point (Phase 3)
-
-**Status:** Open
-**Priority:** Low
-**Loop:** BDD
-**Raised:** 2026-03-19
-**Epic:** Phase 3 — B2B
-
-### User Story
-As a professional landscaper,
-I want to generate a client-ready planting plan document,
-So that I can use the wizard to speed up my design workflow.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Landscaper planting plan
-
-  Scenario: Landscaper generates a professional plan
-    Given landscaper.html is open
-    When they enter a client brief and garden profile
-    Then the advisor returns a professional-format planting plan
-    And the plan can be printed to PDF
-
-  Scenario: Landscaper prompt uses professional tone
-    Given the landscaper entry point
-    When a plan is generated
-    Then it uses buildLandscaperSystemPrompt() from domain.js
-    And the output includes Latin plant names and spacing specifications
-```
-
-### Notes
-- `landscaper.html` already built
-- `buildLandscaperSystemPrompt()` in domain.js
-- `estimatePlantQuantity()` in domain.js for quantity calculations
-
----
-
-## YGW-022 — Worker CORS update (one-time, then done)
-
-**Status:** Done
-**Priority:** High
-**Loop:** TDD
-**Raised:** 2026-03-19
-**Epic:** Phase 1.5 deploy
-
-### User Story
-As the Worker,
-I want CORS configured for GitHub Pages,
-So that the site hosted at asspirited.github.io can call the API proxy.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Worker CORS for GitHub Pages
-
-  Scenario: GitHub Pages origin is allowed
-    Given the worker is deployed with updated CORS
-    When a request arrives from https://asspirited.github.io
-    Then the worker returns a valid CORS response
-```
-
-### Notes
-- Code change done — `asspirited.github.io` added to ALLOWED_ORIGINS in worker/index.js
-- **One action required**: In your terminal — `cd /home/rodent/your-green-gardening-wizard && npx wrangler deploy`
-- After that: Cloudflare Worker is fully hands-off — no further changes needed for Phase 1.5 or Phase 2
-- KV deferred — email capture uses Formspree instead (YGW-014)
-
----
-
-## YGW-023 — Full pipeline setup
-
-**Status:** Done
-**Priority:** High
-**Loop:** TDD
-**Raised:** 2026-03-19
-**Epic:** Quality Gate
-
-### User Story
-As the codebase,
-I want a full pipeline (tests + syntax check + knowledge file presence check),
-So that nothing broken can be committed.
-
-### Acceptance Criteria
-
-```gherkin
-Feature: Pipeline
-
-  Scenario: Pipeline passes on clean state
-    Given all files are in correct state
-    When npm test && npm run check is run
-    Then exit code is 0
-
-  Scenario: Pipeline fails on broken domain.js
-    Given a syntax error is introduced to domain.js
-    When npm run check is run
-    Then exit code is non-zero
-
-  Scenario: Pre-commit hook blocks broken commits
-    Given a git pre-commit hook runs npm test && npm run check
-    When a commit is attempted with failing tests
-    Then the commit is blocked
-```
-
-### Notes
-- `npm test` and `npm run check` already in package.json
-- Add `.git/hooks/pre-commit` to enforce: `npm test && npm run check`
-- Consider adding knowledge file presence check to pipeline
-
----
+*Document ref: ygw-backlog-v2-2026-03-19 · 38 items · CD3+SWOT scored · LeanSpirited*

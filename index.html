@@ -660,9 +660,9 @@
 
 <div class="hero" id="hero">
   <div class="hero-content">
-    <h1>A garden that's <em>yours,</em><br>not just any garden</h1>
-    <p>Tell us about your plot in a minute or two. We'll tell you exactly what to grow — based on your soil, your light, and your climate.</p>
-    <button class="hero-cta" onclick="startWizard()">Start your garden profile →</button>
+    <h1 id="hero-headline">A garden that's <em>yours,</em><br>not just any garden</h1>
+    <p id="hero-sub">Tell us about your plot in a minute or two. We'll tell you exactly what to grow — based on your soil, your light, and your climate.</p>
+    <button class="hero-cta" id="hero-cta-btn" onclick="startWizard()">Start your garden profile →</button>
   </div>
 </div>
 
@@ -790,7 +790,7 @@
   <!-- Result -->
   <div id="result">
     <div class="result-header">
-      <div class="result-tag">Your Garden Plan</div>
+      <div class="result-tag" id="result-tag">Your Garden Plan</div>
       <div class="result-title" id="result-title">Your Personalised Garden</div>
       <div class="result-subtitle" id="result-subtitle"></div>
     </div>
@@ -800,6 +800,9 @@
       <div class="result-actions">
         <button class="btn-share" onclick="shareResult()">
           <span>📋</span> Copy &amp; Share
+        </button>
+        <button class="btn-share" onclick="shareAsImage()" id="btn-share-image">
+          <span>🖼️</span> Share as image
         </button>
         <button class="btn-upgrade" onclick="openUpgrade()">
           <span>🌿</span> Full plan — £9.99
@@ -985,6 +988,8 @@ import {
   buildGardenProfile,
   renderMarkdown,
   formatShareText,
+  generateShareCard,
+  getCurrentUKSeason,
   SOIL_LABELS,
   ASPECT_LABELS,
   GOAL_LABELS,
@@ -1099,6 +1104,38 @@ function showStep(n) {
   updateNav();
 }
 
+// ── Seasonal UI (YGW-019) ──
+const SEASONAL_COPY = {
+  spring: {
+    headline: "What to grow <em>this spring</em><br>in your garden",
+    sub:      "Spring is the best time to start. Tell us about your plot — we'll tell you exactly what to sow and plant right now.",
+    cta:      "Get your spring garden plan →",
+    tag:      "Your Spring Garden Plan",
+    loading:  "Checking what's emerging right now..."
+  },
+  summer: {
+    headline: "A summer garden <em>built for you,</em><br>right now",
+    sub:      "Summer's in full swing. Tell us about your plot and we'll tell you exactly what to grow in the heat.",
+    cta:      "Get your summer garden plan →",
+    tag:      "Your Summer Garden Plan",
+    loading:  "Finding what loves the heat..."
+  },
+  autumn: {
+    headline: "Plant now for <em>a stunning spring.</em><br>Your autumn guide.",
+    sub:      "Autumn is the best planting season. Tell us about your plot — we'll tell you what to get in the ground before the frosts.",
+    cta:      "Get your autumn garden plan →",
+    tag:      "Your Autumn Garden Plan",
+    loading:  "Checking what needs doing before frost..."
+  },
+  winter: {
+    headline: "Plan ahead — your <em>spring garden</em><br>starts now",
+    sub:      "Use the quiet months wisely. Tell us about your plot and we'll design your perfect spring garden.",
+    cta:      "Plan your spring garden now →",
+    tag:      "Your Spring Garden Plan",
+    loading:  "Thinking ahead to spring..."
+  }
+};
+
 // ── Loading messages ──
 const loadingMessages = [
   'Reading your garden...',
@@ -1106,6 +1143,17 @@ const loadingMessages = [
   'Finding plants that will thrive...',
   'Putting your plan together...'
 ];
+
+function applySeasonalUI() {
+  const { season } = getCurrentUKSeason();
+  const copy = SEASONAL_COPY[season];
+  document.getElementById('hero-headline').innerHTML = copy.headline;
+  document.getElementById('hero-sub').textContent   = copy.sub;
+  document.getElementById('hero-cta-btn').textContent = copy.cta;
+  document.getElementById('result-tag').textContent = copy.tag;
+  loadingMessages[0] = copy.loading;
+}
+applySeasonalUI();
 let loadingInterval;
 function cycleLoadingText() {
   let i = 0;
@@ -1344,6 +1392,37 @@ function shareResult() {
   }
 }
 
+
+async function shareAsImage() {
+  const profile = buildGardenProfile(state);
+  if (!profile || !state.result) return;
+
+  const blob = await generateShareCard(profile, state.result, state.refinements, {
+    createCanvas: () => document.createElement('canvas')
+  });
+
+  if (!blob) {
+    shareResult();
+    return;
+  }
+
+  const file = new File([blob], 'my-garden-plan.png', { type: 'image/png' });
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+    navigator.share({ title: 'My Garden Plan', files: [file] }).catch(() => downloadImage(blob));
+  } else {
+    downloadImage(blob);
+  }
+}
+
+function downloadImage(blob) {
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'my-garden-plan.png';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Image saved ✓');
+}
 
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard ✓')).catch(() => {

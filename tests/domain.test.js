@@ -18,9 +18,13 @@ import {
   buildPlantTypeClause,
   buildExtrasClause,
   buildSeasonalPrompt,
+  getCurrentUKSeason,
+  buildSeasonalContext,
   estimatePlantQuantity,
   renderMarkdown,
   formatShareText,
+  extractSharePlants,
+  generateShareCard,
   SOIL_LABELS,
   ASPECT_LABELS,
   GOAL_LABELS
@@ -723,6 +727,226 @@ describe('buildAugmentedSystemPrompt', () => {
     assert.ok(result.includes('ASPECT KNOWLEDGE'));
     assert.ok(result.includes('SAFETY KNOWLEDGE'));
     assert.ok(result.includes('Lilium'));
+  });
+
+});
+
+// ─────────────────────────────────────────────
+// getCurrentUKSeason
+// ─────────────────────────────────────────────
+describe('getCurrentUKSeason', () => {
+
+  const cases = [
+    [3, 'spring'], [4, 'spring'], [5, 'spring'],
+    [6, 'summer'], [7, 'summer'], [8, 'summer'],
+    [9, 'autumn'], [10, 'autumn'], [11, 'autumn'],
+    [12, 'winter'], [1, 'winter'], [2, 'winter']
+  ];
+
+  cases.forEach(([month, expectedSeason]) => {
+    test(`month ${month} returns ${expectedSeason}`, () => {
+      const date = new Date(2026, month - 1, 15);
+      const result = getCurrentUKSeason(date);
+      assert.strictEqual(result.season, expectedSeason);
+    });
+  });
+
+  test('returns label string', () => {
+    const result = getCurrentUKSeason(new Date(2026, 3, 1)); // April = spring
+    assert.ok(typeof result.label === 'string' && result.label.length > 0);
+  });
+
+  test('returns cta string', () => {
+    const result = getCurrentUKSeason(new Date(2026, 6, 1)); // July = summer
+    assert.ok(result.cta.toLowerCase().includes('summer'));
+  });
+
+  test('returns loading string', () => {
+    const result = getCurrentUKSeason(new Date(2026, 9, 1)); // October = autumn
+    assert.ok(typeof result.loading === 'string' && result.loading.length > 0);
+  });
+
+  test('defaults to current date when no arg supplied', () => {
+    const result = getCurrentUKSeason();
+    assert.ok(['spring', 'summer', 'autumn', 'winter'].includes(result.season));
+  });
+
+});
+
+// ─────────────────────────────────────────────
+// buildSeasonalContext
+// ─────────────────────────────────────────────
+describe('buildSeasonalContext', () => {
+
+  test('includes SEASONAL CONTEXT header', () => {
+    const result = buildSeasonalContext('Bristol', new Date(2026, 2, 15)); // March = spring
+    assert.ok(result.includes('SEASONAL CONTEXT'));
+  });
+
+  test('includes the correct month name', () => {
+    const result = buildSeasonalContext('Bristol', new Date(2026, 9, 15)); // October
+    assert.ok(result.includes('October'));
+  });
+
+  test('includes the correct season', () => {
+    const result = buildSeasonalContext('Bristol', new Date(2026, 9, 15)); // autumn
+    assert.ok(result.includes('autumn'));
+  });
+
+  test('includes DO NOW directive', () => {
+    const result = buildSeasonalContext('Bristol', new Date(2026, 5, 1)); // June = summer
+    assert.ok(result.includes('DO NOW'));
+  });
+
+  test('works without a location argument', () => {
+    const result = buildSeasonalContext(undefined, new Date(2026, 0, 15)); // January = winter
+    assert.ok(result.includes('winter'));
+  });
+
+  test('all four seasons produce output > 100 chars', () => {
+    [[3, 2026], [6, 2026], [9, 2026], [12, 2026]].forEach(([month, year]) => {
+      const result = buildSeasonalContext('London', new Date(year, month - 1, 1));
+      assert.ok(result.length > 100);
+    });
+  });
+
+  test('buildSystemPrompt includes seasonal context', () => {
+    const profile = { location: 'Leeds', soil: 'loam', aspect: 'south', goals: ['colour'] };
+    const date = new Date(2026, 9, 1); // October
+    const prompt = buildSystemPrompt(profile, null, date);
+    assert.ok(prompt.includes('SEASONAL CONTEXT'));
+    assert.ok(prompt.includes('October'));
+  });
+
+});
+
+// ─────────────────────────────────────────────
+// extractSharePlants
+// ─────────────────────────────────────────────
+describe('extractSharePlants', () => {
+
+  test('returns empty array for null', () => {
+    assert.deepStrictEqual(extractSharePlants(null), []);
+  });
+
+  test('returns empty array for text with no bold', () => {
+    assert.deepStrictEqual(extractSharePlants('Some plain text here'), []);
+  });
+
+  test('extracts bold plant names', () => {
+    const result = extractSharePlants("Try **Rosa 'Gertrude Jekyll'** and **Salvia nemorosa**.");
+    assert.ok(result.includes("Rosa 'Gertrude Jekyll'"));
+    assert.ok(result.includes('Salvia nemorosa'));
+  });
+
+  test('returns maximum 5 names', () => {
+    const text = '**Plant1** **Plant2** **Plant3** **Plant4** **Plant5** **Plant6**';
+    assert.strictEqual(extractSharePlants(text).length, 5);
+  });
+
+  test('truncates names longer than 30 chars with ellipsis', () => {
+    const longName = 'Abutilon megapotamicum Variegatum Extra';
+    const result = extractSharePlants(`**${longName}**`);
+    assert.ok(result[0].length <= 30);
+    assert.ok(result[0].endsWith('\u2026'));
+  });
+
+  test('names of exactly 30 chars are not truncated', () => {
+    const name30 = 'A'.repeat(30);
+    const result = extractSharePlants(`**${name30}**`);
+    assert.strictEqual(result[0], name30);
+    assert.ok(!result[0].endsWith('\u2026'));
+  });
+
+  test('skips empty bold matches', () => {
+    const result = extractSharePlants('** ** some text **Rosa canina**');
+    assert.ok(!result.includes(''));
+    assert.ok(result.includes('Rosa canina'));
+  });
+
+});
+
+// ─────────────────────────────────────────────
+// generateShareCard
+// ─────────────────────────────────────────────
+describe('generateShareCard', () => {
+
+  function makeMockCanvas() {
+    const ctx = {
+      fillStyle: '', strokeStyle: '', lineWidth: 1, font: '', textAlign: 'left',
+      fillRect() {}, beginPath() {}, moveTo() {}, lineTo() {}, stroke() {},
+      save() {}, restore() {}, fill() {}, fillText() {},
+      quadraticCurveTo() {}, closePath() {},
+      measureText(t) { return { width: t.length * 10 }; }
+    };
+    return {
+      width: 0, height: 0,
+      getContext(type) { return type === '2d' ? ctx : null; },
+      toBlob(cb, mime) { cb(new Blob(['fake'], { type: mime || 'image/png' })); }
+    };
+  }
+
+  const profile = { location: 'Bristol', soil: 'clay', aspect: 'north', goals: ['colour'] };
+  const result  = "**Rosa 'Gertrude Jekyll'** is perfect. **Salvia nemorosa** adds purple.";
+
+  test('returns null when createCanvas not provided', async () => {
+    const blob = await generateShareCard(profile, result, null, {});
+    assert.strictEqual(blob, null);
+  });
+
+  test('returns null when createCanvas throws', async () => {
+    const blob = await generateShareCard(profile, result, null, {
+      createCanvas: () => { throw new Error('Canvas not supported'); }
+    });
+    assert.strictEqual(blob, null);
+  });
+
+  test('returns null when getContext returns null', async () => {
+    const blob = await generateShareCard(profile, result, null, {
+      createCanvas: () => ({ width: 0, height: 0, getContext: () => null })
+    });
+    assert.strictEqual(blob, null);
+  });
+
+  test('returns a Blob for valid profile and result', async () => {
+    const blob = await generateShareCard(profile, result, null, {
+      createCanvas: makeMockCanvas
+    });
+    assert.ok(blob instanceof Blob);
+  });
+
+  test('returns a Blob for null profile', async () => {
+    const blob = await generateShareCard(null, result, null, {
+      createCanvas: makeMockCanvas
+    });
+    assert.ok(blob instanceof Blob);
+  });
+
+  test('returns a Blob for empty result string', async () => {
+    const blob = await generateShareCard(profile, '', null, {
+      createCanvas: makeMockCanvas
+    });
+    assert.ok(blob instanceof Blob);
+  });
+
+  test('returns a Blob when result is null', async () => {
+    const blob = await generateShareCard(profile, null, null, {
+      createCanvas: makeMockCanvas
+    });
+    assert.ok(blob instanceof Blob);
+  });
+
+  test('sets canvas dimensions to 1080x1080', async () => {
+    let capturedCanvas;
+    await generateShareCard(profile, result, null, {
+      createCanvas: () => {
+        const c = makeMockCanvas();
+        capturedCanvas = c;
+        return c;
+      }
+    });
+    assert.strictEqual(capturedCanvas.width, 1080);
+    assert.strictEqual(capturedCanvas.height, 1080);
   });
 
 });

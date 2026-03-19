@@ -298,9 +298,10 @@ Keep the total response focused and readable on a phone screen. Do not pad or re
  * @param {object} refinements - Refinements object or null
  * @returns {string} Complete system prompt
  */
-export function buildSystemPrompt(profile = null, refinements = null) {
+export function buildSystemPrompt(profile = null, refinements = null, date = new Date()) {
   const clauses = [
     BASE_PROMPT,
+    buildSeasonalContext(profile?.location, date),
     buildSafetyClause(refinements?.safety),
     buildStyleClause(refinements?.style),
     buildColourClause(refinements?.colours),
@@ -336,6 +337,32 @@ Also provide:
 ${clientBrief ? `Client brief: ${clientBrief}` : ''}
 
 Format as a structured professional document with clear sections. Use markdown headers.`;
+}
+
+// ─────────────────────────────────────────────
+// Seasonal awareness (YGW-019, YGW-020)
+// ─────────────────────────────────────────────
+
+/**
+ * Returns the current UK season and UI strings for the given date.
+ * Pure function — takes optional date for testability.
+ */
+export function getCurrentUKSeason(date = new Date()) {
+  const month = date.getMonth() + 1; // 1–12
+  if (month >= 3 && month <= 5)  return { season: 'spring', label: 'Spring', cta: 'Get your spring garden plan', loading: "Checking what's emerging..." };
+  if (month >= 6 && month <= 8)  return { season: 'summer', label: 'Summer', cta: 'Get your summer garden plan', loading: 'Finding what loves the heat...' };
+  if (month >= 9 && month <= 11) return { season: 'autumn', label: 'Autumn', cta: 'Get your autumn garden plan', loading: 'Checking what needs doing before frost...' };
+  return { season: 'winter', label: 'Winter', cta: 'Plan your spring garden now', loading: 'Thinking ahead to spring...' };
+}
+
+/**
+ * Builds a seasonal context clause injected into system prompts.
+ * Tells the AI what month/season it is so advice is time-relevant.
+ */
+export function buildSeasonalContext(location, date = new Date()) {
+  const { season } = getCurrentUKSeason(date);
+  const month = date.toLocaleString('en-GB', { month: 'long' });
+  return `\n\nSEASONAL CONTEXT: It is currently ${month} in the UK (${season}). Weight all recommendations toward what the gardener should DO NOW and PLANT NOW for their conditions. Include specific timing (e.g. "plant tulip bulbs before ground freezes", "cut back now before new growth"). Do not give advice that was relevant in a different season.`;
 }
 
 // ─────────────────────────────────────────────
@@ -480,8 +507,8 @@ Get your own free garden plan → ${url}`;
  *   Node tests: (path) => fs.readFileSync(path, 'utf8')
  * @returns {Promise<string>} Complete system prompt with knowledge injected
  */
-export async function buildAugmentedSystemPrompt(profile, refinements = null, loadKnowledge) {
-  const fragments = [BASE_PROMPT];
+export async function buildAugmentedSystemPrompt(profile, refinements = null, loadKnowledge, date = new Date()) {
+  const fragments = [BASE_PROMPT, buildSeasonalContext(profile?.location, date)];
 
   // Soil knowledge — inject only the relevant section
   if (profile && profile.soil) {
@@ -633,4 +660,191 @@ function styleKnowledgeFile(style) {
     'japanese-zen':   'style-japanese-zen.md'
   };
   return map[style] || null;
+}
+
+// ─────────────────────────────────────────────
+// Share card generation (YGW-018)
+// ─────────────────────────────────────────────
+
+/**
+ * Extracts up to 5 bold plant names from AI recommendation markdown.
+ * @param {string} markdown - AI result text with **bold** plant names
+ * @returns {string[]} Up to 5 plant names, names >30 chars truncated with ellipsis
+ */
+export function extractSharePlants(markdown) {
+  if (!markdown) return [];
+  const matches = [];
+  const regex = /\*\*([^*]+)\*\*/g;
+  let match;
+  while ((match = regex.exec(markdown)) !== null) {
+    const name = match[1].trim();
+    if (name.length > 0) {
+      matches.push(name.length > 30 ? name.substring(0, 29) + '\u2026' : name);
+    }
+    if (matches.length >= 5) break;
+  }
+  return matches;
+}
+
+/**
+ * Draws a filled rounded rectangle on a Canvas 2D context.
+ * @param {CanvasRenderingContext2D} ctx
+ * @param {number} x @param {number} y @param {number} w @param {number} h @param {number} r
+ */
+function drawRoundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+/**
+ * Generates a 1080x1080 PNG share card as a Blob.
+ * Uses injected createCanvas for testability (browser passes document.createElement).
+ * @param {object|null} profile - GardenProfile
+ * @param {string} result - AI recommendation text
+ * @param {object|null} refinements - Refinements or null
+ * @param {object} deps - Dependency injection
+ * @param {Function} deps.createCanvas - Returns a canvas element
+ * @returns {Promise<Blob|null>} PNG blob, or null if canvas not supported
+ */
+export async function generateShareCard(profile, result, refinements = null, { createCanvas } = {}) {
+  if (!createCanvas) return null;
+
+  let canvas, ctx;
+  try {
+    canvas = createCanvas();
+    ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+  } catch {
+    return null;
+  }
+
+  canvas.width = 1080;
+  canvas.height = 1080;
+
+  const plants = extractSharePlants(result || '');
+  const DARK_GREEN = '#1a3a2a';
+  const SAGE      = '#52b788';
+  const CREAM     = '#f5f0e8';
+  const MINT      = '#74c69d';
+
+  // Background
+  ctx.fillStyle = DARK_GREEN;
+  ctx.fillRect(0, 0, 1080, 1080);
+
+  // Subtle diagonal stripes
+  ctx.save();
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 2;
+  for (let i = -1080; i < 2160; i += 40) {
+    ctx.beginPath();
+    ctx.moveTo(i, 0);
+    ctx.lineTo(i + 1080, 1080);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // Top accent bar
+  ctx.fillStyle = SAGE;
+  ctx.fillRect(0, 0, 1080, 8);
+
+  // Brand name
+  ctx.fillStyle = CREAM;
+  ctx.font = 'italic 54px Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Your Green Gardening Wizard', 540, 104);
+
+  // Subtitle
+  ctx.fillStyle = SAGE;
+  ctx.font = '28px Arial, sans-serif';
+  ctx.fillText('My Garden Plan', 540, 152);
+
+  // Horizontal divider
+  ctx.strokeStyle = 'rgba(82,183,136,0.4)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(80, 178);
+  ctx.lineTo(1000, 178);
+  ctx.stroke();
+
+  // Profile pills
+  if (profile) {
+    const soilShort   = { clay:'Clay soil', sandy:'Sandy soil', loam:'Rich loam', chalky:'Chalky soil', peaty:'Peaty soil', unknown:'Unknown soil' };
+    const aspectShort = { south:'South-facing', north:'North-facing', east:'East-facing', west:'West-facing', mixed:'Mixed aspect' };
+    const pills = [
+      profile.location,
+      soilShort[profile.soil]   || profile.soil,
+      aspectShort[profile.aspect] || profile.aspect
+    ].filter(Boolean);
+
+    ctx.font = '22px Arial, sans-serif';
+    let pillX = 80;
+    const pillY = 222;
+    const pillH = 36;
+
+    for (const pill of pills) {
+      const textW = ctx.measureText(pill).width;
+      const pillW = textW + 32;
+      if (pillX + pillW > 1000) break;
+      ctx.fillStyle = SAGE;
+      drawRoundRect(ctx, pillX, pillY - 26, pillW, pillH, 18);
+      ctx.fill();
+      ctx.fillStyle = DARK_GREEN;
+      ctx.textAlign = 'left';
+      ctx.fillText(pill, pillX + 16, pillY);
+      pillX += pillW + 12;
+    }
+  }
+
+  // Section label
+  ctx.fillStyle = SAGE;
+  ctx.font = '24px Arial, sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('Your recommended plants', 80, 308);
+
+  // Section divider
+  ctx.strokeStyle = 'rgba(82,183,136,0.25)';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(80, 322);
+  ctx.lineTo(1000, 322);
+  ctx.stroke();
+
+  // Plant list
+  if (plants.length > 0) {
+    plants.forEach((name, i) => {
+      const y = 370 + i * 104;
+      ctx.fillStyle = MINT;
+      ctx.font = '28px Arial, sans-serif';
+      ctx.fillText('\uD83C\uDF3F', 80, y);
+      ctx.fillStyle = CREAM;
+      ctx.font = '500 36px Arial, sans-serif';
+      ctx.fillText(name, 134, y);
+    });
+  } else {
+    ctx.fillStyle = 'rgba(245,240,232,0.5)';
+    ctx.font = 'italic 28px Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Your personalised garden plan', 540, 560);
+  }
+
+  // Bottom bar
+  ctx.fillStyle = SAGE;
+  ctx.fillRect(0, 980, 1080, 100);
+  ctx.fillStyle = DARK_GREEN;
+  ctx.font = 'bold 24px Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Get your free garden plan', 540, 1022);
+  ctx.font = '20px Arial, sans-serif';
+  ctx.fillText('your-green-gardening-wizard.leanspirited.workers.dev', 540, 1050);
+
+  return new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
 }

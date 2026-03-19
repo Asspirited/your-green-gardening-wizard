@@ -6,32 +6,32 @@
 
 ## What was done this session
 
-Phase 1 MVP shipped end-to-end and confirmed working on phone.
+Brought in Claude.ai's v2 backlog (CD3+SWOT scored, 38 items) and shipped four items:
 
-- YGW-001 (Worker proxy): Done — `ygw-api-proxy.leanspirited.workers.dev` deployed with `ANTHROPIC_API_KEY` secret
-- YGW-002 (Garden profile capture): Done — 4-step wizard (location/soil/aspect/goals)
-- YGW-003 (Plant recommendations): Done — AI-generated, system prompt tuned for UK-specific variety-named advice
+- **YGW-016** (seasonal-calendar.md) — file already existed and was complete. Marked Done.
+- **YGW-020** (Seasonal context in AI prompt) — Done. New exports in domain.js:
+  - `getCurrentUKSeason(date)` — pure function, all 12 months, returns season/label/cta/loading
+  - `buildSeasonalContext(location, date)` — injects month+season directive into every AI prompt
+  - Injected into both `buildSystemPrompt()` and `buildAugmentedSystemPrompt()` as first clause after BASE_PROMPT
+  - 23 new tests added. Suite: 109 → 132 tests, all green.
+- **YGW-019** (Seasonal UI awareness) — Done. `applySeasonalUI()` in index.html applies on page load:
+  - Updates hero headline (with `<em>` seasonal phrase), subheadline, CTA button text
+  - Updates result card tag ("Your Autumn Garden Plan" etc.)
+  - Updates first loading message
+  - Four seasonal copy sets: spring/summer/autumn/winter
+- **YGW-027** (Landscaper client plan PDF export) — Done.
+  - `WORKER_URL` set to `https://ygw-api-proxy.leanspirited.workers.dev` in landscaper.html
+  - Professional print CSS: `@page` margins, page-break controls, font sizes for document print
+  - Print footer: "Prepared by Your Green Gardening Wizard · [date] · leanspirited.com"
+- **Worker model update** — `worker/index.js` updated from `claude-sonnet-4-20250514` to `claude-sonnet-4-6`. Awaiting deploy (Rod handles auth/deploy independently).
 
-New UI from Claude.ai (zip in Downloads) adopted wholesale:
-- Playfair Display / DM Sans typography
-- 4-step profile wizard replacing old chat UI
-- Loading states with cycling messages
-- Result card with profile pills and markdown rendering
-- Share button (clipboard + native share)
-- Fake-door £9.99 upgrade modal with waitlist capture
-- AARRR instrumentation hooks (console.log, ready to swap for real analytics)
-
-Worker updated: CORS lockdown (origin allowlist), model enforcement, abuse limits.
+Backlog replaced with v2 (CD3+SWOT scored). Imported from Claude.ai zip in Downloads.
 
 ---
 
 ## Decisions made
 
-DECISION 2026-03-19: Adopted wizard-style UI (not conversational chat) for Phase 1 — simpler, faster to complete, better mobile UX, and profiles are collected more reliably via structured steps.
-
-DECISION 2026-03-19: Fake-door £9.99 upgrade modal with waitlist — testing revenue intent before building the paid tier. No payment integration needed yet.
-
-DECISION 2026-03-19: CORS lockdown on worker (origin allowlist, not `*`) — security improvement, model enforcement prevents abuse.
+DECISION 2026-03-19: Email capture (YGW-021) and seasonal email cron (YGW-022) parked — going with concierge/VIP model targeting specific clients first. Email infrastructure not needed until that channel is validated.
 
 ---
 
@@ -39,32 +39,39 @@ DECISION 2026-03-19: CORS lockdown on worker (origin allowlist, not `*`) — sec
 
 Unchanged: *"A conversational garden advisor that remembers your garden profile will provide enough value to retain users and validate the knowledge engine before building spatial tools."*
 
-Note: "conversational" now means wizard-to-result, not open chat. Hypothesis still valid — we're testing whether personalised AI recommendations create enough value to drive upgrade intent.
+The seasonal work (YGW-019, YGW-020) directly supports this — the app now feels alive in any month, not just spring. Landscaper PDF (YGW-027) opens the B2B concierge channel.
 
 ---
 
 ## Live URLs
 
-- Site: https://your-green-gardening-wizard.leanspirited.workers.dev (or Pages once connected)
+- Site: https://your-green-gardening-wizard.leanspirited.workers.dev
 - Worker: https://ygw-api-proxy.leanspirited.workers.dev
+- Landscaper: https://your-green-gardening-wizard.leanspirited.workers.dev/landscaper.html
 
 ---
 
 ## Open / next session
 
-No open backlog items. Phase 1 backlog is fully closed.
+Still Building (not yet closed):
+- YGW-013 — Tests for `buildAugmentedSystemPrompt()`
+- YGW-014 — Pre-commit hook + pipeline enforcement
+- YGW-015 — hardiness-zones.md (Tier 1 knowledge)
+- YGW-017 — 5 remaining Tier 2 style files
 
-Next session priorities:
-1. Send URL to Oz and Jerry — get first external feedback
-2. Watch for upgrade modal clicks and waitlist signups (check browser console logs)
-3. Raise Phase 2 backlog based on feedback — likely: email capture (real), analytics events, or first B2B landscaper conversation
+Top 3 for next session (priority queue order):
+1. **YGW-018** — Shareable visual plan card (canvas, 1080×1080px PNG) — highest acquisition leverage
+2. **YGW-013** — Tests for `buildAugmentedSystemPrompt()` — closes the test coverage gap
+3. **YGW-015 / YGW-017** — remaining knowledge files
 
-Blockers: none. MVP is live.
+Blockers: none. Worker model update (claude-sonnet-4-6) is staged in worker/index.js.
 
 ---
 
 ## What Claude.ai should know
 
-- The old conversational chat UI has been replaced — do not reference it
-- The worker URL is `https://ygw-api-proxy.leanspirited.workers.dev`
-- Pipeline (tests) not yet set up — known gap, not blocking Phase 1
+- Backlog is now v2 — 38 items, CD3+SWOT scored, at `docs/ygw-backlog.md`
+- Email items (YGW-021, YGW-022) are ⏸ Parked — concierge model first
+- `getCurrentUKSeason()` and `buildSeasonalContext()` are live in domain.js — seasonal context is now injected into every AI prompt automatically
+- landscaper.html is ready to demo to concierge clients — professional PDF print, real worker URL
+- Worker model update is staged but not yet deployed
