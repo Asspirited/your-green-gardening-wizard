@@ -1,5 +1,5 @@
 name = "ygw-api-proxy"
-main = "worker/index.js"
+main = "index.js"
 compatibility_date = "2025-01-01"
 
 # After deploying, set your API key as a secret (never commit it):
