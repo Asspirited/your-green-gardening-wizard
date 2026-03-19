@@ -124,6 +124,37 @@ If any answer is wrong — fix the architecture or add the contract test before 
 
 ---
 
+## Pipeline report format (required)
+
+Every pipeline run must produce a summary table in this format:
+
+```
+Layer          Result      Stmt%   Branch%   Time   Bugs
+──────────────────────────────────────────────────────────
+0 Auth         ✅ GREEN      —       —        2s      —
+1 Unit         ✅ GREEN    97.41   89.30       1s      0
+2 Contract     ✅ GREEN    53.47   21.43       0s      0
+3 Acceptance   SKIP          —       —        0s      0
+4 UI           SKIP          —       —        0s      —
+5 OAT          ✅ GREEN      —       —        1s      —
+──────────────────────────────────────────────────────────
+Total build + test time: 4s
+```
+
+**All layers must show:**
+- Result (✅ GREEN / ❌ RED / SKIP)
+- Statement coverage % (where measurable)
+- Branch coverage % (where measurable)
+- Time taken
+- Bug/failure count
+
+**Run:** `npm run pipeline` or `bash scripts/pipeline-report.sh`
+
+This table must be produced at the end of every session before closedown.
+If it does not exist or is not green — do not merge, do not close session.
+
+---
+
 ## Adding contract testing to YGW (implementation order)
 
 Phase 1 (now): Define `.pact` file manually for `/messages` endpoint. Add to repo. Add Pact provider verify to pipeline.

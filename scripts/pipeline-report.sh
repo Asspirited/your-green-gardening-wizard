@@ -17,6 +17,20 @@ fi
 
 ERRORS=0
 START_TIME=$(date +%s)
+AUTH_TIME=0; UNIT_TIME=0; CONTRACT_TIME=0; ACCEPT_TIME=0; UI_TIME=0; OAT_TIME=0
+AUTH_RESULT="—"; UNIT_RESULT="—"; CONTRACT_RESULT="—"
+ACCEPT_RESULT="SKIP"; UI_RESULT="SKIP"; OAT_RESULT="—"
+UNIT_LINE="—"; UNIT_BRANCH="—"; UNIT_BUGS=0
+CONTRACT_LINE="—"; CONTRACT_BRANCH="—"; CONTRACT_BUGS=0
+ACCEPT_LINE="—"; ACCEPT_BRANCH="—"; ACCEPT_BUGS=0
+
+# Extract statement (line) and branch coverage for a given source file from node coverage output
+# Usage: extract_cov <output> <filename_fragment>
+extract_line_cov()   { echo "$1" | grep -E "$2" | grep -v test | head -1 | awk -F'|' '{gsub(/ /,"",$2); print $2}'; }
+extract_branch_cov() { echo "$1" | grep -E "$2" | grep -v test | head -1 | awk -F'|' '{gsub(/ /,"",$3); print $3}'; }
+
+# Extract fail count from node --test output
+extract_bugs() { echo "$1" | grep -oP '(?<=# fail )\d+' | tail -1 || echo "0"; }
 
 separator() { echo ""; echo "────────────────────────────────────────"; }
 
@@ -45,11 +59,16 @@ parse_coverage() {
 # ── Layer 0: Auth canary ──
 separator
 echo "LAYER 0 — AUTH CANARY"
+AUTH_L0_START=$(date +%s)
 AUTH_OUT=$(bash scripts/check-auth.sh 2>&1)
+AUTH_L0_END=$(date +%s)
+AUTH_TIME=$(( AUTH_L0_END - AUTH_L0_START ))
 if echo "$AUTH_OUT" | grep -q "CANARY: GREEN"; then
-  echo "✅ GREEN"
+  AUTH_RESULT="✅ GREEN"
+  echo "✅ GREEN (${AUTH_TIME}s)"
   echo "$AUTH_OUT" | grep -E "^(GREEN|RED|SKIP)" | sed 's/^/   /'
 else
+  AUTH_RESULT="❌ RED"
   echo "❌ RED — stopping pipeline"
   echo "$AUTH_OUT" | grep -E "^(GREEN|RED|SKIP)" | sed 's/^/   /'
   exit 1
@@ -64,10 +83,16 @@ UNIT_EXIT=$?
 UNIT_END=$(date +%s)
 UNIT_STATS=$(parse_test_stats "$UNIT_OUT")
 
+UNIT_TIME=$(( UNIT_END - UNIT_START ))
+UNIT_LINE=$(extract_line_cov "$UNIT_OUT" "domain\.js")
+UNIT_BRANCH=$(extract_branch_cov "$UNIT_OUT" "domain\.js")
+UNIT_BUGS=$(extract_bugs "$UNIT_OUT")
 if [ $UNIT_EXIT -eq 0 ]; then
-  echo "✅ GREEN ($(( UNIT_END - UNIT_START ))s) | $UNIT_STATS"
+  UNIT_RESULT="✅ GREEN"
+  echo "✅ GREEN (${UNIT_TIME}s) | $UNIT_STATS"
 else
-  echo "❌ RED  ($(( UNIT_END - UNIT_START ))s) | $UNIT_STATS"
+  UNIT_RESULT="❌ RED"
+  echo "❌ RED  (${UNIT_TIME}s) | $UNIT_STATS"
   ERRORS=$((ERRORS+1))
 fi
 
@@ -95,10 +120,16 @@ INTERACTION_COUNT=$(node -e "
   console.log(c.interactions.length);
 " 2>/dev/null || echo '?')
 
+CONTRACT_TIME=$(( CONTRACT_END - CONTRACT_START ))
+CONTRACT_LINE=$(extract_line_cov "$CONTRACT_OUT" "worker/index\.js")
+CONTRACT_BRANCH=$(extract_branch_cov "$CONTRACT_OUT" "worker/index\.js")
+CONTRACT_BUGS=$(extract_bugs "$CONTRACT_OUT")
 if [ $CONTRACT_EXIT -eq 0 ]; then
-  echo "✅ GREEN ($(( CONTRACT_END - CONTRACT_START ))s) | $CONTRACT_STATS"
+  CONTRACT_RESULT="✅ GREEN"
+  echo "✅ GREEN (${CONTRACT_TIME}s) | $CONTRACT_STATS"
 else
-  echo "❌ RED  ($(( CONTRACT_END - CONTRACT_START ))s) | $CONTRACT_STATS"
+  CONTRACT_RESULT="❌ RED"
+  echo "❌ RED  (${CONTRACT_TIME}s) | $CONTRACT_STATS"
   ERRORS=$((ERRORS+1))
 fi
 echo "   Contract: ygw-browser → ygw-worker | interactions: $INTERACTION_COUNT"
@@ -122,10 +153,13 @@ if [ -d "tests/acceptance" ] && [ "$(ls tests/acceptance/*.test.js 2>/dev/null)"
   ACCEPT_EXIT=$?
   ACCEPT_END=$(date +%s)
   ACCEPT_STATS=$(parse_test_stats "$ACCEPT_OUT")
+  ACCEPT_TIME=$(( ACCEPT_END - ACCEPT_START ))
   if [ $ACCEPT_EXIT -eq 0 ]; then
-    echo "✅ GREEN ($(( ACCEPT_END - ACCEPT_START ))s) | $ACCEPT_STATS"
+    ACCEPT_RESULT="✅ GREEN"
+    echo "✅ GREEN (${ACCEPT_TIME}s) | $ACCEPT_STATS"
   else
-    echo "❌ RED  ($(( ACCEPT_END - ACCEPT_START ))s) | $ACCEPT_STATS"
+    ACCEPT_RESULT="❌ RED"
+    echo "❌ RED  (${ACCEPT_TIME}s) | $ACCEPT_STATS"
     ERRORS=$((ERRORS+1))
   fi
   echo "   Coverage:"
@@ -148,10 +182,14 @@ if [ -d "tests/ui" ] && [ "$(ls tests/ui/ 2>/dev/null)" ]; then
   UI_START=$(date +%s)
   if npx playwright test tests/ui/ 2>&1; then
     UI_END=$(date +%s)
-    echo "✅ GREEN ($(( UI_END - UI_START ))s)"
+    UI_TIME=$(( UI_END - UI_START ))
+    UI_RESULT="✅ GREEN"
+    echo "✅ GREEN (${UI_TIME}s)"
   else
     UI_END=$(date +%s)
-    echo "❌ RED  ($(( UI_END - UI_START ))s)"
+    UI_TIME=$(( UI_END - UI_START ))
+    UI_RESULT="❌ RED"
+    echo "❌ RED  (${UI_TIME}s)"
     ERRORS=$((ERRORS+1))
   fi
 else
@@ -173,8 +211,10 @@ OAT_END=$(date +%s)
 OAT_TIME=$(( OAT_END - OAT_START ))
 
 if [ "$PING" = "200" ]; then
+  OAT_RESULT="✅ GREEN (HTTP 200)"
   echo "✅ OAT  — Worker live ping: GREEN (HTTP 200, ${OAT_TIME}s)"
 else
+  OAT_RESULT="❌ RED (HTTP $PING)"
   echo "❌ OAT  — Worker live ping: RED   (HTTP $PING, ${OAT_TIME}s)"
   ERRORS=$((ERRORS+1))
 fi
@@ -187,24 +227,26 @@ END_TIME=$(date +%s)
 TOTAL_TIME=$(( END_TIME - START_TIME ))
 separator
 echo ""
-echo "╔══════════════════════════════════════════╗"
-echo "║  YGW PIPELINE REPORT — $(date '+%Y-%m-%d %H:%M')  ║"
-echo "╠══════════════════════════════════════════╣"
-printf "║  %-40s ║\n" "Total time: ${TOTAL_TIME}s"
-printf "║  %-40s ║\n" ""
-printf "║  %-40s ║\n" "Layer 0 Auth:       $(bash scripts/check-auth.sh 2>&1 | grep -c GREEN)/3 checks GREEN"
-printf "║  %-40s ║\n" "Layer 1 Unit:       $(parse_test_stats "$UNIT_OUT")"
-printf "║  %-40s ║\n" "Layer 2 Contract:   $(parse_test_stats "$CONTRACT_OUT") | ${INTERACTION_COUNT} interactions"
-printf "║  %-40s ║\n" "Layer 3 Acceptance: not yet built"
-printf "║  %-40s ║\n" "Layer 4 UI:         not yet built"
-printf "║  %-40s ║\n" "Layer 5 OAT:        Worker HTTP $PING"
-printf "║  %-40s ║\n" ""
+echo "╔════════════════════════════════════════════════════════════════════════╗"
+printf "║  YGW PIPELINE REPORT — %-48s║\n" "$(date '+%Y-%m-%d %H:%M')"
+echo "╠════════════════════════════════════════════════════════════════════════╣"
+printf "║  %-14s %-12s %8s %8s %6s %7s ║\n" "Layer"        "Result"    "Stmt%"   "Branch%"  "Time"  "Bugs"
+printf "║  %-14s %-12s %8s %8s %6s %7s ║\n" "──────────────" "──────────" "──────" "───────" "────" "──────"
+printf "║  %-14s %-12s %8s %8s %5ss %7s ║\n" "0 Auth"       "$AUTH_RESULT"     "—"              "—"                "$AUTH_TIME"     "—"
+printf "║  %-14s %-12s %8s %8s %5ss %7s ║\n" "1 Unit"       "$UNIT_RESULT"     "${UNIT_LINE}"   "${UNIT_BRANCH}"   "$UNIT_TIME"     "$UNIT_BUGS"
+printf "║  %-14s %-12s %8s %8s %5ss %7s ║\n" "2 Contract"   "$CONTRACT_RESULT" "${CONTRACT_LINE}" "${CONTRACT_BRANCH}" "$CONTRACT_TIME" "$CONTRACT_BUGS"
+printf "║  %-14s %-12s %8s %8s %5ss %7s ║\n" "3 Acceptance" "$ACCEPT_RESULT"   "—"              "—"                "$ACCEPT_TIME"   "$ACCEPT_BUGS"
+printf "║  %-14s %-12s %8s %8s %5ss %7s ║\n" "4 UI"         "$UI_RESULT"       "—"              "—"                "$UI_TIME"       "—"
+printf "║  %-14s %-12s %8s %8s %5ss %7s ║\n" "5 OAT"        "$OAT_RESULT"      "—"              "—"                "$OAT_TIME"      "—"
+echo "╠════════════════════════════════════════════════════════════════════════╣"
+printf "║  %-70s ║\n" "Total build + test time: ${TOTAL_TIME}s"
+printf "║  %-70s ║\n" ""
 if [ $ERRORS -eq 0 ]; then
-  printf "║  %-40s ║\n" "✅ ALL GREEN — safe to merge"
+  printf "║  %-70s ║\n" "✅  ALL GREEN — safe to merge"
 else
-  printf "║  %-40s ║\n" "❌ ${ERRORS} LAYER(S) RED — do not merge"
+  printf "║  %-70s ║\n" "❌  ${ERRORS} LAYER(S) RED — do not merge"
 fi
-echo "╚══════════════════════════════════════════╝"
+echo "╚════════════════════════════════════════════════════════════════════════╝"
 echo ""
 
 [ $ERRORS -eq 0 ] && exit 0 || exit 1
