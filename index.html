@@ -150,6 +150,78 @@
   }
   .hero-cta:hover { background: var(--mint); transform: translateY(-1px); }
 
+  /* ── App shell — left nav + content ── */
+  .app-shell {
+    display: flex;
+    flex: 1;
+    align-items: flex-start;
+  }
+
+  /* ── Left nav ── */
+  .side-nav {
+    width: 220px;
+    flex-shrink: 0;
+    background: var(--forest);
+    min-height: calc(100vh - 78px);
+    padding: 24px 0;
+    position: sticky;
+    top: 78px;
+    align-self: flex-start;
+  }
+  .side-nav-section {
+    padding: 0 16px 8px;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    margin-top: 16px;
+  }
+  .side-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    color: rgba(255,255,255,0.65);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+    border-left: 3px solid transparent;
+    font-family: var(--font-ui);
+  }
+  .side-nav-item:hover { color: white; background: rgba(255,255,255,0.06); }
+  .side-nav-item.active {
+    color: var(--sage);
+    border-left-color: var(--sage);
+    background: rgba(82,183,136,0.1);
+  }
+  .side-nav-item.locked {
+    opacity: 0.4;
+    cursor: default;
+    pointer-events: none;
+  }
+  .side-nav-icon { font-size: 1.1rem; flex-shrink: 0; }
+  .side-nav-badge {
+    margin-left: auto;
+    font-size: 0.6rem;
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.5);
+    padding: 1px 6px;
+    border-radius: 100px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .side-nav-divider {
+    border: none;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    margin: 12px 16px;
+  }
+
+  /* Hide side-nav on small screens */
+  @media (max-width: 767px) { .side-nav { display: none; } }
+
   /* ── Main layout ── */
   main {
     flex: 1;
@@ -713,6 +785,43 @@
   </div>
 </div>
 
+<div class="app-shell">
+
+<nav class="side-nav" aria-label="YGW tools">
+  <div class="side-nav-section">Tools</div>
+
+  <a class="side-nav-item active" onclick="return false;" href="#">
+    <span class="side-nav-icon">🌿</span>
+    Garden Advisor
+  </a>
+
+  <a class="side-nav-item" href="app.html">
+    <span class="side-nav-icon">📐</span>
+    Plot Designer
+  </a>
+
+  <hr class="side-nav-divider">
+  <div class="side-nav-section">Coming soon</div>
+
+  <span class="side-nav-item locked">
+    <span class="side-nav-icon">📅</span>
+    Seasonal Planner
+    <span class="side-nav-badge">soon</span>
+  </span>
+
+  <span class="side-nav-item locked">
+    <span class="side-nav-icon">🛍</span>
+    Plant Shop
+    <span class="side-nav-badge">soon</span>
+  </span>
+
+  <span class="side-nav-item locked">
+    <span class="side-nav-icon">📄</span>
+    Garden Report
+    <span class="side-nav-badge">soon</span>
+  </span>
+</nav>
+
 <main>
 
   <!-- Wizard -->
@@ -860,6 +969,8 @@
   </div>
 
 </main>
+
+</div><!-- /.app-shell -->
 
   <!-- Refine panel -->
   <div class="refine-panel" id="refine-panel" style="display:none">
