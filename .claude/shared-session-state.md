@@ -45,9 +45,9 @@ The seasonal work (YGW-019, YGW-020) directly supports this — the app now feel
 
 ## Live URLs
 
-- Site: https://your-green-gardening-wizard.leanspirited.workers.dev
+- Site: https://asspirited.github.io/your-green-gardening-wizard/
 - Worker: https://ygw-api-proxy.leanspirited.workers.dev
-- Landscaper: https://your-green-gardening-wizard.leanspirited.workers.dev/landscaper.html
+- Landscaper: https://asspirited.github.io/your-green-gardening-wizard/landscaper.html
 
 ---
 
