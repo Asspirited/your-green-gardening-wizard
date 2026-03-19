@@ -1191,7 +1191,7 @@ async function submitProfile() {
 
     // Try Worker first, fall back to direct API for local dev
     if (WORKER_URL && WORKER_URL !== 'YOUR_CLOUDFLARE_WORKER_URL') {
-      const res = await fetch(WORKER_URL, {
+      const res = await fetch(WORKER_URL + '/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1323,7 +1323,7 @@ async function submitRefinement() {
     };
 
     if (WORKER_URL && WORKER_URL !== 'YOUR_CLOUDFLARE_WORKER_URL') {
-      const res = await fetch(WORKER_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      const res = await fetch(WORKER_URL + '/messages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       const data = await res.json();
       responseText = data.content[0].text;
     } else {
