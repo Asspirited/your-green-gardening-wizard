@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Green Gardening Wizard</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --green-dark: #2d5a27;
+      --green-mid: #4a7c3f;
+      --green-light: #7db87a;
+      --cream: #f8f5ee;
+      --text: #1a1a1a;
+      --text-light: #555;
+      --border: #ddd;
+      --radius: 12px;
+    }
+
+    body {
+      font-family: Georgia, 'Times New Roman', serif;
+      background: var(--cream);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: var(--green-dark);
+      color: white;
+      padding: 1.5rem 1rem;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      font-weight: normal;
+      letter-spacing: 0.02em;
+    }
+
+    header p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-top: 0.3rem;
+      font-style: italic;
+    }
+
+    main {
+      flex: 1;
+      max-width: 720px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    #chat {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      min-height: 300px;
+    }
+
+    .message {
+      max-width: 85%;
+      padding: 0.8rem 1rem;
+      border-radius: var(--radius);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .message.wizard {
+      background: white;
+      border: 1px solid var(--border);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.wizard::before {
+      content: '🌿 ';
+    }
+
+    .message.user {
+      background: var(--green-dark);
+      color: white;
+      align-self: flex-end;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.thinking {
+      background: white;
+      border: 1px solid var(--border);
+      align-self: flex-start;
+      color: var(--text-light);
+      font-style: italic;
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.thinking::before {
+      content: '🌿 ';
+    }
+
+    .message.error {
+      background: #fff0f0;
+      border: 1px solid #ffcccc;
+      align-self: flex-start;
+      color: #c00;
+      border-bottom-left-radius: 4px;
+    }
+
+    #input-area {
+      display: flex;
+      gap: 0.5rem;
+      align-items: flex-end;
+    }
+
+    #user-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 0.95rem;
+      resize: none;
+      min-height: 48px;
+      max-height: 160px;
+      line-height: 1.5;
+      background: white;
+    }
+
+    #user-input:focus {
+      outline: none;
+      border-color: var(--green-mid);
+    }
+
+    #send-btn {
+      padding: 0.75rem 1.25rem;
+      background: var(--green-dark);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-family: inherit;
+      font-size: 0.95rem;
+      cursor: pointer;
+      white-space: nowrap;
+      height: 48px;
+    }
+
+    #send-btn:hover { background: var(--green-mid); }
+    #send-btn:disabled { background: var(--green-light); cursor: not-allowed; }
+
+    @media (max-width: 480px) {
+      header h1 { font-size: 1.3rem; }
+      .message { max-width: 95%; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Your Green Gardening Wizard</h1>
+  <p>A knowledgeable friend with a sketchpad</p>
+</header>
+
+<main>
+  <div id="chat"></div>
+  <div id="input-area">
+    <textarea id="user-input" placeholder="Tell me about your garden…" rows="1"></textarea>
+    <button id="send-btn">Send</button>
+  </div>
+</main>
+
+<script>
+  // ─── CONFIG ──────────────────────────────────────────────────────────────────
+  const WORKER_URL = 'PASTE_YOUR_WORKER_URL_HERE';
+  // e.g. 'https://ygw-api-proxy.leanspirited.workers.dev'
+  // ─────────────────────────────────────────────────────────────────────────────
+
+  const SYSTEM_PROMPT = `You are the Green Gardening Wizard — a warm, knowledgeable UK garden advisor. You combine the expertise of an RHS-trained designer with the approachability of a helpful friend.
+
+Your role is to give personalised, practical plant and garden advice based on what you learn about the user's specific garden.
+
+On first contact, gather the garden profile by asking conversational questions about:
+- Location (UK region or postcode area, for climate/hardiness zone)
+- Soil type (clay, sandy, loam, chalk, peat — or help them find out)
+- Aspect (which direction the main garden faces: N/S/E/W or mixed)
+- Goals (colour, food growing, wildlife, low maintenance, etc.)
+- Size and any constraints (shading, slopes, existing plants)
+
+You don't need all answers at once — build the profile naturally through conversation. Once you have enough to work with, start giving recommendations. Always explain WHY a plant suits their specific conditions.
+
+Rules:
+- UK plant names and climate zones only
+- Never recommend plants that could be harmful if the user mentions children or pets
+- If you don't know something, say so — don't hallucinate plant facts
+- Keep responses concise and conversational — this is chat, not a report
+- Use plain language, not horticultural jargon, unless the user is clearly knowledgeable`;
+
+  const history = [];
+
+  const chat = document.getElementById('chat');
+  const input = document.getElementById('user-input');
+  const sendBtn = document.getElementById('send-btn');
+
+  function addMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = 'message ' + role;
+    div.textContent = text;
+    chat.appendChild(div);
+    chat.scrollTop = chat.scrollHeight;
+    return div;
+  }
+
+  function setThinking(on) {
+    if (on) {
+      const el = document.createElement('div');
+      el.className = 'message thinking';
+      el.id = 'thinking';
+      el.textContent = 'Thinking…';
+      chat.appendChild(el);
+      chat.scrollTop = chat.scrollHeight;
+    } else {
+      const el = document.getElementById('thinking');
+      if (el) el.remove();
+    }
+  }
+
+  async function send() {
+    const text = input.value.trim();
+    if (!text || sendBtn.disabled) return;
+
+    addMessage('user', text);
+    history.push({ role: 'user', content: text });
+    input.value = '';
+    input.style.height = 'auto';
+    sendBtn.disabled = true;
+    setThinking(true);
+
+    try {
+      const response = await fetch(WORKER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-6',
+          max_tokens: 1024,
+          system: SYSTEM_PROMPT,
+          messages: history,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data?.error?.message || `HTTP ${response.status}`);
+      }
+
+      const reply = data.content?.[0]?.text ?? 'Sorry, I didn\'t get a response.';
+      history.push({ role: 'assistant', content: reply });
+      setThinking(false);
+      addMessage('wizard', reply);
+    } catch (err) {
+      setThinking(false);
+      addMessage('error', 'Something went wrong: ' + err.message);
+    } finally {
+      sendBtn.disabled = false;
+      input.focus();
+    }
+  }
+
+  sendBtn.addEventListener('click', send);
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      send();
+    }
+  });
+
+  input.addEventListener('input', () => {
+    input.style.height = 'auto';
+    input.style.height = input.scrollHeight + 'px';
+  });
+
+  // Opening message
+  addMessage('wizard', 'Hello! I\'m your Green Gardening Wizard. Tell me a bit about your garden and I\'ll help you make the most of it — whether that\'s finding the right plants, solving a tricky spot, or just knowing where to start. What\'s your garden like?');
+</script>
+
+</body>
+</html>
