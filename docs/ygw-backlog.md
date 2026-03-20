@@ -397,12 +397,12 @@ Feature: Overwrite saved plot
 ```
 
 | YGW-UX-005 | Logo — The Green Wizard mark on index.html homepage | 6.0 | 📋 Open |
-| YGW-054 | Canvas season toggle — show placed garden in Spring/Summer/Autumn/Winter | 7.5 | 📋 Open |
-| YGW-055 | Seasonal shade cover — plant foliage spread adjusts per season (bare deciduous in winter) | 6.5 | 📋 Open |
-| YGW-056 | Save plot — name it, save to localStorage | 9.0 | 🔨 Building |
-| YGW-057 | Load plot — "My saved plots" panel, tap to restore | 9.0 | 🔨 Building |
-| YGW-058 | Overwrite plot — resave changes to existing named plot | 8.5 | 🔨 Building |
-| YGW-059 | Delete plot — remove from saved list | 7.0 | 📋 Open |
+| YGW-054 | Canvas season toggle — show placed garden in Spring/Summer/Autumn/Winter | 7.5 | ✅ Done |
+| YGW-055 | Seasonal shade cover — plant foliage spread adjusts per season (bare deciduous in winter) | 6.5 | ✅ Done |
+| YGW-056 | Save plot — name it, save to localStorage | 9.0 | ✅ Done |
+| YGW-057 | Load plot — "My saved plots" panel, tap to restore | 9.0 | ✅ Done |
+| YGW-058 | Overwrite plot — resave changes to existing named plot | 8.5 | ✅ Done |
+| YGW-059 | Delete plot — remove from saved list | 7.0 | ✅ Done |
 
 ---
 
@@ -420,18 +420,18 @@ _(continued)_
 
 | ID | Title | Score | Status |
 |---|---|---|---|
-| YGW-BL-011 | Wire canvas to plants.json — replace hardcoded CATEGORIES with fetch on load | 9.0 | 🔨 Building |
-| YGW-BL-012 | Seasonal grid colouring in canvas — ground/minor/major/boundary shift per season | 9.0 | 🔨 Building |
-| YGW-BL-013 | Palette icons — landscape architecture symbols (YGW-UX-001) | 8.0 | 🔨 Building |
-| YGW-BL-014 | Latin name italic typography in palette and proposal output (YGW-UX-003) | 6.0 | 🔨 Building |
-| YGW-BL-015 | Product rename to "The Green Wizard" throughout visible UI (YGW-UX-004) | 6.5 | 🔨 Building |
-| YGW-BL-016 | Landing page full rebuild — 6-section marketing page (YGW-UX-002) | 8.5 | 🔨 Building |
-| YGW-BL-017 | UI/UX quality gate — checklist passes before any merge (YGW-UX-005) | 7.0 | 🔨 Building |
+| YGW-BL-011 | Wire canvas to plants.json — replace hardcoded CATEGORIES with fetch on load | 9.0 | ✅ Done |
+| YGW-BL-012 | Seasonal grid colouring in canvas — ground/minor/major/boundary shift per season | 9.0 | ✅ Done |
+| YGW-BL-013 | Palette icons — landscape architecture symbols (YGW-UX-001) | 8.0 | ✅ Done |
+| YGW-BL-014 | Latin name italic typography in palette and proposal output (YGW-UX-003) | 6.0 | ✅ Done |
+| YGW-BL-015 | Product rename to "The Green Wizard" throughout visible UI (YGW-UX-004) | 6.5 | ✅ Done |
+| YGW-BL-016 | Landing page full rebuild — 6-section marketing page (YGW-UX-002) | 8.5 | ✅ Done |
+| YGW-BL-017 | UI/UX quality gate — checklist passes before any merge (YGW-UX-005) | 7.0 | ✅ Done |
 | YGW-BL-018 | Font consistency audit — unified Playfair Display + DM Sans hierarchy, consistent usage for headings/body/labels across index.html, app.html, landscaper.html | 6.5 | 📋 Open |
 | YGW-BL-019 | "Free Plant Advisor" heading on index.html is too small and does not stand out — make it prominent (larger, bolder, more visual weight) | 7.0 | 📋 Open |
 | YGW-BL-020 | Review index.html section ordering — reorder sections so most useful/compelling content appears highest on the page; reduce scroll-to-value | 7.5 | 📋 Open |
 | YGW-BL-021 | Expand plot design element range — add more plant/structure types across all shape/category/subtype combinations; increase canvas design vocabulary | 8.0 | 📋 Open |
-| YGW-BL-022 | Banner nav links (Plot Designer, Landscaper, Plant Advisor) are plain text — make them gold-and-green pill buttons to match Green Wizard logo; make them prominent and clickable | 8.0 | 🔨 Building |
+| YGW-BL-022 | Banner nav links (Plot Designer, Landscaper, Plant Advisor) are plain text — make them gold-and-green pill buttons to match Green Wizard logo; make them prominent and clickable | 8.0 | ✅ Done |
 
 ---
 
