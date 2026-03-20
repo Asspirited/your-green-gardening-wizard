@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 100" role="img" aria-label="The Green Wizard">
+  <!-- White/light version for use on dark backgrounds (hero banner, dark sections) -->
+  <!-- All fills simplified to white with opacity variations for depth -->
+
+  <!-- Hat -->
+  <path d="M33 4 C31 8 21 20 14 30 Q33 25 52 30 C45 20 35 8 33 4 Z" fill="rgba(255,255,255,0.95)"/>
+  <ellipse cx="33" cy="30" rx="20" ry="5.5" fill="rgba(255,255,255,0.75)"/>
+  <path d="M16 28 Q33 24 50 28" stroke="rgba(255,255,255,0.5)" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+  <!-- Leaf on hat - keep a hint of green for identity -->
+  <ellipse cx="43" cy="26.5" rx="3.5" ry="1.8" fill="rgba(133,212,160,0.9)" transform="rotate(-25 43 26.5)"/>
+  <ellipse cx="46" cy="25.5" rx="2.5" ry="1.4" fill="rgba(133,212,160,0.7)" transform="rotate(-35 46 25.5)"/>
+
+  <!-- Face -->
+  <circle cx="33" cy="40" r="8" fill="rgba(255,255,255,0.85)"/>
+  <circle cx="30" cy="39" r="1.3" fill="rgba(0,0,0,0.4)"/>
+  <circle cx="36" cy="39" r="1.3" fill="rgba(0,0,0,0.4)"/>
+  <path d="M28 37.5 Q30 36.5 32 37.5" stroke="rgba(0,0,0,0.25)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  <path d="M34 37.5 Q36 36.5 38 37.5" stroke="rgba(0,0,0,0.25)" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+
+  <!-- Beard -->
+  <path d="M25 47 C18 58 16 72 22 82 Q33 88 44 82 C50 72 48 58 41 47 Z" fill="rgba(255,255,255,0.9)"/>
+  <path d="M28 50 C25 60 24 72 26 80" stroke="rgba(0,0,0,0.08)" stroke-width="0.9" fill="none"/>
+  <path d="M33 50 C33 62 33 73 33 80" stroke="rgba(0,0,0,0.08)" stroke-width="0.9" fill="none"/>
+  <path d="M38 50 C41 60 42 72 40 80" stroke="rgba(0,0,0,0.08)" stroke-width="0.9" fill="none"/>
+  <path d="M27 46 Q33 43 39 46" stroke="rgba(255,255,255,0.95)" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- Robe -->
+  <path d="M24 50 C14 70 12 84 16 96 L50 96 C54 84 52 70 42 50 Z" fill="rgba(255,255,255,0.8)"/>
+  <path d="M29 52 C25 68 24 82 25 92 L41 92 C42 82 41 68 37 52 Z" fill="rgba(255,255,255,0.15)"/>
+  <path d="M19 66 Q33 63 47 66" stroke="rgba(255,255,255,0.5)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <rect x="30" y="64" width="6" height="4" rx="1" fill="rgba(255,255,255,0.6)"/>
+  <path d="M16 88 Q24 85 33 88 Q42 91 50 88" stroke="rgba(133,212,160,0.6)" stroke-width="1" fill="none" stroke-linecap="round"/>
+
+  <!-- Sleeves -->
+  <path d="M25 54 C13 60 9 72 15 80 Q20 82 24 78 Q26 72 26 65 Z" fill="rgba(255,255,255,0.8)"/>
+  <path d="M41 54 C53 60 57 72 51 80 Q46 82 42 78 Q40 72 40 65 Z" fill="rgba(255,255,255,0.8)"/>
+
+  <!-- Hands -->
+  <ellipse cx="14" cy="80" rx="5" ry="3.5" fill="rgba(255,255,255,0.85)" transform="rotate(10 14 80)"/>
+  <ellipse cx="50" cy="80" rx="5" ry="3.5" fill="rgba(255,255,255,0.85)" transform="rotate(-10 50 80)"/>
+
+  <!-- Boots -->
+  <path d="M14 94 Q20 92 26 95 Q24 98 14 98 Z" fill="rgba(255,255,255,0.5)"/>
+  <path d="M40 94 Q46 92 52 95 Q50 98 40 98 Z" fill="rgba(255,255,255,0.5)"/>
+
+  <!-- Staff -->
+  <line x1="50" y1="78" x2="74" y2="18" stroke="rgba(255,255,255,0.7)" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Tree -->
+  <line x1="74" y1="18" x2="74" y2="8" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="74" y1="16" x2="64" y2="8" stroke="rgba(133,212,160,0.9)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="74" y1="16" x2="84" y2="8" stroke="rgba(133,212,160,0.9)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="64" y1="8" x2="60" y2="4" stroke="rgba(133,212,160,0.7)" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="84" y1="8" x2="88" y2="4" stroke="rgba(133,212,160,0.7)" stroke-width="1.3" stroke-linecap="round"/>
+  <circle cx="74" cy="7" r="5.5" fill="rgba(133,212,160,0.95)"/>
+  <circle cx="63" cy="7" r="4.5" fill="rgba(133,212,160,0.85)"/>
+  <circle cx="85" cy="7" r="4.5" fill="rgba(133,212,160,0.85)"/>
+  <circle cx="69" cy="5" r="3.5" fill="rgba(78,184,112,0.9)"/>
+  <circle cx="79" cy="5" r="3" fill="rgba(45,138,66,0.9)"/>
+  <circle cx="63" cy="4" r="2" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="85" cy="4" r="2" fill="rgba(255,255,255,0.6)"/>
+  <!-- Pink blossom stays - it's the brand touch -->
+  <circle cx="74" cy="4" r="1.8" fill="rgba(249,168,212,0.95)"/>
+  <circle cx="78" cy="6" r="1.4" fill="rgba(253,164,175,0.8)"/>
+</svg>

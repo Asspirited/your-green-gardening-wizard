@@ -1,0 +1,115 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 88 100" role="img" aria-label="The Green Wizard">
+  <defs>
+    <radialGradient id="beardGrad" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#f7f2e8"/>
+      <stop offset="100%" stop-color="#e0d8c8"/>
+    </radialGradient>
+    <radialGradient id="leafTop" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#6ee89a"/>
+      <stop offset="100%" stop-color="#2d8a42"/>
+    </radialGradient>
+    <radialGradient id="leafSide" cx="50%" cy="50%" r="60%">
+      <stop offset="0%" stop-color="#4db870"/>
+      <stop offset="100%" stop-color="#1a5c2a"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ═══ HAT ═══ -->
+  <!-- Hat cone - tall and slightly curved, very Gandalf -->
+  <path d="M33 4 C31 8 21 20 14 30 Q33 25 52 30 C45 20 35 8 33 4 Z" fill="#1a5c2a"/>
+  <!-- Hat brim - wide and slightly drooping -->
+  <ellipse cx="33" cy="30" rx="20" ry="5.5" fill="#154d22"/>
+  <!-- Hat band - light green accent stripe -->
+  <path d="M16 28 Q33 24 50 28" stroke="#85d4a0" stroke-width="1.8" fill="none" opacity="0.9" stroke-linecap="round"/>
+  <!-- Small leaf cluster on hat band -->
+  <ellipse cx="43" cy="26.5" rx="3.5" ry="1.8" fill="#4db870" transform="rotate(-25 43 26.5)" opacity="0.9"/>
+  <ellipse cx="46" cy="25.5" rx="2.5" ry="1.4" fill="#2d8a42" transform="rotate(-35 46 25.5)" opacity="0.85"/>
+  <ellipse cx="40" cy="27" rx="2.8" ry="1.4" fill="#6ee89a" transform="rotate(-15 40 27)" opacity="0.7"/>
+
+  <!-- ═══ FACE ═══ -->
+  <circle cx="33" cy="40" r="8" fill="#d4a870"/>
+  <!-- Eyes - small, wise -->
+  <circle cx="30" cy="39" r="1.3" fill="#2a1a0a"/>
+  <circle cx="36" cy="39" r="1.3" fill="#2a1a0a"/>
+  <!-- Eye glint -->
+  <circle cx="30.6" cy="38.5" r="0.5" fill="#fff" opacity="0.7"/>
+  <circle cx="36.6" cy="38.5" r="0.5" fill="#fff" opacity="0.7"/>
+  <!-- Nose hint -->
+  <path d="M33 41 Q32 43 31 43.5 Q33 44 35 43.5 Q34 43 33 41 Z" fill="#c09060" opacity="0.6"/>
+  <!-- Bushy eyebrows -->
+  <path d="M28 37.5 Q30 36.5 32 37.5" stroke="#8a6a40" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+  <path d="M34 37.5 Q36 36.5 38 37.5" stroke="#8a6a40" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+
+  <!-- ═══ BEARD ═══ -->
+  <!-- Full flowing beard - the key Gandalf element -->
+  <path d="M25 47 C18 58 16 72 22 82 Q33 88 44 82 C50 72 48 58 41 47 Z" fill="url(#beardGrad)"/>
+  <!-- Beard flow lines - gives it texture and volume -->
+  <path d="M28 50 C25 60 24 72 26 80" stroke="#d0c8b8" stroke-width="0.9" fill="none" opacity="0.7"/>
+  <path d="M33 50 C33 62 33 73 33 80" stroke="#d0c8b8" stroke-width="0.9" fill="none" opacity="0.7"/>
+  <path d="M38 50 C41 60 42 72 40 80" stroke="#d0c8b8" stroke-width="0.9" fill="none" opacity="0.7"/>
+  <!-- Beard tip - slightly pointed like Gandalf -->
+  <path d="M28 80 Q33 90 38 80 Q33 85 28 80 Z" fill="#e8e0d0"/>
+  <!-- Moustache -->
+  <path d="M27 46 Q33 43 39 46" stroke="#e0d8c8" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- ═══ ROBE ═══ -->
+  <!-- Main robe - earthy gardening green, flows wide -->
+  <path d="M24 50 C14 70 12 84 16 96 L50 96 C54 84 52 70 42 50 Z" fill="#4a5e35"/>
+  <!-- Robe centre panel - slightly lighter, gives depth -->
+  <path d="M29 52 C25 68 24 82 25 92 L41 92 C42 82 41 68 37 52 Z" fill="#526840" opacity="0.7"/>
+  <!-- Robe belt - earthy brown strap across middle -->
+  <path d="M19 66 Q33 63 47 66" stroke="#7c5230" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <!-- Belt buckle -->
+  <rect x="30" y="64" width="6" height="4" rx="1" fill="#a07840"/>
+  <!-- Robe hem detail - leaf motif border -->
+  <path d="M16 88 Q24 85 33 88 Q42 91 50 88" stroke="#85d4a0" stroke-width="1" fill="none" opacity="0.5" stroke-linecap="round"/>
+
+  <!-- ═══ SLEEVES / ARMS ═══ -->
+  <!-- Left sleeve - flows down and slightly out -->
+  <path d="M25 54 C13 60 9 72 15 80 Q20 82 24 78 Q26 72 26 65 Z" fill="#4a5e35"/>
+  <!-- Right sleeve - holds the staff -->
+  <path d="M41 54 C53 60 57 72 51 80 Q46 82 42 78 Q40 72 40 65 Z" fill="#4a5e35"/>
+
+  <!-- ═══ HANDS ═══ -->
+  <ellipse cx="14" cy="80" rx="5" ry="3.5" fill="#d4a870" transform="rotate(10 14 80)"/>
+  <ellipse cx="50" cy="80" rx="5" ry="3.5" fill="#d4a870" transform="rotate(-10 50 80)"/>
+
+  <!-- ═══ BOOTS ═══ -->
+  <path d="M14 94 Q20 92 26 95 Q24 98 14 98 Z" fill="#2a1a0a"/>
+  <path d="M40 94 Q46 92 52 95 Q50 98 40 98 Z" fill="#2a1a0a"/>
+
+  <!-- ═══ STAFF ═══ -->
+  <!-- Staff shaft - natural wood, slightly gnarled feel (two lines for depth) -->
+  <line x1="50" y1="78" x2="74" y2="18" stroke="#5a3518" stroke-width="3" stroke-linecap="round"/>
+  <line x1="50" y1="78" x2="74" y2="18" stroke="#8b5e3c" stroke-width="1.5" stroke-linecap="round" opacity="0.6"/>
+  <!-- Knot/gnarl on staff -->
+  <ellipse cx="62" cy="48" rx="2.5" ry="1.5" fill="#6b4828" transform="rotate(-65 62 48)" opacity="0.7"/>
+
+  <!-- ═══ TREE (growing from staff tip) ═══ -->
+  <!-- This is the brand differentiator - staff becomes a living tree -->
+  <!-- Main trunk extension from staff -->
+  <line x1="74" y1="18" x2="74" y2="8" stroke="#5a3518" stroke-width="2" stroke-linecap="round"/>
+  <!-- Left branch -->
+  <line x1="74" y1="16" x2="64" y2="8" stroke="#2d8a42" stroke-width="2" stroke-linecap="round"/>
+  <!-- Right branch -->
+  <line x1="74" y1="16" x2="84" y2="8" stroke="#2d8a42" stroke-width="2" stroke-linecap="round"/>
+  <!-- Sub-branches for fullness -->
+  <line x1="64" y1="8" x2="60" y2="4" stroke="#2d8a42" stroke-width="1.3" stroke-linecap="round"/>
+  <line x1="84" y1="8" x2="88" y2="4" stroke="#1a5c2a" stroke-width="1.3" stroke-linecap="round"/>
+  <!-- Leaf clusters - layered circles for canopy feel -->
+  <!-- Top centre -->
+  <circle cx="74" cy="7" r="5.5" fill="url(#leafTop)"/>
+  <!-- Left cluster -->
+  <circle cx="63" cy="7" r="4.5" fill="url(#leafSide)"/>
+  <!-- Right cluster -->
+  <circle cx="85" cy="7" r="4.5" fill="url(#leafSide)"/>
+  <!-- Fill gaps between clusters -->
+  <circle cx="69" cy="5" r="3.5" fill="#4db870"/>
+  <circle cx="79" cy="5" r="3" fill="#2d8a42"/>
+  <!-- Small accent leaves -->
+  <circle cx="63" cy="4" r="2" fill="#85d4a0" opacity="0.8"/>
+  <circle cx="85" cy="4" r="2" fill="#6ee89a" opacity="0.8"/>
+  <!-- A single tiny flower/blossom on the tree - the gardening touch -->
+  <circle cx="74" cy="4" r="1.8" fill="#f9a8d4" opacity="0.9"/>
+  <circle cx="78" cy="6" r="1.4" fill="#fda4af" opacity="0.8"/>
+</svg>
