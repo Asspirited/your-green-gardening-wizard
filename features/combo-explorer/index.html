@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Combo Explorer — The Green Wizard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:        #1c2218;
+    --ink-mid:    #4a5244;
+    --ink-light:  #8a9484;
+    --cream:      #faf7f0;
+    --parchment:  #f0ead8;
+    --mist:       #eef4ec;
+    --green-deep: #1a5c2a;
+    --green-mid:  #2d8a42;
+    --green-light:#85d4a0;
+    --star:       #6b21a8;
+    --star-bg:    #f3e8ff;
+    --star-border:#c084fc;
+    --rag-green:  #166534;
+    --rag-green-bg:#dcfce7;
+    --rag-amber:  #92400e;
+    --rag-amber-bg:#fef3c7;
+    --rag-red:    #991b1b;
+    --rag-red-bg: #fee2e2;
+    --rule:       rgba(26,92,42,0.12);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 48px 24px 100px; }
+
+  /* Header */
+  header { margin-bottom: 40px; padding-bottom: 24px; border-bottom: 1px solid var(--rule); }
+  .header-top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .wordmark { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 400; color: var(--green-deep); }
+  .wordmark em { font-style: italic; color: var(--green-mid); }
+  .tool-label { font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-light); margin-top: 4px; }
+  .beta { font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; background: var(--star-bg); color: var(--star); border: 1px solid var(--star-border); padding: 3px 10px; border-radius: 12px; }
+
+  /* Starter sets */
+  .starter-section { margin-bottom: 40px; }
+  .starter-section h2 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 400; color: var(--ink); margin-bottom: 6px; }
+  .starter-section p { font-size: 0.85rem; color: var(--ink-light); margin-bottom: 20px; line-height: 1.5; }
+  .starter-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .starter-card {
+    background: white;
+    border: 1px solid var(--rule);
+    padding: 16px 18px;
+    cursor: pointer;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .starter-card:hover { border-color: var(--green-mid); box-shadow: 0 2px 8px rgba(45,138,66,0.1); }
+  .starter-card.active { border-color: var(--green-deep); background: var(--mist); }
+  .starter-name { font-size: 0.9rem; font-weight: 500; color: var(--green-deep); margin-bottom: 4px; }
+  .starter-desc { font-size: 0.75rem; color: var(--ink-light); line-height: 1.5; }
+
+  /* Plant grid */
+  .plant-grid-section { margin-bottom: 40px; display: none; }
+  .plant-grid-section.visible { display: block; }
+  .section-title { font-family: 'Playfair Display', serif; font-size: 1rem; font-weight: 400; color: var(--ink); margin-bottom: 6px; }
+  .section-hint { font-size: 0.8rem; color: var(--ink-light); margin-bottom: 16px; }
+  .plant-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+  .plant-pill {
+    background: white;
+    border: 1.5px solid var(--rule);
+    padding: 10px 14px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-align: center;
+  }
+  .plant-pill:hover { border-color: var(--green-mid); }
+  .plant-pill.selected { border-color: var(--green-deep); background: var(--mist); }
+  .plant-common { font-size: 0.85rem; font-weight: 500; color: var(--ink); display: block; }
+  .plant-latin { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.72rem; color: var(--ink-light); display: block; margin-top: 2px; }
+
+  /* Loading */
+  .loading { display: none; text-align: center; padding: 48px 0; }
+  .loading.on { display: block; }
+  .loading-icon { font-size: 32px; animation: spin 2s linear infinite; display: inline-block; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+  .loading p { font-size: 0.82rem; color: var(--ink-light); margin-top: 12px; font-style: italic; }
+
+  /* Combos panel */
+  .combos-section { display: none; }
+  .combos-section.visible { display: block; }
+  .combos-header { margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--rule); }
+  .combos-header h2 { font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 400; color: var(--ink); }
+  .combos-header h2 em { font-style: italic; color: var(--green-deep); }
+  .combos-header p { font-size: 0.8rem; color: var(--ink-light); margin-top: 4px; }
+
+  .combo-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+
+  .combo-card {
+    border: 1.5px solid var(--rule);
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+    position: relative;
+  }
+  .combo-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+  .combo-card.open { box-shadow: 0 4px 16px rgba(0,0,0,0.12); }
+
+  .combo-card.rag-star  { border-color: var(--star-border);  background: var(--star-bg); }
+  .combo-card.rag-green { border-color: #86efac; background: var(--rag-green-bg); }
+  .combo-card.rag-amber { border-color: #fcd34d; background: var(--rag-amber-bg); }
+  .combo-card.rag-red   { border-color: #fca5a5; background: var(--rag-red-bg); }
+
+  .combo-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase;
+    font-weight: 500; padding: 2px 8px; border-radius: 10px; margin-bottom: 8px;
+  }
+  .badge-star  { background: var(--star-border); color: var(--star); }
+  .badge-green { background: #86efac; color: var(--rag-green); }
+  .badge-amber { background: #fcd34d; color: var(--rag-amber); }
+  .badge-red   { background: #fca5a5; color: var(--rag-red); }
+
+  .combo-plant-name { font-size: 0.9rem; font-weight: 500; color: var(--ink); margin-bottom: 2px; }
+  .combo-plant-latin { font-family: 'Playfair Display', serif; font-style: italic; font-size: 0.72rem; color: var(--ink-mid); }
+
+  .combo-tags { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px; }
+  .combo-tag { font-size: 0.65rem; background: rgba(0,0,0,0.05); color: var(--ink-mid); padding: 2px 7px; border-radius: 8px; }
+
+  /* Rationale panel */
+  .rationale { display: none; margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(0,0,0,0.08); }
+  .rationale.open { display: block; }
+  .rationale p { font-size: 0.8rem; line-height: 1.6; color: var(--ink-mid); }
+  .rationale p em { color: var(--star); font-style: normal; font-weight: 500; }
+
+  /* Error */
+  .error { display: none; padding: 14px 18px; background: var(--rag-red-bg); border: 1px solid #fca5a5; color: var(--rag-red); font-size: 0.82rem; margin-bottom: 24px; border-radius: 2px; }
+  .error.on { display: block; }
+
+  /* Footer */
+  footer { margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 0.72rem; color: var(--ink-light); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+  footer a { color: var(--green-mid); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  @media (max-width: 560px) {
+    .plant-grid { grid-template-columns: 1fr 1fr; }
+    .combo-grid { grid-template-columns: 1fr; }
+    .starter-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="header-top">
+      <div>
+        <div class="wordmark">The <em>Green</em> Wizard</div>
+        <div class="tool-label">Combo Explorer</div>
+      </div>
+      <div class="beta">Collector Mode · Beta</div>
+    </div>
+  </header>
+
+  <div class="error" id="error"></div>
+
+  <!-- Starter set picker -->
+  <div class="starter-section" id="starterSection">
+    <h2>Choose a starting palette</h2>
+    <p>Select a garden type to load a plant set, then click any plant to explore what combines well with it — and why.</p>
+    <div class="starter-grid" id="starterGrid"></div>
+  </div>
+
+  <!-- Plant grid -->
+  <div class="plant-grid-section" id="plantGridSection">
+    <div class="section-title" id="paletteTitle">Your palette</div>
+    <p class="section-hint">Click a plant to see what it combines with.</p>
+    <div class="plant-grid" id="plantGrid"></div>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="loading-icon">🌿</div>
+    <p>Finding the best combinations…</p>
+  </div>
+
+  <!-- Combos -->
+  <div class="combos-section" id="combosSection">
+    <div class="combos-header">
+      <h2>Combinations for <em id="combosPlantName">—</em></h2>
+      <p>Star pairing is the most exciting match — not just the safest. Click any card for the full rationale.</p>
+    </div>
+    <div class="combo-grid" id="comboGrid"></div>
+  </div>
+
+  <footer>
+    <span>The Green Wizard — Combo Explorer (feature branch)</span>
+    <span>Powered by <a href="https://your-green-gardening-wizard.leanspirited.workers.dev" target="_blank">The Green Wizard</a> · LeanSpirited 2026</span>
+  </footer>
+
+</div>
+<script>
+
+const WORKER = 'https://ygw-api-proxy.leanspirited.workers.dev';
+
+const STARTERS = [
+  {
+    name: 'Shaded Woodland',
+    desc: 'Damp, dappled conditions. Ferns, hostas, and understory drama.',
+    context: 'shaded woodland garden, moist soil, dappled light, naturalistic style',
+    plants: [
+      { common: 'Hosta', latin: "Hosta 'Halcyon'" },
+      { common: 'Hart\'s Tongue Fern', latin: 'Asplenium scolopendrium' },
+      { common: 'Astilbe', latin: "Astilbe 'Fanal'" },
+      { common: 'Japanese Anemone', latin: "Anemone × hybrida 'Honorine Jobert'" },
+      { common: 'Solomon\'s Seal', latin: 'Polygonatum multiflorum' },
+      { common: 'Foxglove', latin: 'Digitalis purpurea' },
+      { common: 'Tiarella', latin: "Tiarella 'Iron Butterfly'" },
+      { common: 'Epimedium', latin: "Epimedium × rubrum" }
+    ]
+  },
+  {
+    name: 'Cool Modern Border',
+    desc: 'Blues, silvers, and purples. Architectural and restrained.',
+    context: 'contemporary garden, well-drained soil, full sun to partial shade, cool colour palette',
+    plants: [
+      { common: 'Salvia', latin: "Salvia nemorosa 'Caradonna'" },
+      { common: 'Allium', latin: "Allium 'Purple Sensation'" },
+      { common: 'Catmint', latin: "Nepeta 'Six Hills Giant'" },
+      { common: 'Eryngium', latin: "Eryngium × zabelii 'Big Blue'" },
+      { common: 'Agapanthus', latin: "Agapanthus 'Navy Blue'" },
+      { common: 'Stipa', latin: 'Stipa gigantea' },
+      { common: 'Perovskia', latin: "Perovskia 'Blue Spire'" },
+      { common: 'Veronicastrum', latin: "Veronicastrum virginicum 'Fascination'" }
+    ]
+  },
+  {
+    name: 'Cottage Garden',
+    desc: 'Romantic and abundant. Roses, perennials, and seasonal layers.',
+    context: 'cottage garden, fertile loam, full sun, romantic informal style',
+    plants: [
+      { common: 'Rosa', latin: "Rosa 'Gertrude Jekyll'" },
+      { common: 'Delphinium', latin: "Delphinium 'Black Knight'" },
+      { common: 'Peonies', latin: "Paeonia 'Sarah Bernhardt'" },
+      { common: 'Lavender', latin: "Lavandula angustifolia 'Hidcote'" },
+      { common: 'Geranium', latin: "Geranium 'Rozanne'" },
+      { common: 'Aquilegia', latin: "Aquilegia vulgaris 'William Guiness'" },
+      { common: 'Campanula', latin: "Campanula lactiflora 'Loddon Anna'" },
+      { common: 'Sweet Pea', latin: "Lathyrus odoratus 'Matucana'" }
+    ]
+  },
+  {
+    name: 'Night Garden',
+    desc: 'Whites, night scent, and plants that come alive after dark.',
+    context: 'night garden, mixed soil, sheltered spot, plants chosen for scent and pale flowers visible at dusk',
+    plants: [
+      { common: 'Nicotiana', latin: "Nicotiana sylvestris" },
+      { common: 'Hesperis', latin: 'Hesperis matronalis' },
+      { common: 'White Rose', latin: "Rosa 'Iceberg'" },
+      { common: 'Moonflower', latin: 'Ipomoea alba' },
+      { common: 'Evening Primrose', latin: 'Oenothera biennis' },
+      { common: 'Phlox', latin: "Phlox paniculata 'David'" },
+      { common: 'White Cosmos', latin: "Cosmos bipinnatus 'Purity'" },
+      { common: 'Wisteria', latin: "Wisteria sinensis 'Alba'" }
+    ]
+  }
+];
+
+let activePlants = [];
+let activeContext = '';
+let comboCache = {};
+
+function renderStarters() {
+  const grid = document.getElementById('starterGrid');
+  STARTERS.forEach((s, i) => {
+    const card = document.createElement('div');
+    card.className = 'starter-card';
+    card.innerHTML = `<div class="starter-name">${s.name}</div><div class="starter-desc">${s.desc}</div>`;
+    card.onclick = () => loadStarter(i, card);
+    grid.appendChild(card);
+  });
+}
+
+function loadStarter(i, el) {
+  document.querySelectorAll('.starter-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const s = STARTERS[i];
+  activePlants = s.plants;
+  activeContext = s.context;
+  comboCache = {};
+  renderPlantGrid(s.name);
+  hideCombos();
+}
+
+function renderPlantGrid(title) {
+  document.getElementById('paletteTitle').textContent = title;
+  const grid = document.getElementById('plantGrid');
+  grid.innerHTML = '';
+  activePlants.forEach((p, i) => {
+    const pill = document.createElement('div');
+    pill.className = 'plant-pill';
+    pill.id = `plant-${i}`;
+    pill.innerHTML = `<span class="plant-common">${p.common}</span><span class="plant-latin">${p.latin}</span>`;
+    pill.onclick = () => selectPlant(i, pill);
+    grid.appendChild(pill);
+  });
+  document.getElementById('plantGridSection').classList.add('visible');
+}
+
+async function selectPlant(i, el) {
+  document.querySelectorAll('.plant-pill').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  hideCombos();
+
+  const plant = activePlants[i];
+  const others = activePlants.filter((_, j) => j !== i);
+
+  if (comboCache[i]) {
+    renderCombos(plant, comboCache[i]);
+    return;
+  }
+
+  showLoading(true);
+  hideError();
+
+  const plantList = activePlants.map(p => `${p.common} (${p.latin})`).join(', ');
+  const otherList = others.map(p => `${p.common} (${p.latin})`).join(', ');
+
+  const prompt = `You are an expert plantsperson with strong opinions and deep horticultural knowledge.
+
+Garden context: ${activeContext}
+
+Full plant list in this palette: ${plantList}
+
+For the plant "${plant.common} (${plant.latin})", rate its combination with each of the following plants:
+${otherList}
+
+Return ONLY valid JSON — no preamble, no markdown. Use this exact structure:
+
+{
+  "combos": [
+    {
+      "id": "exact common name of the other plant",
+      "latin": "exact latin name of the other plant",
+      "rag": "green" | "amber" | "red",
+      "star": true | false,
+      "reason": "2-3 sentences. Opinionated and specific to this garden context. Never hedge. If green: why it's a great direct companion. If amber: what care is needed or why it works adjacently. If red: what the conflict is.",
+      "tags": ["2-4 short descriptor strings, e.g. 'same habitat', 'season contrast', 'height layering', 'avoid wet roots'"]
+    }
+  ]
+}
+
+Rules:
+- Exactly ONE star pairing — the most exciting combination that is also compatible (must be green)
+- Star is chosen for excitement AND compatibility, not compatibility alone
+- Green = same habitat conditions, plant directly together
+- Amber = can work with care — different conditions, adjacent planting, or sequential not simultaneous
+- Red = avoid — habitat, drainage, or growth conflict
+- Never mark star: true on an amber or red
+- Be specific — reference the garden context, not just generic advice`;
+
+  try {
+    const res = await fetch(`${WORKER}/messages`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 2000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!res.ok) throw new Error(`Worker error ${res.status}`);
+    const data = await res.json();
+    const raw = data.content.map(b => b.text || '').join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+
+    comboCache[i] = result.combos;
+    renderCombos(plant, result.combos);
+
+  } catch (e) {
+    showError('Could not load combinations. Please try again. (' + e.message + ')');
+  } finally {
+    showLoading(false);
+  }
+}
+
+function renderCombos(plant, combos) {
+  document.getElementById('combosPlantName').textContent = plant.common;
+
+  // Sort: star first, then green, amber, red
+  const order = { star: 0, green: 1, amber: 2, red: 3 };
+  const sorted = [...combos].sort((a, b) => {
+    const aKey = a.star ? 'star' : a.rag;
+    const bKey = b.star ? 'star' : b.rag;
+    return order[aKey] - order[bKey];
+  });
+
+  const grid = document.getElementById('comboGrid');
+  grid.innerHTML = '';
+
+  sorted.forEach(combo => {
+    const isStar = combo.star;
+    const ragClass = isStar ? 'rag-star' : `rag-${combo.rag}`;
+    const badgeClass = isStar ? 'badge-star' : `badge-${combo.rag}`;
+    const badgeText = isStar ? '★ Star pairing' : combo.rag === 'green' ? '✓ Great combo' : combo.rag === 'amber' ? '⚠ With care' : '✕ Avoid';
+
+    const card = document.createElement('div');
+    card.className = `combo-card ${ragClass}`;
+
+    const reasonHtml = isStar
+      ? combo.reason.replace(/^/, '<em>★ Star pairing — </em>')
+      : combo.reason;
+
+    card.innerHTML = `
+      <div class="combo-badge ${badgeClass}">${badgeText}</div>
+      <div class="combo-plant-name">${combo.id}</div>
+      <div class="combo-plant-latin">${combo.latin}</div>
+      <div class="combo-tags">${(combo.tags || []).map(t => `<span class="combo-tag">${t}</span>`).join('')}</div>
+      <div class="rationale"><p>${reasonHtml}</p></div>
+    `;
+
+    card.onclick = () => {
+      const rat = card.querySelector('.rationale');
+      const isOpen = rat.classList.contains('open');
+      document.querySelectorAll('.rationale').forEach(r => r.classList.remove('open'));
+      document.querySelectorAll('.combo-card').forEach(c => c.classList.remove('open'));
+      if (!isOpen) {
+        rat.classList.add('open');
+        card.classList.add('open');
+      }
+    };
+
+    grid.appendChild(card);
+  });
+
+  document.getElementById('combosSection').classList.add('visible');
+  document.getElementById('combosSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function hideCombos() {
+  document.getElementById('combosSection').classList.remove('visible');
+  document.getElementById('comboGrid').innerHTML = '';
+}
+
+function showLoading(on) {
+  document.getElementById('loading').classList.toggle('on', on);
+}
+
+function showError(msg) {
+  const el = document.getElementById('error');
+  el.textContent = msg;
+  el.classList.add('on');
+}
+
+function hideError() {
+  document.getElementById('error').classList.remove('on');
+}
+
+renderStarters();
+</script>
+</body>
+</html>
