@@ -67,7 +67,7 @@ export const STYLE_LABELS = {
  */
 export function buildGardenProfile(wizardState) {
   if (!wizardState) return null;
-  const { location, soil, aspect, goals, horizon } = wizardState;
+  const { location, soil, aspect, goals, horizon, wizardMode, existingPlants, problems } = wizardState;
   if (!location || location.trim().length < 2) return null;
   if (!soil || !SOIL_LABELS[soil]) return null;
   if (!aspect || !ASPECT_LABELS[aspect]) return null;
@@ -79,7 +79,10 @@ export function buildGardenProfile(wizardState) {
     soil,
     aspect,
     goals: goals.filter(g => GOAL_LABELS[g]),
-    horizon: VALID_HORIZONS.includes(horizon) ? horizon : null
+    horizon: VALID_HORIZONS.includes(horizon) ? horizon : null,
+    wizardMode: wizardMode === 'fix' ? 'fix' : 'new',
+    existingPlants: wizardMode === 'fix' ? (existingPlants || '') : undefined,
+    problems: wizardMode === 'fix' ? (problems || '') : undefined,
   };
 }
 
@@ -125,6 +128,26 @@ export function buildGrowthHorizonContext(horizon) {
 
   if (!horizon || !HORIZON_FRAGMENTS[horizon]) return '';
   return HORIZON_FRAGMENTS[horizon];
+}
+
+/**
+ * Builds the fix-mode context clause for existing garden advisory.
+ * Switches AI framing from "plan from scratch" to "keep/remove/add/timing".
+ * @param {string} existingPlants - Free text describing what's already there
+ * @param {string} problems - Free text describing what's going wrong
+ * @returns {string} Prompt fragment or empty string
+ */
+export function buildFixModeContext(existingPlants = '', problems = '') {
+  if (!existingPlants && !problems) return '';
+  const plantClause = existingPlants ? `\n- Existing plants: ${existingPlants}` : '';
+  const problemClause = problems ? `\n- Current problems: ${problems}` : '';
+  return `\n\nFIX MY GARDEN MODE: This gardener has an existing garden, not a blank canvas. Structure ALL advice as four clear sections:
+1. KEEP — plants or features worth retaining and why
+2. REMOVE — what to take out, with reasons (invasive, wrong place, diseased, etc.)
+3. ADD — new plants that fill gaps, solve problems, or improve the space
+4. TIMING — when to do each action, in order of priority
+
+Do NOT give generic "plan a new border" advice. Address the specific existing situation directly.${plantClause}${problemClause}`;
 }
 
 /**
@@ -325,6 +348,7 @@ export function buildSystemPrompt(profile = null, refinements = null, date = new
     BASE_PROMPT,
     buildSeasonalContext(profile?.location, date),
     buildGrowthHorizonContext(profile?.horizon),
+    profile?.wizardMode === 'fix' ? buildFixModeContext(profile?.existingPlants, profile?.problems) : '',
     buildSafetyClause(refinements?.safety),
     buildStyleClause(refinements?.style),
     buildColourClause(refinements?.colours),
@@ -531,7 +555,11 @@ Get your own free garden plan → ${url}`;
  * @returns {Promise<string>} Complete system prompt with knowledge injected
  */
 export async function buildAugmentedSystemPrompt(profile, refinements = null, loadKnowledge, date = new Date()) {
-  const fragments = [BASE_PROMPT, buildSeasonalContext(profile?.location, date)];
+  const fragments = [
+    BASE_PROMPT,
+    buildSeasonalContext(profile?.location, date),
+    profile?.wizardMode === 'fix' ? buildFixModeContext(profile?.existingPlants, profile?.problems) : '',
+  ].filter(Boolean);
 
   // Soil knowledge — inject only the relevant section
   if (profile && profile.soil) {
