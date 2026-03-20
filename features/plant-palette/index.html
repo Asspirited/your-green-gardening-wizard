@@ -1,0 +1,861 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plant Palette Generator — The Green Wizard</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --soil: #2c1a0e;
+    --bark: #4a3728;
+    --moss: #5a6e3a;
+    --sage: #8a9e6a;
+    --fern: #b5c99a;
+    --mist: #e8ede0;
+    --cream: #f7f4ee;
+    --gold: #c9a84c;
+    --rust: #a0522d;
+    --sky: #7ba7bc;
+    --text: #1a1208;
+    --text-light: #5a4e3a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--cream);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Botanical background texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse at 10% 20%, rgba(90,110,58,0.06) 0%, transparent 50%),
+      radial-gradient(ellipse at 90% 80%, rgba(181,201,154,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 50% 50%, rgba(201,168,76,0.03) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrap {
+    position: relative;
+    z-index: 1;
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+
+  /* Header */
+  header {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(90,110,58,0.2);
+  }
+
+  .logo-mark {
+    width: 48px;
+    height: 48px;
+    background: var(--moss);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--soil);
+  }
+
+  header h1 span {
+    display: block;
+    font-size: 0.9rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    color: var(--text-light);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .beta-badge {
+    margin-left: auto;
+    background: var(--gold);
+    color: var(--soil);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    align-self: center;
+  }
+
+  /* Form */
+  .brief-form {
+    background: white;
+    border: 1px solid rgba(90,110,58,0.15);
+    border-radius: 4px;
+    padding: 32px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 24px rgba(44,26,14,0.05);
+  }
+
+  .brief-form h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: var(--soil);
+    margin-bottom: 24px;
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .form-grid.three {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .field.full {
+    grid-column: 1 / -1;
+  }
+
+  label {
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  select, input, textarea {
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: var(--cream);
+    border: 1px solid rgba(90,110,58,0.25);
+    border-radius: 3px;
+    padding: 10px 12px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    width: 100%;
+  }
+
+  select:focus, input:focus, textarea:focus {
+    border-color: var(--moss);
+    box-shadow: 0 0 0 3px rgba(90,110,58,0.1);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.5;
+  }
+
+  .generate-btn {
+    width: 100%;
+    padding: 14px 24px;
+    background: var(--moss);
+    color: white;
+    border: none;
+    border-radius: 3px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    margin-top: 8px;
+  }
+
+  .generate-btn:hover:not(:disabled) { background: var(--bark); }
+  .generate-btn:active:not(:disabled) { transform: scale(0.99); }
+  .generate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* Loading */
+  .loading-state {
+    display: none;
+    text-align: center;
+    padding: 48px 24px;
+  }
+
+  .loading-state.visible { display: block; }
+
+  .leaf-spinner {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 16px;
+    animation: spin 1.5s linear infinite;
+    font-size: 32px;
+  }
+
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .loading-state p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+
+  /* Error */
+  .error-state {
+    display: none;
+    background: #fef5f0;
+    border: 1px solid #e8a07a;
+    border-radius: 3px;
+    padding: 16px 20px;
+    color: var(--rust);
+    font-size: 0.9rem;
+    margin-bottom: 24px;
+  }
+  .error-state.visible { display: block; }
+
+  /* Results */
+  .results {
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+  .results.visible { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .results-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+
+  .results-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--soil);
+  }
+
+  .results-header p {
+    font-size: 0.82rem;
+    color: var(--text-light);
+    margin-top: 3px;
+  }
+
+  .copy-btn {
+    background: none;
+    border: 1px solid rgba(90,110,58,0.3);
+    border-radius: 3px;
+    padding: 8px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--moss);
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .copy-btn:hover { background: var(--moss); color: white; }
+
+  /* Plant cards */
+  .palette-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .plant-card {
+    background: white;
+    border: 1px solid rgba(90,110,58,0.12);
+    border-radius: 4px;
+    padding: 20px;
+    transition: box-shadow 0.2s, transform 0.2s;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .plant-card:hover {
+    box-shadow: 0 4px 20px rgba(44,26,14,0.1);
+    transform: translateY(-2px);
+  }
+
+  .plant-card-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+
+  .plant-icon {
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .plant-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: flex-end;
+  }
+
+  .tag {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 2px;
+  }
+
+  .tag-sun { background: #fef3cd; color: #856404; }
+  .tag-shade { background: #d1ecf1; color: #0c5460; }
+  .tag-part { background: #e2ffe2; color: #155724; }
+  .tag-low { background: #e8f5e9; color: #2e7d32; }
+  .tag-med { background: #fff8e1; color: #f57f17; }
+  .tag-high { background: #fce4ec; color: #880e4f; }
+
+  .plant-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--soil);
+    margin-bottom: 2px;
+  }
+
+  .plant-latin {
+    font-size: 0.78rem;
+    font-style: italic;
+    color: var(--text-light);
+    margin-bottom: 10px;
+  }
+
+  .plant-desc {
+    font-size: 0.84rem;
+    line-height: 1.55;
+    color: var(--text-light);
+    margin-bottom: 12px;
+  }
+
+  .plant-meta {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(90,110,58,0.1);
+  }
+
+  .meta-item {
+    font-size: 0.75rem;
+    color: var(--text-light);
+  }
+
+  .meta-item strong {
+    display: block;
+    font-weight: 500;
+    color: var(--text);
+    font-size: 0.8rem;
+  }
+
+  /* Notes section */
+  .notes-block {
+    background: var(--mist);
+    border-left: 3px solid var(--sage);
+    padding: 20px 24px;
+    border-radius: 0 4px 4px 0;
+    margin-bottom: 24px;
+  }
+
+  .notes-block h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 400;
+    margin-bottom: 10px;
+    color: var(--soil);
+  }
+
+  .notes-block p {
+    font-size: 0.87rem;
+    line-height: 1.6;
+    color: var(--text-light);
+  }
+
+  .notes-block ul {
+    margin-top: 8px;
+    padding-left: 16px;
+  }
+
+  .notes-block li {
+    font-size: 0.87rem;
+    line-height: 1.6;
+    color: var(--text-light);
+    margin-bottom: 4px;
+  }
+
+  /* Client copy */
+  .client-copy {
+    background: white;
+    border: 1px solid rgba(90,110,58,0.15);
+    border-radius: 4px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  .client-copy-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .client-copy h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 400;
+    color: var(--soil);
+  }
+
+  .section-label {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--sage);
+    background: var(--mist);
+    padding: 3px 8px;
+    border-radius: 2px;
+  }
+
+  .client-copy p {
+    font-size: 0.88rem;
+    line-height: 1.65;
+    color: var(--text-light);
+    font-style: italic;
+  }
+
+  /* Reset */
+  .reset-btn {
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 0.82rem;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .reset-btn:hover { color: var(--rust); }
+
+  /* Footer */
+  footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(90,110,58,0.15);
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    letter-spacing: 0.05em;
+  }
+
+  @media (max-width: 600px) {
+    .form-grid, .form-grid.three { grid-template-columns: 1fr; }
+    .palette-grid { grid-template-columns: 1fr; }
+    header h1 { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <header>
+    <div class="logo-mark">🌿</div>
+    <h1>The Green Wizard<span>Plant Palette Generator</span></h1>
+    <div class="beta-badge">Beta</div>
+  </header>
+
+  <!-- Brief Form -->
+  <div class="brief-form" id="formSection">
+    <h2>Tell me about the site</h2>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>Aspect / Light</label>
+        <select id="aspect">
+          <option value="">Select aspect...</option>
+          <option value="full sun (6+ hours direct sun)">Full sun (south-facing)</option>
+          <option value="partial shade (3–6 hours sun)">Partial shade (east/west-facing)</option>
+          <option value="full shade (under 3 hours sun)">Full shade (north-facing)</option>
+          <option value="mixed sun and shade">Mixed sun and shade</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Soil Type</label>
+        <select id="soil">
+          <option value="">Select soil...</option>
+          <option value="clay soil (heavy, moisture-retentive)">Clay (heavy, moisture-retentive)</option>
+          <option value="sandy soil (free-draining, low nutrients)">Sandy (free-draining)</option>
+          <option value="loam (well-balanced)">Loam (well-balanced)</option>
+          <option value="chalky/alkaline soil">Chalky / alkaline</option>
+          <option value="acidic/peaty soil">Acidic / peaty</option>
+          <option value="unknown or mixed">Unknown / mixed</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-grid three">
+      <div class="field">
+        <label>Region / Climate</label>
+        <select id="region">
+          <option value="">Select region...</option>
+          <option value="Southern England">Southern England</option>
+          <option value="Northern England">Northern England</option>
+          <option value="Scotland">Scotland</option>
+          <option value="Wales">Wales</option>
+          <option value="Ireland">Ireland</option>
+          <option value="Midlands">Midlands</option>
+          <option value="Coastal UK">Coastal UK</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Border Width</label>
+        <select id="size">
+          <option value="">Select size...</option>
+          <option value="narrow border (under 1m deep)">Narrow (under 1m)</option>
+          <option value="medium border (1–2m deep)">Medium (1–2m)</option>
+          <option value="wide border (2m+ deep)">Wide (2m+)</option>
+          <option value="mixed / island bed">Island bed</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Plant Count</label>
+        <select id="count">
+          <option value="6">6 plants</option>
+          <option value="8" selected>8 plants</option>
+          <option value="10">10 plants</option>
+          <option value="12">12 plants</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="field">
+        <label>Style / Mood</label>
+        <select id="style">
+          <option value="">Select style...</option>
+          <option value="cottage garden (informal, romantic, abundant)">Cottage garden</option>
+          <option value="contemporary / minimalist (clean lines, restrained palette)">Contemporary / minimalist</option>
+          <option value="wildlife garden (pollinators, biodiversity)">Wildlife / pollinator garden</option>
+          <option value="Mediterranean (drought-tolerant, warm tones)">Mediterranean</option>
+          <option value="woodland / naturalistic (shade-loving, textural)">Woodland / naturalistic</option>
+          <option value="formal / structural (clipped, geometric)">Formal / structural</option>
+          <option value="low maintenance (tough, reliable performers)">Low maintenance</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Colour Preference</label>
+        <select id="colour">
+          <option value="">No preference</option>
+          <option value="cool tones — blues, purples, whites, silvers">Cool tones (blues, purples, whites)</option>
+          <option value="warm tones — reds, oranges, yellows, bronzes">Warm tones (reds, oranges, yellows)</option>
+          <option value="pastel and soft pinks">Pastels and soft pinks</option>
+          <option value="foliage-led — greens, silvers, purples (minimal flower colour)">Foliage-led (greens, silvers)</option>
+          <option value="white and green only">White and green only</option>
+          <option value="bold and mixed — high contrast, no restrictions">Bold and mixed</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="field full">
+        <label>Additional Notes (optional)</label>
+        <textarea id="notes" placeholder="e.g. needs to be dog-safe, client dislikes yellow flowers, existing mature oak provides deep shade on east side, budget around £400 for planting..."></textarea>
+      </div>
+    </div>
+
+    <button class="generate-btn" id="generateBtn" onclick="generatePalette()">
+      Generate Plant Palette
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-state" id="loadingState">
+    <div class="leaf-spinner">🌱</div>
+    <p>Consulting the wizard...</p>
+  </div>
+
+  <!-- Error -->
+  <div class="error-state" id="errorState"></div>
+
+  <!-- Results -->
+  <div class="results" id="resultsSection">
+    <div class="results-header">
+      <div>
+        <h2 id="resultsTitle">Your Plant Palette</h2>
+        <p id="resultsSummary"></p>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button class="copy-btn" onclick="copyAll()">Copy for proposal</button>
+        <button class="reset-btn" onclick="resetForm()">Start again</button>
+      </div>
+    </div>
+
+    <div class="palette-grid" id="paletteGrid"></div>
+
+    <div class="notes-block" id="notesBlock" style="display:none">
+      <h3>Designer notes</h3>
+      <div id="notesContent"></div>
+    </div>
+
+    <div class="client-copy" id="clientCopyBlock" style="display:none">
+      <div class="client-copy-header">
+        <h3>Client-ready description</h3>
+        <span class="section-label">Paste into proposal</span>
+      </div>
+      <p id="clientCopyText"></p>
+    </div>
+  </div>
+
+  <footer>The Green Wizard — Plant Palette Generator (feature branch) · LeanSpirited 2026</footer>
+</div>
+
+<script>
+let lastPaletteText = '';
+
+function getIcon(plantName) {
+  const name = plantName.toLowerCase();
+  if (name.includes('grass') || name.includes('sedge') || name.includes('festuca')) return '🌾';
+  if (name.includes('rose') || name.includes('rosa')) return '🌹';
+  if (name.includes('lavender') || name.includes('lavandula')) return '💜';
+  if (name.includes('fern') || name.includes('dryopteris') || name.includes('polystichum')) return '🌿';
+  if (name.includes('hydrangea')) return '💐';
+  if (name.includes('tulip')) return '🌷';
+  if (name.includes('sunflower') || name.includes('helianthus') || name.includes('rudbeckia')) return '🌻';
+  if (name.includes('daisy') || name.includes('echinacea') || name.includes('aster')) return '🌼';
+  if (name.includes('tree') || name.includes('shrub') || name.includes('viburnum') || name.includes('cornus')) return '🌳';
+  if (name.includes('iris')) return '🌸';
+  if (name.includes('allium') || name.includes('bulb')) return '🧅';
+  return '🌱';
+}
+
+function getLightTag(light) {
+  if (!light) return '';
+  const l = light.toLowerCase();
+  if (l.includes('full sun') || l.includes('sun')) return '<span class="tag tag-sun">☀️ Sun</span>';
+  if (l.includes('shade') || l.includes('shadow')) return '<span class="tag tag-shade">🌑 Shade</span>';
+  return '<span class="tag tag-part">⛅ Part shade</span>';
+}
+
+function getWaterTag(water) {
+  if (!water) return '';
+  const w = water.toLowerCase();
+  if (w.includes('low') || w.includes('drought') || w.includes('dry')) return '<span class="tag tag-low">💧 Low water</span>';
+  if (w.includes('high') || w.includes('moist') || w.includes('wet')) return '<span class="tag tag-high">💧💧 Moist</span>';
+  return '<span class="tag tag-med">💧 Avg water</span>';
+}
+
+async function generatePalette() {
+  const aspect = document.getElementById('aspect').value;
+  const soil = document.getElementById('soil').value;
+  const region = document.getElementById('region').value;
+  const size = document.getElementById('size').value;
+  const count = document.getElementById('count').value;
+  const style = document.getElementById('style').value;
+  const colour = document.getElementById('colour').value;
+  const notes = document.getElementById('notes').value;
+
+  if (!aspect || !soil || !region || !style) {
+    showError('Please fill in Aspect, Soil Type, Region, and Style before generating.');
+    return;
+  }
+
+  hideError();
+  showLoading(true);
+  document.getElementById('generateBtn').disabled = true;
+  document.getElementById('resultsSection').classList.remove('visible');
+
+  const prompt = `You are a professional UK garden designer and horticulturalist. Generate a plant palette for the following site brief.
+
+SITE BRIEF:
+- Aspect/light: ${aspect}
+- Soil: ${soil}
+- Region: ${region}
+- Border size: ${size || 'medium border'}
+- Desired style: ${style}
+- Colour preference: ${colour || 'no specific preference'}
+- Number of plants requested: ${count}
+- Additional notes: ${notes || 'none'}
+
+Respond ONLY with a valid JSON object, no preamble, no markdown fences. Use this exact structure:
+
+{
+  "palette_title": "short evocative title for this palette (e.g. 'A Shaded Cottage Border' or 'Sun-Drenched Mediterranean Terrace')",
+  "summary": "one sentence summary of what this palette achieves and why it suits the brief",
+  "plants": [
+    {
+      "common_name": "plant common name",
+      "latin_name": "Genus species 'Cultivar'",
+      "light": "full sun | partial shade | full shade",
+      "water": "low | average | high",
+      "height": "e.g. 60-90cm",
+      "spread": "e.g. 45cm",
+      "season_interest": "e.g. Spring-Summer, or Year-round foliage",
+      "description": "2-3 sentences: what it looks like, why it works in this context, any practical notes for the landscaper",
+      "approx_cost": "e.g. £6-10 per plant"
+    }
+  ],
+  "designer_notes": [
+    "practical tip or planting note for the landscaper (one per array item, 3-5 notes total)"
+  ],
+  "client_description": "A 3-4 sentence paragraph written in warm, accessible language for a client who is not a gardener. Describe what the finished border will look, feel, and smell like across the seasons. No Latin names. No jargon."
+}
+
+All plants must be appropriate for UK conditions, the specified aspect, soil, and region. Include a mix of heights, textures, and seasonal interest where possible. Be specific with cultivar names where relevant.`;
+
+  try {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!response.ok) throw new Error(`API error ${response.status}`);
+
+    const data = await response.json();
+    const raw = data.content.map(b => b.text || '').join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const palette = JSON.parse(clean);
+
+    renderPalette(palette);
+
+  } catch (err) {
+    showError('Something went wrong generating the palette. Please try again. (' + err.message + ')');
+  } finally {
+    showLoading(false);
+    document.getElementById('generateBtn').disabled = false;
+  }
+}
+
+function renderPalette(data) {
+  document.getElementById('resultsTitle').textContent = data.palette_title || 'Your Plant Palette';
+  document.getElementById('resultsSummary').textContent = data.summary || '';
+
+  const grid = document.getElementById('paletteGrid');
+  grid.innerHTML = '';
+
+  let copyText = `PLANT PALETTE: ${data.palette_title}\n${data.summary}\n\n`;
+
+  (data.plants || []).forEach((plant, i) => {
+    const card = document.createElement('div');
+    card.className = 'plant-card';
+    card.style.animationDelay = `${i * 0.06}s`;
+
+    card.innerHTML = `
+      <div class="plant-card-top">
+        <div class="plant-icon">${getIcon(plant.common_name)}</div>
+        <div class="plant-tags">
+          ${getLightTag(plant.light)}
+          ${getWaterTag(plant.water)}
+        </div>
+      </div>
+      <div class="plant-name">${plant.common_name}</div>
+      <div class="plant-latin">${plant.latin_name || ''}</div>
+      <div class="plant-desc">${plant.description}</div>
+      <div class="plant-meta">
+        <div class="meta-item"><strong>Height</strong>${plant.height || '—'}</div>
+        <div class="meta-item"><strong>Spread</strong>${plant.spread || '—'}</div>
+        <div class="meta-item"><strong>Interest</strong>${plant.season_interest || '—'}</div>
+        <div class="meta-item"><strong>Est. cost</strong>${plant.approx_cost || '—'}</div>
+      </div>
+    `;
+
+    grid.appendChild(card);
+    copyText += `${plant.common_name} (${plant.latin_name})\nHeight: ${plant.height} | Spread: ${plant.spread} | ${plant.season_interest}\n${plant.description}\nApprox cost: ${plant.approx_cost}\n\n`;
+  });
+
+  if (data.designer_notes && data.designer_notes.length) {
+    const nb = document.getElementById('notesBlock');
+    nb.style.display = 'block';
+    const nc = document.getElementById('notesContent');
+    nc.innerHTML = '<ul>' + data.designer_notes.map(n => `<li>${n}</li>`).join('') + '</ul>';
+    copyText += `DESIGNER NOTES:\n${data.designer_notes.map(n => '• ' + n).join('\n')}\n\n`;
+  }
+
+  if (data.client_description) {
+    const cb = document.getElementById('clientCopyBlock');
+    cb.style.display = 'block';
+    document.getElementById('clientCopyText').textContent = data.client_description;
+    copyText += `FOR THE CLIENT:\n${data.client_description}\n`;
+  }
+
+  lastPaletteText = copyText;
+  document.getElementById('resultsSection').classList.add('visible');
+  document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copyAll() {
+  if (!lastPaletteText) return;
+  navigator.clipboard.writeText(lastPaletteText).then(() => {
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.textContent = 'Copy for proposal', 2000);
+  });
+}
+
+function resetForm() {
+  document.getElementById('resultsSection').classList.remove('visible');
+  document.getElementById('formSection').scrollIntoView({ behavior: 'smooth' });
+}
+
+function showLoading(show) {
+  document.getElementById('loadingState').classList.toggle('visible', show);
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorState');
+  el.textContent = msg;
+  el.classList.add('visible');
+}
+
+function hideError() {
+  document.getElementById('errorState').classList.remove('visible');
+}
+</script>
+</body>
+</html>
