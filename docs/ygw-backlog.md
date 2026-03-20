@@ -338,7 +338,7 @@ Feature: Bulk developer API
 | YGW-042 | Plant library phase 2 — landscaper builds own plant list | 6.0 | 📋 Open |
 | YGW-043 | Plant quantity estimator in canvas — auto-count from area + spread | 8.5 | ✅ Done |
 | YGW-044 | Pact contract test for Worker /messages endpoint | 7.0 | ✅ Done |
-| YGW-045 | Plant growth timeline — canvas shows spread at Now/1yr/3yr/5yr/10yr | 9.0 | 📋 Open |
+| YGW-045 | Plant growth timeline — canvas shows spread at Now/1yr/3yr/5yr/10yr | 9.0 | ✅ Done |
 | YGW-047 | Left-hand nav panel on landing page — tool switcher for Ollie demo | 7.0 | ✅ Done |
 
 ---

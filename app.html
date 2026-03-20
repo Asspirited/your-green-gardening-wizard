@@ -273,6 +273,27 @@
   }
   .toast.show { transform: translateX(-50%) translateY(0); }
 
+  /* ── Timeline ── */
+  .timeline-btns {
+    display: flex;
+    gap: 3px;
+    flex-wrap: wrap;
+    padding: 8px 12px;
+  }
+  .timeline-btn {
+    font-size: 0.65rem;
+    padding: 3px 7px;
+    border: 1px solid #ddd;
+    border-radius: 100px;
+    cursor: pointer;
+    background: white;
+    color: #666;
+    font-family: var(--font-ui);
+    transition: all 0.12s;
+  }
+  .timeline-btn:hover { border-color: var(--sage); color: var(--forest); }
+  .timeline-btn.active { background: var(--forest); color: white; border-color: transparent; }
+
   /* ── Season override ── */
   .season-btns {
     display: flex;
@@ -371,6 +392,10 @@
       <ul class="qty-guide-list" id="qty-guide-list"></ul>
     </div>
     <div class="info-section">
+      <div class="info-label">Growth timeline</div>
+      <div class="timeline-btns" id="timeline-btns"></div>
+    </div>
+    <div class="info-section">
       <div class="info-label">Season</div>
       <div class="season-btns" id="season-btns"></div>
     </div>
@@ -389,11 +414,29 @@ import { SEASON_THEMES, applySeasonTheme } from './js/seasons.js';
 // ── Load plants ──
 const PLANTS = await fetch('./data/plants.json').then(r => r.json());
 
+// ── Growth timeline ──
+// Multipliers × mature spread at: [Now (planting), 1yr, 3yr, 5yr, 10yr]
+const GROWTH_CURVES = {
+  bulb:      [0.30, 1.00, 1.00, 1.00, 1.00],
+  perennial: [0.20, 0.60, 0.90, 1.00, 1.00],
+  grass:     [0.20, 0.55, 0.85, 1.00, 1.00],
+  shrub:     [0.12, 0.30, 0.60, 0.85, 1.00],
+  tree:      [0.05, 0.15, 0.35, 0.60, 1.00],
+};
+const TIMELINE_LABELS = ['Now', '1 yr', '3 yr', '5 yr', '10 yr'];
+// Default: index 4 = 10yr (mature) — identical to previous behaviour
+
+function getSpreadFactor(plant) {
+  const curve = GROWTH_CURVES[plant.type] || GROWTH_CURVES.shrub;
+  return curve[state.timelineIdx];
+}
+
 // ── State ──
 const state = {
   mode: 'draw',          // 'draw' | 'place' | 'select'
   view: 'proposal',      // 'plan' | 'proposal'
   season: getCurrentUKSeason().season,
+  timelineIdx: 4,        // index into TIMELINE_LABELS — default 10yr (mature)
   boundary: [],          // [{x,y}] in metres
   boundaryClosed: false,
   plants: [],            // [{plantId, x, y}] in metres
@@ -426,11 +469,12 @@ function resizeCanvas() {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas();
 
-// ── Season init ──
+// ── Season + timeline init ──
 applySeasonTheme(state.season);
 document.getElementById('season-indicator').textContent =
   state.season.charAt(0).toUpperCase() + state.season.slice(1);
 buildSeasonBtns();
+buildTimelineBtns();
 
 // ── Build palette ──
 const paletteList = document.getElementById('palette-list');
@@ -611,7 +655,7 @@ function drawPlants() {
     const plant = PLANTS.find(p => p.id === placed.plantId);
     if (!plant) return;
     const c = toCanvas(placed.x, placed.y);
-    const r = (plant.spread / 2) * state.scale;
+    const r = Math.max(4, (plant.spread / 2) * state.scale * getSpreadFactor(plant));
 
     if (state.view === 'proposal') {
       // Soft radial gradient fill
@@ -664,6 +708,19 @@ function render() {
   drawGrid();
   drawBoundary();
   drawPlants();
+  // Timeline overlay label — only when not at 10yr (mature)
+  if (state.timelineIdx < 4) {
+    const label = 'Year: ' + TIMELINE_LABELS[state.timelineIdx];
+    ctx.font = 'bold 13px DM Sans, system-ui, sans-serif';
+    ctx.textAlign = 'left';
+    const w = ctx.measureText(label).width + 20;
+    ctx.fillStyle = 'rgba(26,58,42,0.75)';
+    ctx.beginPath();
+    ctx.roundRect(12, 12, w, 26, 4);
+    ctx.fill();
+    ctx.fillStyle = '#b7e4c7';
+    ctx.fillText(label, 22, 29);
+  }
   updateInfoPanel();
 }
 
@@ -713,7 +770,9 @@ function updateInfoPanel() {
     qtySection.style.display = '';
     qtyList.innerHTML = '';
     PLANTS.forEach(plant => {
-      const rec  = estimateQty(plant, area_m2);
+      // Qty at current timeline spread (not mature spread)
+      const currentSpread = plant.spread * getSpreadFactor(plant);
+      const rec  = Math.ceil(area_m2 / (currentSpread * currentSpread));
       const placed = counts[plant.id] || 0;
       const li = document.createElement('li');
       li.className = 'qty-guide-item';
@@ -756,6 +815,26 @@ function setView(view) {
   render();
 }
 window.setView = setView;
+
+// ── Timeline buttons ──
+function buildTimelineBtns() {
+  const container = document.getElementById('timeline-btns');
+  TIMELINE_LABELS.forEach((label, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'timeline-btn' + (idx === state.timelineIdx ? ' active' : '');
+    btn.textContent = label;
+    btn.addEventListener('click', () => setTimeline(idx));
+    container.appendChild(btn);
+  });
+}
+
+function setTimeline(idx) {
+  state.timelineIdx = idx;
+  document.querySelectorAll('.timeline-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === idx);
+  });
+  render();
+}
 
 // ── Season buttons ──
 function buildSeasonBtns() {
@@ -982,10 +1061,15 @@ function exportPDF() {
   const counts = {};
   state.plants.forEach(p => { counts[p.plantId] = (counts[p.plantId] || 0) + 1; });
   const area_m2_pdf = state.boundaryClosed ? polygonArea(state.boundary) : 0;
+  const timelineLabel = TIMELINE_LABELS[state.timelineIdx];
   const plantRows = Object.entries(counts).map(([id, n]) => {
     const plant = PLANTS.find(p => p.id === id);
     if (!plant) return '';
-    const rec = area_m2_pdf > 0 ? '~' + estimateQty(plant, area_m2_pdf) : '—';
+    let rec = '—';
+    if (area_m2_pdf > 0) {
+      const s = plant.spread * getSpreadFactor(plant);
+      rec = '~' + Math.ceil(area_m2_pdf / (s * s));
+    }
     return `<tr>
       <td><span class="dot" style="background:${plant.dotColour}"></span>${plant.name}</td>
       <td>${plant.type}</td>
@@ -1074,6 +1158,10 @@ function exportPDF() {
     <div class="stat">
       <div class="stat-label">Season</div>
       <div class="stat-value">${seasonLabel}</div>
+    </div>
+    <div class="stat">
+      <div class="stat-label">Timeline view</div>
+      <div class="stat-value">${timelineLabel}</div>
     </div>
   </div>
 
