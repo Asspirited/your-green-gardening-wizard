@@ -96,6 +96,14 @@ If an instruction is genuinely ambiguous: ask one specific clarifying question b
 Don't guess and build the wrong thing. Don't ask multiple questions at once. One question, then build.
 This is not "questioning Rod" — it's how good work gets done.
 
+### Rule: Update features log on every push
+After every `git push` that ships a user-facing feature, update the features log:
+`/mnt/c/Users/roden/Downloads/ygw-features-delivered-YYYY-MM-DD.md`
+- Keep the file dated to TODAY (create new file if date has changed)
+- Add the feature to the relevant section
+- Mark any newly-done backlog items as Done in the table
+This file is the Ollie/Jerry progress report. Keep it current.
+
 ### Rule: Is it worth doing? (xkcd.com/1205)
 Before fixing, automating, or spending time on anything non-trivial, apply the time-value test:
 - How often does this problem occur?

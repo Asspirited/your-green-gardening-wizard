@@ -57,3 +57,5 @@ List files that need committing to `Asspirited/your-green-gardening-wizard`:
 - [ ] Any new garden domain knowledge that should go into the system prompt?
 - [ ] Any Oz / Jerry actions outstanding from this session?
 - [ ] Does `leanspirited-standards` need updating? (Raise STD- item if yes)
+- [ ] **Features log updated?** `/mnt/c/Users/roden/Downloads/ygw-features-delivered-YYYY-MM-DD.md`
+      Must be dated TODAY. Add all shipped features. This is the Ollie/Jerry progress report.
