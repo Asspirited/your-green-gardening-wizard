@@ -364,3 +364,20 @@ Changed `.info-panel { overflow-y: auto }`.
 Any flex column panel that contains variable-length content must use `overflow-y: auto`, not `overflow: hidden`.
 
 ---
+
+## WL-022 — Mobile canvas: both side panels squash the canvas to zero usable width
+
+**Status:** Fixed 2026-03-20
+**Raised:** 2026-03-20
+**Type:** Live bug — mobile layout unusable
+
+### What happened
+On mobile (≤700px) the left palette (160px) and right info panel (hidden) still occupied layout space. The canvas had no room. Both panels needed to be removed from flow and converted to slide-out drawers.
+
+### Fix applied
+On mobile: both panels are `position: fixed`, off-screen by default (translateX ±110%). 🌿 and ℹ️ buttons in toolbar slide each panel in. Backdrop tap dismisses. × button in each panel header also closes.
+
+### Prevention
+Any three-column flex layout on mobile must account for viewport width. Either collapse side panels to drawers or use a tab/bottom-sheet pattern. Test layout at 375px before merging any canvas or layout work.
+
+---

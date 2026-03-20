@@ -437,9 +437,34 @@
   .season-btn.active { background: var(--season-cta, var(--forest)); color: white; border-color: transparent; }
 
   @media (max-width: 700px) {
-    .plant-palette { width: 160px; --palette-w: 160px; }
-    .info-panel { display: none; }
+    .plant-palette {
+      position: fixed; top: 0; left: 0; height: 100%; width: 85vw; max-width: 320px;
+      z-index: 300; transform: translateX(-110%); transition: transform 0.25s ease;
+      overflow-y: auto; box-shadow: 4px 0 24px rgba(0,0,0,0.18);
+    }
+    .plant-palette.drawer-open { transform: translateX(0); }
+    .info-panel {
+      display: flex; flex-direction: column;
+      position: fixed; top: 0; right: 0; height: 100%; width: 85vw; max-width: 320px;
+      z-index: 300; transform: translateX(110%); transition: transform 0.25s ease;
+      overflow-y: auto; box-shadow: -4px 0 24px rgba(0,0,0,0.18);
+    }
+    .info-panel.drawer-open { transform: translateX(0); }
+    .drawer-close-btn { display: flex; }
+    .mob-open-btn { display: flex !important; }
+    .toolbar-sep.mob-hide { display: none; }
   }
+  .drawer-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45); z-index: 299;
+  }
+  .drawer-backdrop.open { display: block; }
+  .drawer-close-btn {
+    display: none; margin-left: auto; background: none; border: none;
+    font-size: 1.1rem; color: #888; cursor: pointer; padding: 4px 8px; line-height: 1;
+  }
+  .drawer-close-btn:hover { color: var(--ink); }
+  .mob-open-btn { display: none !important; }
 
   /* ── Current plot name in toolbar ── */
   .plot-name-label {
@@ -586,6 +611,9 @@
   <button class="tool-btn view-active" id="btn-proposal" onclick="setView('proposal')">
     🖼 Proposal
   </button>
+  <button class="tool-btn mob-open-btn" onclick="openDrawer('left')" title="Plant palette">🌿</button>
+  <button class="tool-btn mob-open-btn" onclick="openDrawer('right')" title="Info panel">ℹ️</button>
+  <div class="toolbar-sep mob-hide"></div>
   <div class="toolbar-right">
     <span class="plot-name-label" id="plot-name-label" style="display:none"></span>
     <div class="toolbar-sep"></div>
@@ -604,6 +632,9 @@
   </div>
 </div>
 
+<!-- Mobile drawer backdrop -->
+<div class="drawer-backdrop" id="drawer-backdrop" onclick="closeDrawer()"></div>
+
 <!-- Plots modal -->
 <div class="plots-overlay" id="plots-overlay" onclick="closePlotsPanel(event)">
   <div class="plots-modal">
@@ -619,7 +650,7 @@
 
   <!-- Plant palette -->
   <aside class="plant-palette">
-    <div class="palette-header">Plants</div>
+    <div class="palette-header" style="display:flex;align-items:center">Plants<button class="drawer-close-btn" onclick="closeDrawer()">✕</button></div>
     <div id="archetype-picker" class="archetype-picker"></div>
     <div class="palette-search-wrap">
       <input type="text" id="palette-search" placeholder="Search or add plant…" autocomplete="off" />
@@ -651,6 +682,10 @@
 
   <!-- Info panel -->
   <aside class="info-panel">
+    <div class="info-section" style="display:flex;align-items:center;padding:8px 12px">
+      <span style="font-size:0.68rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--moss)">Info</span>
+      <button class="drawer-close-btn" onclick="closeDrawer()">✕</button>
+    </div>
     <div class="info-section">
       <div class="info-label">Growth timeline</div>
       <div class="timeline-btns" id="timeline-btns"></div>
@@ -2310,9 +2345,24 @@ function escapeHtml(s) {
   return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
+// ── Mobile drawers ──
+function openDrawer(side) {
+  closeDrawer();
+  if (side === 'left')  document.querySelector('.plant-palette').classList.add('drawer-open');
+  if (side === 'right') document.querySelector('.info-panel').classList.add('drawer-open');
+  document.getElementById('drawer-backdrop').classList.add('open');
+}
+function closeDrawer() {
+  document.querySelector('.plant-palette').classList.remove('drawer-open');
+  document.querySelector('.info-panel').classList.remove('drawer-open');
+  document.getElementById('drawer-backdrop').classList.remove('open');
+}
+
 // Initial render
 render();
 
+window.openDrawer        = openDrawer;
+window.closeDrawer       = closeDrawer;
 window.showCustomForm    = showCustomForm;
 window.addCustomPlant    = addCustomPlant;
 window.savePlot          = savePlot;
