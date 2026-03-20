@@ -38,6 +38,7 @@
 | YGW-013 | Tests for buildAugmentedSystemPrompt() | 6.0 | ✅ Done |
 | YGW-014 | Pre-commit hook + pipeline enforcement | 6.0 | ✅ Done |
 | YGW-025 | Year-round interest planner | 5.5 | 📋 Open |
+| YGW-048 | Enter key submits wizard step — Return fires enabled Next/Submit button | 6.0 | 📋 Open |
 
 ---
 
