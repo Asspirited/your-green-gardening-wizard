@@ -3,77 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Your Green Gardening Wizard</title>
+<title>The Green Wizard — Garden Design for Landscapers</title>
+<meta name="description" content="Professional garden design tool for landscapers. Draw accurate planting plans, generate seasonal proposals, and export client-ready PDFs.">
+<meta property="og:title" content="The Green Wizard">
+<meta property="og:description" content="Professional garden design tool. Draw plots, place plants, generate seasonal proposals.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;1,400;1,500&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --forest: #1a3a2a;
-    --moss:   #2d6a4f;
-    --sage:   #52b788;
+    /* Brand system */
+    --green-deep:  #1a5c2a;
+    --green-mid:   #2d8a42;
+    --green-light: #85d4a0;
+    --cream:       #faf7f0;
+    --parchment:   #f0ead8;
+    --ink:         #1c2218;
+    --mist:        #eef4ec;
+    --font-display:'Playfair Display', Georgia, serif;
+    --font-ui:     'DM Sans', system-ui, sans-serif;
+    /* Legacy aliases — existing wizard components use these */
+    --forest: #1a5c2a;
+    --moss:   #2d8a42;
+    --sage:   #85d4a0;
     --mint:   #b7e4c7;
-    --cream:  #faf6f0;
-    --parch:  #f0e8d8;
+    --parch:  #f0ead8;
     --soil:   #6b4226;
     --bark:   #3d2b1f;
-    --ink:    #1c1c1c;
-    --mist:   #e8f4e8;
     --radius: 16px;
-    --font-display: 'Playfair Display', Georgia, serif;
-    --font-ui: 'DM Sans', system-ui, sans-serif;
   }
 
   html { scroll-behavior: smooth; }
+  body { font-family: var(--font-ui); background: var(--cream); color: var(--ink); min-height: 100vh; display: flex; flex-direction: column; }
 
-  body {
-    font-family: var(--font-ui);
-    background: var(--cream);
-    color: var(--ink);
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
+  /* ══ SECTION 1: BANNER ══ */
 
-  /* ── Header ── */
-  header {
-    background: var(--forest);
-    padding: 20px 24px 18px;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    position: sticky;
-    top: 0;
-    z-index: 100;
-  }
-  .logo-mark {
-    width: 40px; height: 40px;
-    background: var(--sage);
-    border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-    font-size: 20px;
-  }
-  .brand {
-    font-family: var(--font-display);
-    font-size: 1.25rem;
-    color: var(--cream);
-    line-height: 1.2;
-  }
-  .brand span { color: var(--sage); font-style: italic; }
-
-  /* ── Hero ── */
   .hero {
-    background: linear-gradient(160deg, #1a5c2a 0%, #2d8a42 40%, #4db870 80%, #85d4a0 100%);
-    padding: 48px 24px 56px;
-    text-align: center;
     position: relative;
     overflow: hidden;
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
     transition: background 0.8s ease;
   }
-  /* Particle canvas — full hero overlay, pointer-events none so clicks pass through */
   #particle-canvas {
     position: absolute;
     inset: 0;
@@ -82,90 +56,430 @@
     pointer-events: none;
     z-index: 0;
   }
-  .hero-content { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
 
-  /* Season controls — AUTO/MANUAL indicator + override buttons */
-  .season-controls {
-    position: absolute;
-    top: 12px;
-    right: 16px;
+  /* Nav row — single flex container, no absolute positioning */
+  .banner-nav {
+    position: relative;
+    z-index: 10;
     display: flex;
     align-items: center;
-    gap: 6px;
-    z-index: 2;
+    padding: 12px 24px;
+    gap: 12px;
+  }
+  .banner-logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+    flex-shrink: 0;
+  }
+  .banner-logo img {
+    height: 34px;
+    width: auto;
+    flex-shrink: 0;
+  }
+  .banner-logo-text {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    font-weight: 500;
+    color: #fff;
+    white-space: nowrap;
+    line-height: 1.1;
+  }
+  .banner-logo-text em { font-style: italic; font-weight: 400; }
+  .banner-links {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 22px;
+  }
+  .banner-links a {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.72);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+  .banner-links a:hover { color: #fff; }
+  .banner-season {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    flex-shrink: 0;
   }
   .season-mode-badge {
-    font-size: 0.62rem;
+    font-size: 0.58rem;
     font-weight: 500;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: rgba(255,255,255,0.55);
-    padding: 2px 6px;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 100px;
-    cursor: default;
+    padding: 3px 7px;
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 14px;
   }
   .season-override-btn {
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 500;
-    color: rgba(255,255,255,0.55);
-    background: none;
-    border: 1px solid rgba(255,255,255,0.2);
-    border-radius: 100px;
-    padding: 2px 8px;
-    cursor: pointer;
     font-family: var(--font-ui);
+    color: rgba(255,255,255,0.65);
+    background: rgba(255,255,255,0.16);
+    border: 1px solid rgba(255,255,255,0.45);
+    border-radius: 14px;
+    padding: 3px 8px;
+    cursor: pointer;
     transition: all 0.15s;
   }
-  .season-override-btn:hover { color: white; border-color: rgba(255,255,255,0.5); }
-  .season-override-btn.active { color: white; border-color: white; background: rgba(255,255,255,0.15); }
+  .season-override-btn:hover { color: #fff; background: rgba(255,255,255,0.28); }
+  .season-override-btn.active { background: rgba(255,255,255,0.55); color: #333; border-color: rgba(255,255,255,0.7); }
+
+  /* Hero content */
+  .hero-content {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 28px 24px 0;
+    max-width: 560px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  .hero-season-badge {
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.7);
+    margin-bottom: 12px;
+  }
   .hero h1 {
     font-family: var(--font-display);
-    font-size: clamp(2rem, 6vw, 3rem);
-    color: var(--cream);
-    line-height: 1.15;
-    margin-bottom: 16px;
+    font-size: clamp(1.375rem, 3.5vw, 2.25rem);
+    font-weight: 500;
+    color: #fff;
+    line-height: 1.2;
+    margin-bottom: 10px;
   }
-  .hero h1 em { color: var(--sage); font-style: italic; }
-  .hero p {
-    color: var(--mint);
-    font-size: 1.05rem;
+  .hero h1 em { font-style: italic; font-weight: 400; }
+  .hero-sub {
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.78);
     line-height: 1.6;
-    margin-bottom: 32px;
-    opacity: 0.9;
+    margin-bottom: 22px;
+    max-width: 400px;
   }
-  .hero-cta {
+  .hero-ctas { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 32px; }
+  .cta-primary {
     display: inline-block;
-    background: var(--sage);
-    color: var(--forest);
+    background: #fff;
+    color: var(--green-deep);
     font-family: var(--font-ui);
     font-weight: 500;
-    font-size: 1rem;
-    padding: 14px 32px;
-    border-radius: 100px;
-    text-decoration: none;
-    transition: transform 0.15s, background 0.15s;
-    cursor: pointer;
+    font-size: 0.85rem;
+    padding: 10px 22px;
+    border-radius: 24px;
     border: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: transform 0.15s, box-shadow 0.15s;
   }
-  .hero-cta:hover { background: var(--mint); transform: translateY(-1px); }
+  .cta-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(0,0,0,0.22); }
+  .cta-secondary {
+    display: inline-block;
+    background: transparent;
+    color: #fff;
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 0.85rem;
+    padding: 9px 22px;
+    border-radius: 24px;
+    border: 1.5px solid rgba(255,255,255,0.55);
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .cta-secondary:hover { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.88); }
 
-  /* ── App shell — left nav + content ── */
+  /* Feature strip */
+  .hero-strip {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    border-top: 1px solid rgba(255,255,255,0.14);
+  }
+  .hero-strip-col {
+    padding: 11px 14px;
+    border-right: 1px solid rgba(255,255,255,0.1);
+  }
+  .hero-strip-col:last-child { border-right: none; }
+  .hero-strip-col h3 {
+    font-size: 0.66rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.92);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 3px;
+  }
+  .hero-strip-col p { font-size: 0.63rem; color: rgba(255,255,255,0.62); line-height: 1.5; }
+
+  /* ══ SECTION 2: ABOUT ══ */
+
+  .about-strip {
+    background: var(--parchment);
+    border-top: 1px solid #ddd5c0;
+    border-bottom: 1px solid #ddd5c0;
+    padding: 22px 28px;
+  }
+  .about-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+  .about-col {
+    padding: 0 18px;
+    border-right: 1px solid #ddd5c0;
+  }
+  .about-col:first-child { padding-left: 0; }
+  .about-col:last-child { border-right: none; padding-right: 0; }
+  .about-col h3 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--green-deep);
+    margin-bottom: 5px;
+  }
+  .about-col p { font-size: 0.68rem; color: #5a5040; line-height: 1.6; }
+
+  /* ══ SECTION 3: HOW IT WORKS ══ */
+
+  .how-section { background: var(--cream); padding: 36px 28px; }
+  .section-head { text-align: center; margin-bottom: 22px; }
+  .section-head h2 {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 5px;
+  }
+  .section-head p { font-size: 0.73rem; color: #7a7060; }
+  .steps-grid {
+    max-width: 680px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
+  }
+  .step-card {
+    background: #fff;
+    border: 0.5px solid #ddd5c0;
+    border-radius: 10px;
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+  }
+  .step-num {
+    width: 40px; height: 40px;
+    border-radius: 50%;
+    background: var(--mist);
+    border: 1.5px solid var(--green-mid);
+    color: var(--green-deep);
+    font-family: var(--font-display);
+    font-size: 0.95rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-card h3 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--ink);
+  }
+  .step-card p { font-size: 0.68rem; color: #5a5040; line-height: 1.6; flex: 1; }
+  .step-tag {
+    display: inline-block;
+    background: var(--mist);
+    color: var(--green-deep);
+    border: 0.5px solid #b8d4b8;
+    border-radius: 10px;
+    font-size: 0.6rem;
+    font-weight: 500;
+    padding: 3px 9px;
+    align-self: flex-start;
+  }
+
+  /* ══ SECTION 4: SEASONAL PREVIEW ══ */
+
+  .seasonal-section {
+    background: var(--mist);
+    border-top: 1px solid #d4e8d0;
+    padding: 36px 28px;
+  }
+  .season-tabs {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+  }
+  .season-tab {
+    font-family: var(--font-ui);
+    font-size: 0.73rem;
+    font-weight: 500;
+    padding: 6px 18px;
+    border-radius: 24px;
+    border: 1.5px solid #ccdccc;
+    background: #fff;
+    color: #5a6050;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .season-tab:hover { border-color: var(--green-mid); color: var(--green-deep); }
+  .season-tab.active { background: var(--green-deep); color: #fff; border-color: var(--green-deep); }
+  .season-cards {
+    max-width: 680px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .season-card {
+    border-radius: 10px;
+    overflow: hidden;
+    border: 0.5px solid #ccdccc;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  .season-card.active { border: 2px solid var(--green-deep); }
+  .season-card canvas { display: block; width: 100%; }
+  .season-card-info { padding: 7px 10px 8px; background: #fff; }
+  .season-card-label {
+    font-size: 0.58rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--green-deep);
+    margin-bottom: 3px;
+  }
+  .season-card-desc { font-size: 0.62rem; color: #7a7060; line-height: 1.4; }
+
+  /* ══ SECTION 5: ARCHETYPES ══ */
+
+  .archetypes-section { background: #fff; border-top: 1px solid #ddd5c0; padding: 36px 28px; }
+  .archetype-grid {
+    max-width: 680px;
+    margin: 18px auto 0;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .archetype-card {
+    border-radius: 10px;
+    border: 0.5px solid #ddd5c0;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .archetype-card:hover {
+    border-color: var(--green-mid);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  }
+  .archetype-card canvas { display: block; width: 100%; }
+  .archetype-card-label { padding: 7px 10px 8px; }
+  .archetype-name {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--ink);
+    display: block;
+    margin-bottom: 2px;
+  }
+  .archetype-hint { font-size: 0.6rem; color: #7a7060; display: block; }
+
+  /* ══ SECTION 6: CALLOUT ══ */
+
+  .callout-section { background: var(--green-deep); padding: 28px; }
+  .callout-inner {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .callout-text h3 {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: #fff;
+    margin-bottom: 7px;
+  }
+  .callout-text p { font-size: 0.73rem; color: rgba(255,255,255,0.8); line-height: 1.6; max-width: 400px; }
+  .callout-btn {
+    display: inline-block;
+    background: #fff;
+    color: var(--green-deep);
+    font-family: var(--font-ui);
+    font-weight: 500;
+    font-size: 0.8rem;
+    padding: 10px 22px;
+    border-radius: 24px;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .callout-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+  /* ══ ADVISOR SECTION DIVIDER ══ */
+
+  .advisor-divider {
+    background: var(--parchment);
+    border-top: 1px solid #ddd5c0;
+    padding: 20px 28px 0;
+    text-align: center;
+  }
+  .advisor-divider h2 {
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .advisor-divider p { font-size: 0.72rem; color: #7a7060; margin-bottom: 18px; }
+
+  /* ══ EXISTING WIZARD STYLES (preserved) ══ */
+
   .app-shell {
     display: flex;
     flex: 1;
     align-items: flex-start;
   }
-
-  /* ── Left nav ── */
   .side-nav {
     width: 220px;
     flex-shrink: 0;
     background: var(--forest);
-    min-height: calc(100vh - 78px);
+    min-height: 400px;
     padding: 24px 0;
     position: sticky;
-    top: 78px;
+    top: 0;
     align-self: flex-start;
   }
   .side-nav-section {
@@ -192,16 +506,8 @@
     font-family: var(--font-ui);
   }
   .side-nav-item:hover { color: white; background: rgba(255,255,255,0.06); }
-  .side-nav-item.active {
-    color: var(--sage);
-    border-left-color: var(--sage);
-    background: rgba(82,183,136,0.1);
-  }
-  .side-nav-item.locked {
-    opacity: 0.4;
-    cursor: default;
-    pointer-events: none;
-  }
+  .side-nav-item.active { color: var(--sage); border-left-color: var(--sage); background: rgba(133,212,160,0.1); }
+  .side-nav-item.locked { opacity: 0.4; cursor: default; pointer-events: none; }
   .side-nav-icon { font-size: 1.1rem; flex-shrink: 0; }
   .side-nav-badge {
     margin-left: auto;
@@ -213,66 +519,25 @@
     text-transform: uppercase;
     letter-spacing: 0.05em;
   }
-  .side-nav-divider {
-    border: none;
-    border-top: 1px solid rgba(255,255,255,0.07);
-    margin: 12px 16px;
-  }
-
-  /* Mobile: side-nav collapses to full-width top strip */
-  .side-nav-toggle {
-    display: none;
-  }
+  .side-nav-divider { border: none; border-top: 1px solid rgba(255,255,255,0.07); margin: 12px 16px; }
+  .side-nav-toggle { display: none; }
   @media (max-width: 767px) {
-    .app-shell {
-      flex-direction: column;
-    }
-    .side-nav {
-      width: 100%;
-      min-height: auto;
-      position: static;
-      padding: 0;
-    }
+    .app-shell { flex-direction: column; }
+    .side-nav { width: 100%; min-height: auto; position: static; padding: 0; }
     .side-nav-toggle {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      width: 100%;
-      padding: 12px 20px;
-      background: none;
-      border: none;
-      color: rgba(255,255,255,0.8);
-      font-size: 0.9rem;
-      font-weight: 600;
-      font-family: var(--font-ui);
-      cursor: pointer;
-      letter-spacing: 0.02em;
+      display: flex; align-items: center; justify-content: space-between;
+      width: 100%; padding: 12px 20px; background: none; border: none;
+      color: rgba(255,255,255,0.8); font-size: 0.9rem; font-weight: 600;
+      font-family: var(--font-ui); cursor: pointer; letter-spacing: 0.02em;
     }
-    .side-nav-toggle-arrow {
-      font-size: 0.75rem;
-      transition: transform 0.2s;
-    }
-    .side-nav.expanded .side-nav-toggle-arrow {
-      transform: rotate(180deg);
-    }
-    .side-nav-body {
-      display: none;
-      padding-bottom: 8px;
-    }
-    .side-nav.expanded .side-nav-body {
-      display: block;
-    }
-    .side-nav-section {
-      margin-top: 8px;
-    }
+    .side-nav-toggle-arrow { font-size: 0.75rem; transition: transform 0.2s; }
+    .side-nav.expanded .side-nav-toggle-arrow { transform: rotate(180deg); }
+    .side-nav-body { display: none; padding-bottom: 8px; }
+    .side-nav.expanded .side-nav-body { display: block; }
+    .side-nav-section { margin-top: 8px; }
   }
-  @media (min-width: 768px) {
-    .side-nav-body {
-      display: block !important;
-    }
-  }
+  @media (min-width: 768px) { .side-nav-body { display: block !important; } }
 
-  /* ── Main layout ── */
   main {
     flex: 1;
     max-width: 720px;
@@ -280,8 +545,6 @@
     width: 100%;
     padding: 32px 20px 80px;
   }
-
-  /* ── Profile wizard ── */
   .wizard-card {
     background: white;
     border-radius: var(--radius);
@@ -290,331 +553,84 @@
     box-shadow: 0 2px 20px rgba(26,58,42,0.08);
     margin-bottom: 24px;
   }
-  .wizard-progress {
-    height: 4px;
-    background: var(--parch);
-    position: relative;
-  }
-  .wizard-progress-fill {
-    height: 100%;
-    background: var(--sage);
-    border-radius: 2px;
-    transition: width 0.4s ease;
-  }
+  .wizard-progress { height: 4px; background: var(--parch); position: relative; }
+  .wizard-progress-fill { height: 100%; background: var(--sage); border-radius: 2px; transition: width 0.4s ease; }
   .wizard-inner { padding: 28px 28px 24px; }
-
   .step { display: none; }
   .step.active { display: block; }
-
-  .step-label {
-    font-size: 0.75rem;
-    font-weight: 500;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--sage);
-    margin-bottom: 8px;
-  }
-  .step-question {
-    font-family: var(--font-display);
-    font-size: 1.4rem;
-    color: var(--forest);
-    margin-bottom: 6px;
-    line-height: 1.3;
-  }
-  .step-hint {
-    font-size: 0.875rem;
-    color: #777;
-    margin-bottom: 24px;
-    line-height: 1.5;
-  }
-
-  /* Option grid */
-  .option-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-bottom: 20px;
-  }
+  .step-label { font-size: 0.75rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--sage); margin-bottom: 8px; }
+  .step-question { font-family: var(--font-display); font-size: 1.4rem; color: var(--forest); margin-bottom: 6px; line-height: 1.3; }
+  .step-hint { font-size: 0.875rem; color: #777; margin-bottom: 24px; line-height: 1.5; }
+  .option-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
   .option-grid.three { grid-template-columns: 1fr 1fr 1fr; }
   .option-grid.solo { grid-template-columns: 1fr; }
-
   .opt {
-    border: 2px solid var(--parch);
-    border-radius: 12px;
-    padding: 14px 16px;
-    cursor: pointer;
-    transition: all 0.15s;
-    background: var(--cream);
-    text-align: left;
-    font-family: var(--font-ui);
+    border: 2px solid var(--parch); border-radius: 12px; padding: 14px 16px;
+    cursor: pointer; transition: all 0.15s; background: var(--cream);
+    text-align: left; font-family: var(--font-ui);
   }
   .opt:hover { border-color: var(--sage); background: var(--mist); }
   .opt.selected { border-color: var(--moss); background: var(--mist); }
   .opt-icon { font-size: 1.5rem; margin-bottom: 6px; display: block; }
   .opt-label { font-weight: 500; font-size: 0.9rem; color: var(--forest); display: block; }
   .opt-sub { font-size: 0.78rem; color: #666; display: block; margin-top: 2px; line-height: 1.4; }
-
-  /* Text input for location */
   .location-input {
-    width: 100%;
-    padding: 14px 18px;
-    border: 2px solid var(--parch);
-    border-radius: 12px;
-    font-family: var(--font-ui);
-    font-size: 1rem;
-    background: var(--cream);
-    color: var(--ink);
-    outline: none;
-    transition: border-color 0.15s;
-    margin-bottom: 10px;
+    width: 100%; padding: 14px 18px; border: 2px solid var(--parch); border-radius: 12px;
+    font-family: var(--font-ui); font-size: 1rem; background: var(--cream); color: var(--ink);
+    outline: none; transition: border-color 0.15s; margin-bottom: 10px;
   }
   .location-input:focus { border-color: var(--sage); background: white; }
-
-  /* Goal checkboxes */
-  .goal-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 20px;
-  }
+  .goal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 20px; }
   .goal-opt {
-    border: 2px solid var(--parch);
-    border-radius: 10px;
-    padding: 10px 14px;
-    cursor: pointer;
-    transition: all 0.15s;
-    background: var(--cream);
-    font-family: var(--font-ui);
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #555;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    border: 2px solid var(--parch); border-radius: 10px; padding: 10px 14px;
+    cursor: pointer; transition: all 0.15s; background: var(--cream);
+    font-family: var(--font-ui); font-size: 0.875rem; font-weight: 500; color: #555;
+    display: flex; align-items: center; gap: 8px;
   }
   .goal-opt:hover { border-color: var(--sage); color: var(--forest); }
   .goal-opt.selected { border-color: var(--moss); background: var(--mist); color: var(--forest); }
   .goal-opt .gicon { font-size: 1.1rem; }
-
-  /* Nav buttons */
   .wizard-nav {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 28px 24px;
-    border-top: 1px solid var(--parch);
-    background: white;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 28px 24px; border-top: 1px solid var(--parch); background: white;
   }
-  .btn-back {
-    font-family: var(--font-ui);
-    font-size: 0.875rem;
-    color: #888;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px 0;
-  }
+  .btn-back { font-family: var(--font-ui); font-size: 0.875rem; color: #888; background: none; border: none; cursor: pointer; padding: 8px 0; }
   .btn-back:hover { color: var(--moss); }
   .btn-next {
-    font-family: var(--font-ui);
-    font-weight: 500;
-    font-size: 0.95rem;
-    background: var(--moss);
-    color: white;
-    border: none;
-    border-radius: 100px;
-    padding: 12px 28px;
-    cursor: pointer;
-    transition: background 0.15s, transform 0.1s;
+    font-family: var(--font-ui); font-weight: 500; font-size: 0.95rem;
+    background: var(--moss); color: white; border: none; border-radius: 100px;
+    padding: 12px 28px; cursor: pointer; transition: background 0.15s, transform 0.1s;
   }
   .btn-next:hover { background: var(--forest); transform: translateY(-1px); }
   .btn-next:disabled { background: #ccc; cursor: not-allowed; transform: none; }
-
-  /* ── Loading ── */
-  #loading {
-    display: none;
-    text-align: center;
-    padding: 48px 24px;
-  }
-  .spinner {
-    width: 48px; height: 48px;
-    border: 3px solid var(--parch);
-    border-top-color: var(--sage);
-    border-radius: 50%;
-    animation: spin 0.9s linear infinite;
-    margin: 0 auto 20px;
-  }
+  #loading { display: none; text-align: center; padding: 48px 24px; }
+  .spinner { width: 48px; height: 48px; border: 3px solid var(--parch); border-top-color: var(--sage); border-radius: 50%; animation: spin 0.9s linear infinite; margin: 0 auto 20px; }
   @keyframes spin { to { transform: rotate(360deg); } }
-  .loading-text {
-    font-family: var(--font-display);
-    font-size: 1.2rem;
-    color: var(--forest);
-    margin-bottom: 8px;
-  }
+  .loading-text { font-family: var(--font-display); font-size: 1.2rem; color: var(--forest); margin-bottom: 8px; }
   .loading-sub { font-size: 0.875rem; color: #888; }
-
-  /* ── Result card ── */
   #result { display: none; }
-
-  .result-header {
-    background: var(--forest);
-    border-radius: var(--radius) var(--radius) 0 0;
-    padding: 28px;
-    color: var(--cream);
-  }
-  .result-tag {
-    font-size: 0.7rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--sage);
-    font-weight: 500;
-    margin-bottom: 10px;
-  }
-  .result-title {
-    font-family: var(--font-display);
-    font-size: 1.6rem;
-    margin-bottom: 6px;
-    line-height: 1.2;
-  }
+  .result-header { background: var(--forest); border-radius: var(--radius) var(--radius) 0 0; padding: 28px; color: var(--cream); }
+  .result-tag { font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sage); font-weight: 500; margin-bottom: 10px; }
+  .result-title { font-family: var(--font-display); font-size: 1.6rem; margin-bottom: 6px; line-height: 1.2; }
   .result-subtitle { font-size: 0.875rem; color: var(--mint); opacity: 0.85; }
-
-  .result-profile {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    padding: 16px 28px;
-    background: var(--mist);
-    border-left: 1px solid rgba(0,0,0,0.06);
-    border-right: 1px solid rgba(0,0,0,0.06);
-  }
-  .profile-pill {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    background: white;
-    border: 1px solid var(--mint);
-    border-radius: 100px;
-    padding: 5px 12px;
-    font-size: 0.8rem;
-    color: var(--forest);
-    font-weight: 500;
-  }
-
-  .result-body {
-    background: white;
-    border: 1px solid rgba(0,0,0,0.07);
-    border-top: none;
-    border-radius: 0 0 var(--radius) var(--radius);
-    padding: 28px;
-  }
-  .result-body h3 {
-    font-family: var(--font-display);
-    font-size: 1.1rem;
-    color: var(--forest);
-    margin: 24px 0 12px;
-  }
+  .result-profile { display: flex; flex-wrap: wrap; gap: 8px; padding: 16px 28px; background: var(--mist); border-left: 1px solid rgba(0,0,0,0.06); border-right: 1px solid rgba(0,0,0,0.06); }
+  .profile-pill { display: flex; align-items: center; gap: 6px; background: white; border: 1px solid var(--mint); border-radius: 100px; padding: 5px 12px; font-size: 0.8rem; color: var(--forest); font-weight: 500; }
+  .result-body { background: white; border: 1px solid rgba(0,0,0,0.07); border-top: none; border-radius: 0 0 var(--radius) var(--radius); padding: 28px; }
+  .result-body h3 { font-family: var(--font-display); font-size: 1.1rem; color: var(--forest); margin: 24px 0 12px; }
   .result-body h3:first-child { margin-top: 0; }
-  .result-body p {
-    font-size: 0.925rem;
-    line-height: 1.7;
-    color: #333;
-    margin-bottom: 12px;
-  }
-  .result-body ul, .result-body ol {
-    padding-left: 0;
-    list-style: none;
-    margin-bottom: 16px;
-  }
-  .result-body li {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: #333;
-    padding: 8px 14px;
-    margin-bottom: 6px;
-    background: var(--cream);
-    border-radius: 8px;
-    border-left: 3px solid var(--sage);
-  }
+  .result-body p { font-size: 0.925rem; line-height: 1.7; color: #333; margin-bottom: 12px; }
+  .result-body ul, .result-body ol { padding-left: 0; list-style: none; margin-bottom: 16px; }
+  .result-body li { font-size: 0.9rem; line-height: 1.6; color: #333; padding: 8px 14px; margin-bottom: 6px; background: var(--cream); border-radius: 8px; border-left: 3px solid var(--sage); }
   .result-body strong { color: var(--forest); }
-
-  /* Action bar */
-  .result-actions {
-    display: flex;
-    gap: 10px;
-    margin-top: 28px;
-    flex-wrap: wrap;
-  }
-  .btn-share {
-    flex: 1;
-    min-width: 140px;
-    background: var(--forest);
-    color: white;
-    border: none;
-    border-radius: 100px;
-    padding: 13px 20px;
-    font-family: var(--font-ui);
-    font-weight: 500;
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: background 0.15s;
-  }
+  .result-actions { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+  .btn-share { flex: 1; min-width: 140px; background: var(--forest); color: white; border: none; border-radius: 100px; padding: 13px 20px; font-family: var(--font-ui); font-weight: 500; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
   .btn-share:hover { background: var(--moss); }
-  .btn-upgrade {
-    flex: 1;
-    min-width: 140px;
-    background: var(--parch);
-    color: var(--soil);
-    border: 2px solid #d4a96a;
-    border-radius: 100px;
-    padding: 11px 20px;
-    font-family: var(--font-ui);
-    font-weight: 500;
-    font-size: 0.9rem;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.15s;
-  }
+  .btn-upgrade { flex: 1; min-width: 140px; background: var(--parch); color: var(--soil); border: 2px solid #d4a96a; border-radius: 100px; padding: 11px 20px; font-family: var(--font-ui); font-weight: 500; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.15s; }
   .btn-upgrade:hover { background: #e8d5a8; }
-  .btn-restart {
-    background: none;
-    color: #888;
-    border: none;
-    font-family: var(--font-ui);
-    font-size: 0.85rem;
-    cursor: pointer;
-    padding: 8px 0;
-    width: 100%;
-    text-align: center;
-    margin-top: 8px;
-  }
+  .btn-restart { background: none; color: #888; border: none; font-family: var(--font-ui); font-size: 0.85rem; cursor: pointer; padding: 8px 0; width: 100%; text-align: center; margin-top: 8px; }
   .btn-restart:hover { color: var(--moss); }
-
-
-  /* ── Refine panel ── */
-  .refine-panel {
-    background: white;
-    border: 1px solid rgba(0,0,0,0.07);
-    border-radius: var(--radius);
-    margin-top: 16px;
-    overflow: hidden;
-    box-shadow: 0 2px 20px rgba(26,58,42,0.06);
-  }
-  .refine-header {
-    background: var(--parch);
-    padding: 18px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    cursor: pointer;
-    user-select: none;
-  }
+  .refine-panel { background: white; border: 1px solid rgba(0,0,0,0.07); border-radius: var(--radius); margin-top: 16px; overflow: hidden; box-shadow: 0 2px 20px rgba(26,58,42,0.06); }
+  .refine-header { background: var(--parch); padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; user-select: none; }
   .refine-header-left { display: flex; align-items: center; gap: 12px; }
   .refine-header-icon { font-size: 1.2rem; }
   .refine-header-text { font-family: var(--font-display); font-size: 1.05rem; color: var(--forest); }
@@ -625,182 +641,67 @@
   .refine-body.open { display: block; }
   .refine-section { margin-bottom: 24px; }
   .refine-section:last-child { margin-bottom: 0; }
-  .refine-section-title {
-    font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em;
-    text-transform: uppercase; color: var(--moss); margin-bottom: 10px;
-  }
+  .refine-section-title { font-size: 0.72rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--moss); margin-bottom: 10px; }
   .style-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .style-opt {
-    border: 2px solid var(--parch); border-radius: 10px; padding: 10px 8px;
-    cursor: pointer; text-align: center; background: var(--cream);
-    transition: all 0.15s; font-family: var(--font-ui);
-  }
+  .style-opt { border: 2px solid var(--parch); border-radius: 10px; padding: 10px 8px; cursor: pointer; text-align: center; background: var(--cream); transition: all 0.15s; font-family: var(--font-ui); }
   .style-opt:hover { border-color: var(--sage); background: var(--mist); }
   .style-opt.selected { border-color: var(--moss); background: var(--mist); }
   .style-opt .sicon { font-size: 1.4rem; display: block; margin-bottom: 4px; }
   .style-opt .slabel { font-size: 0.78rem; font-weight: 500; color: var(--forest); display: block; }
   .colour-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-  .colour-opt {
-    display: flex; align-items: center; gap: 7px;
-    border: 2px solid var(--parch); border-radius: 100px; padding: 6px 14px 6px 8px;
-    cursor: pointer; background: var(--cream); transition: all 0.15s;
-    font-family: var(--font-ui); font-size: 0.8rem; font-weight: 500; color: #555;
-  }
+  .colour-opt { display: flex; align-items: center; gap: 7px; border: 2px solid var(--parch); border-radius: 100px; padding: 6px 14px 6px 8px; cursor: pointer; background: var(--cream); transition: all 0.15s; font-family: var(--font-ui); font-size: 0.8rem; font-weight: 500; color: #555; }
   .colour-opt:hover { border-color: var(--sage); }
   .colour-opt.selected { border-color: var(--moss); background: var(--mist); color: var(--forest); }
   .colour-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; border: 1px solid rgba(0,0,0,0.12); }
   .safety-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-  .safety-opt {
-    display: flex; align-items: center; gap: 8px;
-    border: 2px solid var(--parch); border-radius: 10px; padding: 10px 14px;
-    cursor: pointer; background: var(--cream); transition: all 0.15s;
-    font-family: var(--font-ui); font-size: 0.85rem; font-weight: 500; color: #555;
-  }
+  .safety-opt { display: flex; align-items: center; gap: 8px; border: 2px solid var(--parch); border-radius: 10px; padding: 10px 14px; cursor: pointer; background: var(--cream); transition: all 0.15s; font-family: var(--font-ui); font-size: 0.85rem; font-weight: 500; color: #555; }
   .safety-opt:hover { border-color: #e8a87c; background: #fdf6f0; }
   .safety-opt.selected { border-color: var(--soil); background: #fdf1e8; color: var(--bark); }
   .plant-type-grid { display: flex; flex-wrap: wrap; gap: 8px; }
-  .plant-type-opt {
-    border: 2px solid var(--parch); border-radius: 100px; padding: 6px 16px;
-    cursor: pointer; background: var(--cream); transition: all 0.15s;
-    font-family: var(--font-ui); font-size: 0.82rem; font-weight: 500; color: #555;
-  }
+  .plant-type-opt { border: 2px solid var(--parch); border-radius: 100px; padding: 6px 16px; cursor: pointer; background: var(--cream); transition: all 0.15s; font-family: var(--font-ui); font-size: 0.82rem; font-weight: 500; color: #555; }
   .plant-type-opt:hover { border-color: var(--sage); }
   .plant-type-opt.selected { border-color: var(--moss); background: var(--mist); color: var(--forest); }
-  .refine-actions {
-    display: flex; gap: 10px; margin-top: 20px;
-    padding-top: 20px; border-top: 1px solid var(--parch);
-  }
-  .btn-refine {
-    flex: 1; background: var(--moss); color: white; border: none;
-    border-radius: 100px; padding: 13px 20px; font-family: var(--font-ui);
-    font-weight: 500; font-size: 0.9rem; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    gap: 8px; transition: background 0.15s;
-  }
+  .refine-actions { display: flex; gap: 10px; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--parch); }
+  .btn-refine { flex: 1; background: var(--moss); color: white; border: none; border-radius: 100px; padding: 13px 20px; font-family: var(--font-ui); font-weight: 500; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s; }
   .btn-refine:hover { background: var(--forest); }
   .btn-refine:disabled { background: #ccc; cursor: not-allowed; }
-  .refine-spinner {
-    display: none; text-align: center; padding: 20px;
-    color: var(--moss); font-size: 0.875rem;
-  }
+  .refine-spinner { display: none; text-align: center; padding: 20px; color: var(--moss); font-size: 0.875rem; }
   .refine-spinner .spinner { width: 32px; height: 32px; margin: 0 auto 10px; }
-
-  /* ── Upgrade modal ── */
-  .modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(26,58,42,0.7);
-    z-index: 200;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26,58,42,0.7); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.open { display: flex; }
-  .modal {
-    background: white;
-    border-radius: var(--radius);
-    max-width: 420px;
-    width: 100%;
-    overflow: hidden;
-    animation: modalIn 0.2s ease;
-  }
+  .modal { background: white; border-radius: var(--radius); max-width: 420px; width: 100%; overflow: hidden; animation: modalIn 0.2s ease; }
   @keyframes modalIn { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  .modal-head {
-    background: var(--soil);
-    padding: 24px;
-    color: var(--cream);
-  }
-  .modal-head h3 {
-    font-family: var(--font-display);
-    font-size: 1.4rem;
-    margin-bottom: 4px;
-  }
+  .modal-head { background: var(--soil); padding: 24px; color: var(--cream); }
+  .modal-head h3 { font-family: var(--font-display); font-size: 1.4rem; margin-bottom: 4px; }
   .modal-head p { font-size: 0.85rem; opacity: 0.8; }
   .modal-body { padding: 24px; }
-  .modal-feature {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    margin-bottom: 14px;
-    font-size: 0.9rem;
-    color: #333;
-  }
+  .modal-feature { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; font-size: 0.9rem; color: #333; }
   .modal-feature span:first-child { font-size: 1.2rem; flex-shrink: 0; margin-top: 1px; }
-  .modal-price {
-    text-align: center;
-    padding: 16px;
-    background: var(--parch);
-    border-radius: 10px;
-    margin: 20px 0 16px;
-  }
+  .modal-price { text-align: center; padding: 16px; background: var(--parch); border-radius: 10px; margin: 20px 0 16px; }
   .modal-price .price { font-family: var(--font-display); font-size: 2rem; color: var(--soil); }
   .modal-price .price-note { font-size: 0.8rem; color: #888; }
-  .btn-modal-cta {
-    width: 100%;
-    background: var(--soil);
-    color: white;
-    border: none;
-    border-radius: 100px;
-    padding: 14px;
-    font-family: var(--font-ui);
-    font-weight: 500;
-    font-size: 1rem;
-    cursor: pointer;
-    margin-bottom: 10px;
-    transition: background 0.15s;
-  }
+  .btn-modal-cta { width: 100%; background: var(--soil); color: white; border: none; border-radius: 100px; padding: 14px; font-family: var(--font-ui); font-weight: 500; font-size: 1rem; cursor: pointer; margin-bottom: 10px; transition: background 0.15s; }
   .btn-modal-cta:hover { background: var(--bark); }
-  .btn-modal-close {
-    width: 100%;
-    background: none;
-    border: none;
-    color: #888;
-    font-size: 0.85rem;
-    cursor: pointer;
-    font-family: var(--font-ui);
-    padding: 6px;
-  }
-  .waitlist-msg {
-    display: none;
-    text-align: center;
-    padding: 16px;
-    background: var(--mist);
-    border-radius: 10px;
-    color: var(--forest);
-    font-size: 0.9rem;
-    font-weight: 500;
-    margin-bottom: 10px;
-  }
-
-  /* ── Share toast ── */
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: var(--forest);
-    color: var(--cream);
-    padding: 12px 24px;
-    border-radius: 100px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    z-index: 300;
-    transition: transform 0.3s ease;
-    white-space: nowrap;
-  }
+  .btn-modal-close { width: 100%; background: none; border: none; color: #888; font-size: 0.85rem; cursor: pointer; font-family: var(--font-ui); padding: 6px; }
+  .waitlist-msg { display: none; text-align: center; padding: 16px; background: var(--mist); border-radius: 10px; color: var(--forest); font-size: 0.9rem; font-weight: 500; margin-bottom: 10px; }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--forest); color: var(--cream); padding: 12px 24px; border-radius: 100px; font-size: 0.875rem; font-weight: 500; z-index: 300; transition: transform 0.3s ease; white-space: nowrap; }
   .toast.show { transform: translateX(-50%) translateY(0); }
+  footer { background: var(--forest); text-align: center; padding: 20px; color: var(--mint); font-size: 0.8rem; opacity: 0.7; }
 
-  /* ── Footer ── */
-  footer {
-    background: var(--forest);
-    text-align: center;
-    padding: 20px;
-    color: var(--mint);
-    font-size: 0.8rem;
-    opacity: 0.7;
+  /* ══ RESPONSIVE ══ */
+  @media (max-width: 767px) {
+    .about-inner { grid-template-columns: 1fr; }
+    .about-col { border-right: none; border-bottom: 1px solid #ddd5c0; padding: 12px 0; }
+    .about-col:last-child { border-bottom: none; }
+    .steps-grid { grid-template-columns: 1fr; }
+    .season-cards { grid-template-columns: 1fr 1fr; }
+    .archetype-grid { grid-template-columns: 1fr 1fr; }
+    .callout-inner { flex-direction: column; align-items: flex-start; }
+    .banner-links { display: none; }
+    .hero-strip { grid-template-columns: 1fr; }
+    .hero-strip-col { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .hero-strip-col:last-child { border-bottom: none; }
   }
-
   @media (max-width: 480px) {
     .option-grid { grid-template-columns: 1fr 1fr; }
     .option-grid.three { grid-template-columns: 1fr 1fr; }
@@ -814,222 +715,278 @@
 </head>
 <body>
 
-<header>
-  <div class="logo-mark">🌿</div>
-  <div class="brand">Your Green <span>Gardening Wizard</span></div>
-</header>
-
+<!-- ══ SECTION 1: BANNER ══ -->
 <div class="hero" id="hero">
   <canvas id="particle-canvas"></canvas>
-  <div class="season-controls" id="season-controls">
-    <span class="season-mode-badge" id="season-mode-badge">AUTO</span>
-    <button class="season-override-btn" data-season="spring" onclick="overrideSeason('spring')">Spr</button>
-    <button class="season-override-btn" data-season="summer" onclick="overrideSeason('summer')">Sum</button>
-    <button class="season-override-btn" data-season="autumn" onclick="overrideSeason('autumn')">Aut</button>
-    <button class="season-override-btn" data-season="winter" onclick="overrideSeason('winter')">Win</button>
-  </div>
+
+  <nav class="banner-nav">
+    <a href="/" class="banner-logo">
+      <img src="assets/wizard-logo-white.svg" alt="The Green Wizard">
+      <span class="banner-logo-text">The Green <em>Wizard</em></span>
+    </a>
+    <div class="banner-links">
+      <a href="app.html">Plot Designer</a>
+      <a href="landscaper.html">Landscaper</a>
+      <a href="#advisor-section">Plant Advisor</a>
+    </div>
+    <div class="banner-season">
+      <span class="season-mode-badge" id="season-mode-badge">AUTO</span>
+      <button class="season-override-btn" data-season="spring" onclick="overrideSeason('spring')">Spr</button>
+      <button class="season-override-btn" data-season="summer" onclick="overrideSeason('summer')">Sum</button>
+      <button class="season-override-btn" data-season="autumn" onclick="overrideSeason('autumn')">Aut</button>
+      <button class="season-override-btn" data-season="winter" onclick="overrideSeason('winter')">Win</button>
+    </div>
+  </nav>
+
   <div class="hero-content">
-    <h1 id="hero-headline">A garden that's <em>yours,</em><br>not just any garden</h1>
-    <p id="hero-sub">Tell us about your plot in a minute or two. We'll tell you exactly what to grow — based on your soil, your light, and your climate.</p>
-    <button class="hero-cta" id="hero-cta-btn" onclick="startWizard()">Start your garden profile →</button>
+    <div class="hero-season-badge" id="hero-season-badge">Spring</div>
+    <h1 id="hero-headline">Garden design that's <em>professional,</em><br>not just pretty</h1>
+    <p class="hero-sub" id="hero-sub">Draw accurate planting plans, generate seasonal proposals, and show clients what their garden looks like in every season — not just June.</p>
+    <div class="hero-ctas">
+      <a href="app.html" class="cta-primary">Draw your garden plan →</a>
+      <a href="#advisor-section" class="cta-secondary">Get plant advice</a>
+    </div>
+  </div>
+
+  <div class="hero-strip">
+    <div class="hero-strip-col">
+      <h3>30 plant elements</h3>
+      <p>Trees, shrubs, perennials, surfaces and structures. Every plant at correct mature spread.</p>
+    </div>
+    <div class="hero-strip-col">
+      <h3>Seasonal preview</h3>
+      <p>Show clients what their garden looks like in February, not just June.</p>
+    </div>
+    <div class="hero-strip-col">
+      <h3>Client-ready PDF</h3>
+      <p>AI writes the seasonal proposal narrative. You edit and send.</p>
+    </div>
   </div>
 </div>
 
-<div class="app-shell">
-
-<nav class="side-nav" aria-label="YGW tools" id="sideNav">
-  <button class="side-nav-toggle" id="sideNavToggle" aria-expanded="false" aria-controls="sideNavBody" onclick="toggleSideNav()">
-    🌿 Tools
-    <span class="side-nav-toggle-arrow">▼</span>
-  </button>
-
-  <div class="side-nav-body" id="sideNavBody">
-  <div class="side-nav-section">Tools</div>
-
-  <a class="side-nav-item active" onclick="return false;" href="#">
-    <span class="side-nav-icon">🌿</span>
-    Garden Advisor
-  </a>
-
-  <a class="side-nav-item" href="app.html">
-    <span class="side-nav-icon">📐</span>
-    Plot Designer
-  </a>
-
-  <hr class="side-nav-divider">
-  <div class="side-nav-section">Coming soon</div>
-
-  <span class="side-nav-item locked">
-    <span class="side-nav-icon">📅</span>
-    Seasonal Planner
-    <span class="side-nav-badge">soon</span>
-  </span>
-
-  <span class="side-nav-item locked">
-    <span class="side-nav-icon">🛍</span>
-    Plant Shop
-    <span class="side-nav-badge">soon</span>
-  </span>
-
-  <span class="side-nav-item locked">
-    <span class="side-nav-icon">📄</span>
-    Garden Report
-    <span class="side-nav-badge">soon</span>
-  </span>
-  </div><!-- /.side-nav-body -->
-</nav>
-
-<main>
-
-  <!-- Wizard -->
-  <div class="wizard-card" id="wizard" style="display:none">
-    <div class="wizard-progress">
-      <div class="wizard-progress-fill" id="progress-fill" style="width:0%"></div>
+<!-- ══ SECTION 2: ABOUT ══ -->
+<section class="about-strip">
+  <div class="about-inner">
+    <div class="about-col">
+      <h3>What it is</h3>
+      <p>A professional garden design tool that helps landscapers draw accurate planting plans and generate client proposals — seasonal, visual, and exportable.</p>
     </div>
-    <div class="wizard-inner">
+    <div class="about-col">
+      <h3>Who it's for</h3>
+      <p>Garden designers and landscapers who want to spend less time on paperwork and more time creating gardens clients love.</p>
+    </div>
+    <div class="about-col">
+      <h3>How it works</h3>
+      <p>Draw your plot, place your planting, switch through the seasons. The AI writes the proposal narrative. You edit and send.</p>
+    </div>
+  </div>
+</section>
 
-      <!-- Step 1: Location -->
-      <div class="step active" data-step="1">
-        <div class="step-label">Step 1 of 4</div>
-        <div class="step-question">Where in the UK is your garden?</div>
-        <div class="step-hint">Town, city, or region is fine — we use this to understand your climate and frost risk.</div>
-        <input class="location-input" type="text" id="location-input" placeholder="e.g. Bristol, Yorkshire, Glasgow..." autocomplete="off">
+<!-- ══ SECTION 3: HOW IT WORKS ══ -->
+<section class="how-section">
+  <div class="section-head">
+    <h2>Three steps to a client proposal</h2>
+    <p>From blank canvas to professional PDF</p>
+  </div>
+  <div class="steps-grid">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <h3>✏ Draw the plot</h3>
+      <p>Click points to trace any boundary shape. Every edge measured in metres, area calculated automatically.</p>
+      <span class="step-tag">Any shape plot</span>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <h3>🌿 Place your planting</h3>
+      <p>30 elements across trees, shrubs, surfaces and structures. Every plant at its correct mature spread.</p>
+      <span class="step-tag">30 elements</span>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <h3>📄 Export the proposal</h3>
+      <p>AI writes the seasonal narrative. You edit, then send. Professional PDF — not a hand-drawn sketch.</p>
+      <span class="step-tag">Client-ready PDF</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECTION 4: SEASONAL PREVIEW ══ -->
+<section class="seasonal-section">
+  <div class="section-head">
+    <h2>Four seasons, one garden</h2>
+    <p>Show clients what their garden looks like in February, not just June — that's the conversation that wins jobs</p>
+  </div>
+  <div class="season-tabs" id="preview-tabs">
+    <button class="season-tab active" data-season="spring" onclick="setPreviewSeason('spring')">Spring</button>
+    <button class="season-tab" data-season="summer" onclick="setPreviewSeason('summer')">Summer</button>
+    <button class="season-tab" data-season="autumn" onclick="setPreviewSeason('autumn')">Autumn</button>
+    <button class="season-tab" data-season="winter" onclick="setPreviewSeason('winter')">Winter</button>
+  </div>
+  <div class="season-cards" id="season-cards">
+    <div class="season-card active" data-season="spring" onclick="setPreviewSeason('spring')">
+      <canvas id="prev-spring" width="180" height="110"></canvas>
+      <div class="season-card-info">
+        <div class="season-card-label">Spring</div>
+        <div class="season-card-desc">Early colour, fresh growth emerging</div>
       </div>
+    </div>
+    <div class="season-card" data-season="summer" onclick="setPreviewSeason('summer')">
+      <canvas id="prev-summer" width="180" height="110"></canvas>
+      <div class="season-card-info">
+        <div class="season-card-label">Summer</div>
+        <div class="season-card-desc">Peak growth, borders at their best</div>
+      </div>
+    </div>
+    <div class="season-card" data-season="autumn" onclick="setPreviewSeason('autumn')">
+      <canvas id="prev-autumn" width="180" height="110"></canvas>
+      <div class="season-card-info">
+        <div class="season-card-label">Autumn</div>
+        <div class="season-card-desc">Rich colour, harvest interest</div>
+      </div>
+    </div>
+    <div class="season-card" data-season="winter" onclick="setPreviewSeason('winter')">
+      <canvas id="prev-winter" width="180" height="110"></canvas>
+      <div class="season-card-info">
+        <div class="season-card-label">Winter</div>
+        <div class="season-card-desc">Structure, bark and evergreen form</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-      <!-- Step 2: Soil -->
-      <div class="step" data-step="2">
-        <div class="step-label">Step 2 of 4</div>
-        <div class="step-question">What's your soil like?</div>
-        <div class="step-hint">Pick the closest match — or tell us if you're not sure.</div>
-        <div class="option-grid">
-          <button class="opt" data-value="clay" onclick="selectOption(this,'soil')">
-            <span class="opt-icon">🟫</span>
-            <span class="opt-label">Heavy clay</span>
-            <span class="opt-sub">Sticky when wet, cracks when dry</span>
-          </button>
-          <button class="opt" data-value="sandy" onclick="selectOption(this,'soil')">
-            <span class="opt-icon">🏖️</span>
-            <span class="opt-label">Sandy / light</span>
-            <span class="opt-sub">Free-draining, dries out quickly</span>
-          </button>
-          <button class="opt" data-value="loam" onclick="selectOption(this,'soil')">
-            <span class="opt-icon">🌱</span>
-            <span class="opt-label">Rich loam</span>
-            <span class="opt-sub">Dark, crumbly, smells earthy</span>
-          </button>
-          <button class="opt" data-value="chalky" onclick="selectOption(this,'soil')">
-            <span class="opt-icon">🪨</span>
-            <span class="opt-label">Chalky / stony</span>
-            <span class="opt-sub">Pale, lots of stones</span>
-          </button>
-          <button class="opt" data-value="peaty" onclick="selectOption(this,'soil')">
-            <span class="opt-icon">🌿</span>
-            <span class="opt-label">Peaty / boggy</span>
-            <span class="opt-sub">Dark, holds water, acidic</span>
-          </button>
-          <button class="opt" data-value="unknown" onclick="selectOption(this,'soil')">
-            <span class="opt-icon">🤷</span>
-            <span class="opt-label">Not sure</span>
-            <span class="opt-sub">We'll guide you through it</span>
-          </button>
+<!-- ══ SECTION 5: ARCHETYPES ══ -->
+<section class="archetypes-section">
+  <div class="section-head">
+    <h2>Eight garden archetypes</h2>
+    <p>Choose a style and The Green Wizard suggests the right plants, in the right order, for that archetype</p>
+  </div>
+  <div class="archetype-grid" id="archetype-grid"></div>
+</section>
+
+<!-- ══ SECTION 6: LANDSCAPER CALLOUT ══ -->
+<section class="callout-section">
+  <div class="callout-inner">
+    <div class="callout-text">
+      <h3>Designed for professional landscapers</h3>
+      <p>The suggestion engine knows the design rules — plant big to small, layer heights, check seasonal coverage — so you can focus on the vision, not the checklist.</p>
+    </div>
+    <a href="landscaper.html" class="callout-btn">See landscaper features ↗</a>
+  </div>
+</section>
+
+<!-- ══ PLANT ADVISOR (existing, preserved) ══ -->
+<div id="advisor-section">
+  <div class="advisor-divider">
+    <h2>Free plant advisor</h2>
+    <p>Tell us about your plot — we'll recommend exactly what to grow.</p>
+  </div>
+
+  <div class="app-shell">
+
+    <nav class="side-nav" aria-label="Tools" id="sideNav">
+      <button class="side-nav-toggle" id="sideNavToggle" aria-expanded="false" aria-controls="sideNavBody">
+        🌿 Tools <span class="side-nav-toggle-arrow">▼</span>
+      </button>
+      <div class="side-nav-body" id="sideNavBody">
+        <div class="side-nav-section">Tools</div>
+        <a class="side-nav-item active" onclick="return false;" href="#">
+          <span class="side-nav-icon">🌿</span> Plant Advisor
+        </a>
+        <a class="side-nav-item" href="app.html">
+          <span class="side-nav-icon">📐</span> Plot Designer
+        </a>
+        <hr class="side-nav-divider">
+        <div class="side-nav-section">Coming soon</div>
+        <span class="side-nav-item locked"><span class="side-nav-icon">📅</span> Seasonal Planner<span class="side-nav-badge">soon</span></span>
+        <span class="side-nav-item locked"><span class="side-nav-icon">🛍</span> Plant Shop<span class="side-nav-badge">soon</span></span>
+        <span class="side-nav-item locked"><span class="side-nav-icon">📄</span> Garden Report<span class="side-nav-badge">soon</span></span>
+      </div>
+    </nav>
+
+    <main>
+      <div class="wizard-card" id="wizard">
+        <div class="wizard-progress"><div class="wizard-progress-fill" id="progress-fill" style="width:0%"></div></div>
+        <div class="wizard-inner">
+          <div class="step active" data-step="1">
+            <div class="step-label">Step 1 of 4</div>
+            <div class="step-question">Where in the UK is your garden?</div>
+            <div class="step-hint">Town, city, or region is fine — we use this to understand your climate and frost risk.</div>
+            <input class="location-input" type="text" id="location-input" placeholder="e.g. Bristol, Yorkshire, Glasgow..." autocomplete="off">
+          </div>
+          <div class="step" data-step="2">
+            <div class="step-label">Step 2 of 4</div>
+            <div class="step-question">What's your soil like?</div>
+            <div class="step-hint">Pick the closest match — or tell us if you're not sure.</div>
+            <div class="option-grid">
+              <button class="opt" data-value="clay" onclick="selectOption(this,'soil')"><span class="opt-icon">🟫</span><span class="opt-label">Heavy clay</span><span class="opt-sub">Sticky when wet, cracks when dry</span></button>
+              <button class="opt" data-value="sandy" onclick="selectOption(this,'soil')"><span class="opt-icon">🏖️</span><span class="opt-label">Sandy / light</span><span class="opt-sub">Free-draining, dries out quickly</span></button>
+              <button class="opt" data-value="loam" onclick="selectOption(this,'soil')"><span class="opt-icon">🌱</span><span class="opt-label">Rich loam</span><span class="opt-sub">Dark, crumbly, smells earthy</span></button>
+              <button class="opt" data-value="chalky" onclick="selectOption(this,'soil')"><span class="opt-icon">🪨</span><span class="opt-label">Chalky / stony</span><span class="opt-sub">Pale, lots of stones</span></button>
+              <button class="opt" data-value="peaty" onclick="selectOption(this,'soil')"><span class="opt-icon">🌿</span><span class="opt-label">Peaty / boggy</span><span class="opt-sub">Dark, holds water, acidic</span></button>
+              <button class="opt" data-value="unknown" onclick="selectOption(this,'soil')"><span class="opt-icon">🤷</span><span class="opt-label">Not sure</span><span class="opt-sub">We'll guide you through it</span></button>
+            </div>
+          </div>
+          <div class="step" data-step="3">
+            <div class="step-label">Step 3 of 4</div>
+            <div class="step-question">Which way does your garden mainly face?</div>
+            <div class="step-hint">Stand at your back door looking into the garden. Which direction are you facing?</div>
+            <div class="option-grid">
+              <button class="opt" data-value="south" onclick="selectOption(this,'aspect')"><span class="opt-icon">☀️</span><span class="opt-label">South-facing</span><span class="opt-sub">Sun all day — the best</span></button>
+              <button class="opt" data-value="north" onclick="selectOption(this,'aspect')"><span class="opt-icon">🌥️</span><span class="opt-label">North-facing</span><span class="opt-sub">Mostly shade</span></button>
+              <button class="opt" data-value="east" onclick="selectOption(this,'aspect')"><span class="opt-icon">🌅</span><span class="opt-label">East-facing</span><span class="opt-sub">Morning sun only</span></button>
+              <button class="opt" data-value="west" onclick="selectOption(this,'aspect')"><span class="opt-icon">🌇</span><span class="opt-label">West-facing</span><span class="opt-sub">Afternoon sun</span></button>
+              <button class="opt" data-value="mixed" onclick="selectOption(this,'aspect')"><span class="opt-icon">🔄</span><span class="opt-label">Mixed / not sure</span><span class="opt-sub">Patchy shade and sun</span></button>
+            </div>
+          </div>
+          <div class="step" data-step="4">
+            <div class="step-label">Step 4 of 4</div>
+            <div class="step-question">What do you want from your garden?</div>
+            <div class="step-hint">Pick everything that appeals — this is your garden, not anyone else's.</div>
+            <div class="goal-grid">
+              <button class="goal-opt" data-value="colour" onclick="toggleGoal(this)"><span class="gicon">🌸</span> Colour &amp; flowers</button>
+              <button class="goal-opt" data-value="wildlife" onclick="toggleGoal(this)"><span class="gicon">🦋</span> Wildlife &amp; pollinators</button>
+              <button class="goal-opt" data-value="veg" onclick="toggleGoal(this)"><span class="gicon">🥕</span> Vegetables &amp; herbs</button>
+              <button class="goal-opt" data-value="low-maintenance" onclick="toggleGoal(this)"><span class="gicon">😌</span> Low maintenance</button>
+              <button class="goal-opt" data-value="privacy" onclick="toggleGoal(this)"><span class="gicon">🌳</span> Privacy &amp; screening</button>
+              <button class="goal-opt" data-value="entertaining" onclick="toggleGoal(this)"><span class="gicon">🍷</span> Entertaining</button>
+              <button class="goal-opt" data-value="scent" onclick="toggleGoal(this)"><span class="gicon">🌹</span> Scent</button>
+              <button class="goal-opt" data-value="year-round" onclick="toggleGoal(this)"><span class="gicon">📅</span> Year-round interest</button>
+            </div>
+          </div>
+        </div>
+        <div class="wizard-nav">
+          <button class="btn-back" id="btn-back" onclick="goBack()" style="visibility:hidden">← Back</button>
+          <button class="btn-next" id="btn-next" onclick="goNext()" disabled>Continue →</button>
         </div>
       </div>
 
-      <!-- Step 3: Aspect -->
-      <div class="step" data-step="3">
-        <div class="step-label">Step 3 of 4</div>
-        <div class="step-question">Which way does your garden mainly face?</div>
-        <div class="step-hint">Stand at your back door looking into the garden. Which direction are you facing?</div>
-        <div class="option-grid">
-          <button class="opt" data-value="south" onclick="selectOption(this,'aspect')">
-            <span class="opt-icon">☀️</span>
-            <span class="opt-label">South-facing</span>
-            <span class="opt-sub">Sun all day — the best</span>
-          </button>
-          <button class="opt" data-value="north" onclick="selectOption(this,'aspect')">
-            <span class="opt-icon">🌥️</span>
-            <span class="opt-label">North-facing</span>
-            <span class="opt-sub">Mostly shade</span>
-          </button>
-          <button class="opt" data-value="east" onclick="selectOption(this,'aspect')">
-            <span class="opt-icon">🌅</span>
-            <span class="opt-label">East-facing</span>
-            <span class="opt-sub">Morning sun only</span>
-          </button>
-          <button class="opt" data-value="west" onclick="selectOption(this,'aspect')">
-            <span class="opt-icon">🌇</span>
-            <span class="opt-label">West-facing</span>
-            <span class="opt-sub">Afternoon sun</span>
-          </button>
-          <button class="opt" data-value="mixed" onclick="selectOption(this,'aspect')">
-            <span class="opt-icon">🔄</span>
-            <span class="opt-label">Mixed / not sure</span>
-            <span class="opt-sub">Patchy shade and sun</span>
-          </button>
+      <div id="loading">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loading-text">Reading your garden...</div>
+        <div class="loading-sub">Your wizard is thinking</div>
+      </div>
+
+      <div id="result">
+        <div class="result-header">
+          <div class="result-tag" id="result-tag">Your Garden Plan</div>
+          <div class="result-title" id="result-title">Your Personalised Garden</div>
+          <div class="result-subtitle" id="result-subtitle"></div>
+        </div>
+        <div class="result-profile" id="result-profile"></div>
+        <div class="result-body" id="result-body"></div>
+        <div style="padding: 0 28px 28px; background: white; border-radius: 0 0 var(--radius) var(--radius); border: 1px solid rgba(0,0,0,0.07); border-top: none; margin-top: -1px;">
+          <div class="result-actions">
+            <button class="btn-share" onclick="shareResult()"><span>📋</span> Copy &amp; Share</button>
+            <button class="btn-share" onclick="shareAsImage()" id="btn-share-image"><span>🖼️</span> Share as image</button>
+            <button class="btn-upgrade" onclick="openUpgrade()"><span>🌿</span> Full plan — £9.99</button>
+          </div>
+          <button class="btn-restart" onclick="restartWizard()">Start over with a different garden</button>
         </div>
       </div>
+    </main>
 
-      <!-- Step 4: Goals -->
-      <div class="step" data-step="4">
-        <div class="step-label">Step 4 of 4</div>
-        <div class="step-question">What do you want from your garden?</div>
-        <div class="step-hint">Pick everything that appeals — this is your garden, not anyone else's.</div>
-        <div class="goal-grid">
-          <button class="goal-opt" data-value="colour" onclick="toggleGoal(this)"><span class="gicon">🌸</span> Colour &amp; flowers</button>
-          <button class="goal-opt" data-value="wildlife" onclick="toggleGoal(this)"><span class="gicon">🦋</span> Wildlife &amp; pollinators</button>
-          <button class="goal-opt" data-value="veg" onclick="toggleGoal(this)"><span class="gicon">🥕</span> Vegetables &amp; herbs</button>
-          <button class="goal-opt" data-value="low-maintenance" onclick="toggleGoal(this)"><span class="gicon">😌</span> Low maintenance</button>
-          <button class="goal-opt" data-value="privacy" onclick="toggleGoal(this)"><span class="gicon">🌳</span> Privacy &amp; screening</button>
-          <button class="goal-opt" data-value="entertaining" onclick="toggleGoal(this)"><span class="gicon">🍷</span> Entertaining</button>
-          <button class="goal-opt" data-value="scent" onclick="toggleGoal(this)"><span class="gicon">🌹</span> Scent</button>
-          <button class="goal-opt" data-value="year-round" onclick="toggleGoal(this)"><span class="gicon">📅</span> Year-round interest</button>
-        </div>
-      </div>
+  </div><!-- /.app-shell -->
 
-    </div>
-    <div class="wizard-nav">
-      <button class="btn-back" id="btn-back" onclick="goBack()" style="visibility:hidden">← Back</button>
-      <button class="btn-next" id="btn-next" onclick="goNext()" disabled>Continue →</button>
-    </div>
-  </div>
-
-  <!-- Loading -->
-  <div id="loading">
-    <div class="spinner"></div>
-    <div class="loading-text" id="loading-text">Reading your garden...</div>
-    <div class="loading-sub">Your wizard is thinking</div>
-  </div>
-
-  <!-- Result -->
-  <div id="result">
-    <div class="result-header">
-      <div class="result-tag" id="result-tag">Your Garden Plan</div>
-      <div class="result-title" id="result-title">Your Personalised Garden</div>
-      <div class="result-subtitle" id="result-subtitle"></div>
-    </div>
-    <div class="result-profile" id="result-profile"></div>
-    <div class="result-body" id="result-body"></div>
-    <div style="padding: 0 28px 28px; background: white; border-radius: 0 0 var(--radius) var(--radius); border: 1px solid rgba(0,0,0,0.07); border-top: none; margin-top: -1px;">
-      <div class="result-actions">
-        <button class="btn-share" onclick="shareResult()">
-          <span>📋</span> Copy &amp; Share
-        </button>
-        <button class="btn-share" onclick="shareAsImage()" id="btn-share-image">
-          <span>🖼️</span> Share as image
-        </button>
-        <button class="btn-upgrade" onclick="openUpgrade()">
-          <span>🌿</span> Full plan — £9.99
-        </button>
-      </div>
-      <button class="btn-restart" onclick="restartWizard()">Start over with a different garden</button>
-    </div>
-  </div>
-
-</main>
-
-</div><!-- /.app-shell -->
-
-  <!-- Refine panel -->
   <div class="refine-panel" id="refine-panel" style="display:none">
     <div class="refine-header" onclick="toggleRefine()">
       <div class="refine-header-left">
@@ -1042,58 +999,28 @@
       <div class="refine-chevron" id="refine-chevron">▼</div>
     </div>
     <div class="refine-body" id="refine-body">
-
-      <!-- Garden style -->
       <div class="refine-section">
         <div class="refine-section-title">Garden style &amp; vibe</div>
         <div class="style-grid">
-          <button class="style-opt" data-value="natural-wild" onclick="toggleRefineOpt(this,'style')">
-            <span class="sicon">🌾</span><span class="slabel">Natural &amp; wild</span>
-          </button>
-          <button class="style-opt" data-value="meticulous" onclick="toggleRefineOpt(this,'style')">
-            <span class="sicon">✂️</span><span class="slabel">Meticulous</span>
-          </button>
-          <button class="style-opt" data-value="cottage" onclick="toggleRefineOpt(this,'style')">
-            <span class="sicon">🏡</span><span class="slabel">Cottage garden</span>
-          </button>
-          <button class="style-opt" data-value="mediterranean" onclick="toggleRefineOpt(this,'style')">
-            <span class="sicon">🫒</span><span class="slabel">Mediterranean</span>
-          </button>
-          <button class="style-opt" data-value="modern-minimal" onclick="toggleRefineOpt(this,'style')">
-            <span class="sicon">◻️</span><span class="slabel">Modern &amp; minimal</span>
-          </button>
-          <button class="style-opt" data-value="japanese-zen" onclick="toggleRefineOpt(this,'style')">
-            <span class="sicon">🎋</span><span class="slabel">Japanese &amp; Zen</span>
-          </button>
+          <button class="style-opt" data-value="natural-wild" onclick="toggleRefineOpt(this,'style')"><span class="sicon">🌾</span><span class="slabel">Natural &amp; wild</span></button>
+          <button class="style-opt" data-value="meticulous" onclick="toggleRefineOpt(this,'style')"><span class="sicon">✂️</span><span class="slabel">Meticulous</span></button>
+          <button class="style-opt" data-value="cottage" onclick="toggleRefineOpt(this,'style')"><span class="sicon">🏡</span><span class="slabel">Cottage garden</span></button>
+          <button class="style-opt" data-value="mediterranean" onclick="toggleRefineOpt(this,'style')"><span class="sicon">🫒</span><span class="slabel">Mediterranean</span></button>
+          <button class="style-opt" data-value="modern-minimal" onclick="toggleRefineOpt(this,'style')"><span class="sicon">◻️</span><span class="slabel">Modern &amp; minimal</span></button>
+          <button class="style-opt" data-value="japanese-zen" onclick="toggleRefineOpt(this,'style')"><span class="sicon">🎋</span><span class="slabel">Japanese &amp; Zen</span></button>
         </div>
       </div>
-
-      <!-- Colour palette -->
       <div class="refine-section">
         <div class="refine-section-title">Colour palette</div>
         <div class="colour-grid">
-          <button class="colour-opt" data-value="hot-bold" onclick="toggleRefineMulti(this,'colours')">
-            <span class="colour-dot" style="background:#e84545"></span>Hot &amp; bold
-          </button>
-          <button class="colour-opt" data-value="soft-pastel" onclick="toggleRefineMulti(this,'colours')">
-            <span class="colour-dot" style="background:#f4b8c8"></span>Soft pastels
-          </button>
-          <button class="colour-opt" data-value="cool-purple-blue" onclick="toggleRefineMulti(this,'colours')">
-            <span class="colour-dot" style="background:#7b68ee"></span>Cool purples &amp; blues
-          </button>
-          <button class="colour-opt" data-value="white-silver" onclick="toggleRefineMulti(this,'colours')">
-            <span class="colour-dot" style="background:#d8d8d8"></span>White &amp; silver
-          </button>
-          <button class="colour-opt" data-value="yellow-orange" onclick="toggleRefineMulti(this,'colours')">
-            <span class="colour-dot" style="background:#f5a623"></span>Yellows &amp; oranges
-          </button>
-          <button class="colour-opt" data-value="green-foliage" onclick="toggleRefineMulti(this,'colours')">
-            <span class="colour-dot" style="background:#52b788"></span>Greens &amp; foliage
-          </button>
+          <button class="colour-opt" data-value="hot-bold" onclick="toggleRefineMulti(this,'colours')"><span class="colour-dot" style="background:#e84545"></span>Hot &amp; bold</button>
+          <button class="colour-opt" data-value="soft-pastel" onclick="toggleRefineMulti(this,'colours')"><span class="colour-dot" style="background:#f4b8c8"></span>Soft pastels</button>
+          <button class="colour-opt" data-value="cool-purple-blue" onclick="toggleRefineMulti(this,'colours')"><span class="colour-dot" style="background:#7b68ee"></span>Cool purples &amp; blues</button>
+          <button class="colour-opt" data-value="white-silver" onclick="toggleRefineMulti(this,'colours')"><span class="colour-dot" style="background:#d8d8d8"></span>White &amp; silver</button>
+          <button class="colour-opt" data-value="yellow-orange" onclick="toggleRefineMulti(this,'colours')"><span class="colour-dot" style="background:#f5a623"></span>Yellows &amp; oranges</button>
+          <button class="colour-opt" data-value="green-foliage" onclick="toggleRefineMulti(this,'colours')"><span class="colour-dot" style="background:#85d4a0"></span>Greens &amp; foliage</button>
         </div>
       </div>
-
-      <!-- Plant types -->
       <div class="refine-section">
         <div class="refine-section-title">Plant types I want</div>
         <div class="plant-type-grid">
@@ -1108,81 +1035,44 @@
           <button class="plant-type-opt" data-value="evergreen" onclick="toggleRefineMulti(this,'plantTypes')">🌲 Evergreen only</button>
         </div>
       </div>
-
-      <!-- Safety & hazards -->
       <div class="refine-section">
         <div class="refine-section-title">Safety &amp; hazards — exclude toxic plants for</div>
         <div class="safety-grid">
-          <button class="safety-opt" data-value="dogs" onclick="toggleRefineMulti(this,'safety')">
-            <span class="saicon">🐕</span> Dogs
-          </button>
-          <button class="safety-opt" data-value="cats" onclick="toggleRefineMulti(this,'safety')">
-            <span class="saicon">🐈</span> Cats
-          </button>
-          <button class="safety-opt" data-value="young-children" onclick="toggleRefineMulti(this,'safety')">
-            <span class="saicon">👶</span> Young children
-          </button>
-          <button class="safety-opt" data-value="hayfever" onclick="toggleRefineMulti(this,'safety')">
-            <span class="saicon">🤧</span> Hayfever / allergies
-          </button>
-          <button class="safety-opt" data-value="skin-irritants" onclick="toggleRefineMulti(this,'safety')">
-            <span class="saicon">🖐️</span> Skin irritants
-          </button>
-          <button class="safety-opt" data-value="bees-important" onclick="toggleRefineMulti(this,'safety')">
-            <span class="saicon">🐝</span> Prioritise bee-friendly
-          </button>
+          <button class="safety-opt" data-value="dogs" onclick="toggleRefineMulti(this,'safety')"><span>🐕</span> Dogs</button>
+          <button class="safety-opt" data-value="cats" onclick="toggleRefineMulti(this,'safety')"><span>🐈</span> Cats</button>
+          <button class="safety-opt" data-value="young-children" onclick="toggleRefineMulti(this,'safety')"><span>👶</span> Young children</button>
+          <button class="safety-opt" data-value="hayfever" onclick="toggleRefineMulti(this,'safety')"><span>🤧</span> Hayfever / allergies</button>
+          <button class="safety-opt" data-value="skin-irritants" onclick="toggleRefineMulti(this,'safety')"><span>🖐️</span> Skin irritants</button>
+          <button class="safety-opt" data-value="bees-important" onclick="toggleRefineMulti(this,'safety')"><span>🐝</span> Prioritise bee-friendly</button>
         </div>
       </div>
-
-      <!-- Companion planting -->
       <div class="refine-section">
         <div class="refine-section-title">Extra knowledge I want included</div>
         <div class="safety-grid">
-          <button class="safety-opt" data-value="companion-planting" onclick="toggleRefineMulti(this,'extras')">
-            <span class="saicon">🤝</span> Companion planting
-          </button>
-          <button class="safety-opt" data-value="avoid-combinations" onclick="toggleRefineMulti(this,'extras')">
-            <span class="saicon">🚫</span> What NOT to plant together
-          </button>
-          <button class="safety-opt" data-value="invasive-warning" onclick="toggleRefineMulti(this,'extras')">
-            <span class="saicon">⚠️</span> Flag invasive species
-          </button>
-          <button class="safety-opt" data-value="seasonal-succession" onclick="toggleRefineMulti(this,'extras')">
-            <span class="saicon">📅</span> Seasonal succession plan
-          </button>
+          <button class="safety-opt" data-value="companion-planting" onclick="toggleRefineMulti(this,'extras')"><span>🤝</span> Companion planting</button>
+          <button class="safety-opt" data-value="avoid-combinations" onclick="toggleRefineMulti(this,'extras')"><span>🚫</span> What NOT to plant together</button>
+          <button class="safety-opt" data-value="invasive-warning" onclick="toggleRefineMulti(this,'extras')"><span>⚠️</span> Flag invasive species</button>
+          <button class="safety-opt" data-value="seasonal-succession" onclick="toggleRefineMulti(this,'extras')"><span>📅</span> Seasonal succession plan</button>
         </div>
       </div>
-
-      <div class="refine-spinner" id="refine-spinner">
-        <div class="spinner"></div>
-        <div>Updating your garden plan...</div>
-      </div>
-
+      <div class="refine-spinner" id="refine-spinner"><div class="spinner"></div><div>Updating your garden plan...</div></div>
       <div class="refine-actions">
-        <button class="btn-refine" onclick="submitRefinement()" id="btn-refine">
-          🌿 Update my garden plan
-        </button>
+        <button class="btn-refine" onclick="submitRefinement()" id="btn-refine">🌿 Update my garden plan</button>
       </div>
     </div>
   </div>
-
+</div><!-- /#advisor-section -->
 
 <!-- Upgrade modal -->
 <div class="modal-overlay" id="modal" onclick="closeUpgradeIfOutside(event)">
   <div class="modal">
-    <div class="modal-head">
-      <h3>Your full garden plan</h3>
-      <p>Everything you need to design and build it yourself</p>
-    </div>
+    <div class="modal-head"><h3>Your full garden plan</h3><p>Everything you need to design and build it yourself</p></div>
     <div class="modal-body">
       <div class="modal-feature"><span>🗺️</span><div><strong>Bed-by-bed planting plan</strong> — exactly what goes where, with spacing and timing</div></div>
       <div class="modal-feature"><span>📅</span><div><strong>12-month calendar</strong> — what to plant, prune, and harvest each month</div></div>
       <div class="modal-feature"><span>🛒</span><div><strong>Shopping list</strong> — plants, bulbs, and seeds with UK supplier links</div></div>
       <div class="modal-feature"><span>💬</span><div><strong>Unlimited follow-up questions</strong> — your wizard stays on call</div></div>
-      <div class="modal-price">
-        <div class="price">£9.99</div>
-        <div class="price-note">One-off. Yours to keep.</div>
-      </div>
+      <div class="modal-price"><div class="price">£9.99</div><div class="price-note">One-off. Yours to keep.</div></div>
       <div class="waitlist-msg" id="waitlist-msg">✅ You're on the list! We'll email you when it's ready.</div>
       <button class="btn-modal-cta" onclick="joinWaitlist()">Join the waitlist</button>
       <button class="btn-modal-close" onclick="closeUpgrade()">Maybe later</button>
@@ -1190,31 +1080,30 @@
   </div>
 </div>
 
-<!-- Toast -->
 <div class="toast" id="toast">Copied to clipboard ✓</div>
 
-<footer>Your Green Gardening Wizard · Made with 🌱 by LeanSpirited</footer>
+<footer>The Green <em style="font-family:var(--font-display);font-style:italic">Wizard</em> · Made with 🌱 by LeanSpirited</footer>
+
+<script>
+// Side-nav toggle — standalone, not in module so it works regardless of module load state
+function toggleSideNav() {
+  var nav = document.getElementById('sideNav');
+  var btn = document.getElementById('sideNavToggle');
+  var expanded = nav.classList.toggle('expanded');
+  btn.setAttribute('aria-expanded', String(expanded));
+}
+document.getElementById('sideNavToggle').addEventListener('click', toggleSideNav);
+</script>
 
 <script type="module">
 import {
-  buildSystemPrompt,
-  buildAugmentedSystemPrompt,
-  buildUserMessage,
-  buildGardenProfile,
-  renderMarkdown,
-  formatShareText,
-  generateShareCard,
-  getCurrentUKSeason,
-  SOIL_LABELS,
-  ASPECT_LABELS,
-  GOAL_LABELS,
-  GOAL_ICONS,
-  STYLE_LABELS
+  buildSystemPrompt, buildAugmentedSystemPrompt, buildUserMessage,
+  buildGardenProfile, renderMarkdown, formatShareText, generateShareCard,
+  getCurrentUKSeason, SOIL_LABELS, ASPECT_LABELS, GOAL_LABELS, GOAL_ICONS, STYLE_LABELS
 } from './domain.js';
 import { SEASON_THEMES } from './js/seasons.js';
 import { startParticles, stopParticles, resizeParticleCanvas } from './js/particles.js';
 
-// Knowledge loader for browser — fetch from /knowledge/ path
 async function loadKnowledge(path) {
   const res = await fetch(path);
   if (!res.ok) throw new Error(`Knowledge file not found: ${path}`);
@@ -1223,47 +1112,24 @@ async function loadKnowledge(path) {
 
 // ── State ──
 const state = {
-  step: 1,
-  totalSteps: 4,
-  location: '',
-  soil: '',
-  aspect: '',
-  goals: [],
+  step: 1, totalSteps: 4,
+  location: '', soil: '', aspect: '', goals: [],
   result: '',
-  refinements: {
-    style: null,
-    colours: [],
-    plantTypes: [],
-    safety: [],
-    extras: []
-  }
+  refinements: { style: null, colours: [], plantTypes: [], safety: [], extras: [] }
 };
 
-// ── IMPORTANT: Replace this URL with your Cloudflare Worker URL after deployment ──
-// During local testing, this calls the Anthropic API directly (requires API key in Worker)
 const WORKER_URL = 'https://ygw-api-proxy.leanspirited.workers.dev';
 
-// ── Side nav toggle (mobile) ──
-function toggleSideNav() {
-  const nav = document.getElementById('sideNav');
-  const btn = document.getElementById('sideNavToggle');
-  const expanded = nav.classList.toggle('expanded');
-  btn.setAttribute('aria-expanded', expanded);
-}
+// toggleSideNav defined in standalone <script> above the module
 
 // ── Wizard flow ──
 function startWizard() {
-  document.getElementById('hero').style.display = 'none';
-  document.getElementById('wizard').style.display = 'block';
-  updateProgress();
-  updateNav();
-  document.getElementById('wizard').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  setTimeout(() => document.getElementById('location-input').focus(), 300);
+  document.getElementById('advisor-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  setTimeout(() => document.getElementById('location-input').focus(), 600);
 }
 
 function updateProgress() {
-  const pct = ((state.step - 1) / state.totalSteps) * 100;
-  document.getElementById('progress-fill').style.width = pct + '%';
+  document.getElementById('progress-fill').style.width = (((state.step - 1) / state.totalSteps) * 100) + '%';
 }
 
 function updateNav() {
@@ -1290,8 +1156,7 @@ document.getElementById('location-input').addEventListener('input', function() {
 });
 
 function selectOption(btn, field) {
-  const grid = btn.closest('.option-grid');
-  grid.querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
+  btn.closest('.option-grid').querySelectorAll('.opt').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
   state[field] = btn.dataset.value;
   checkNextEnabled();
@@ -1300,26 +1165,18 @@ function selectOption(btn, field) {
 function toggleGoal(btn) {
   const val = btn.dataset.value;
   btn.classList.toggle('selected');
-  if (btn.classList.contains('selected')) {
-    if (!state.goals.includes(val)) state.goals.push(val);
-  } else {
-    state.goals = state.goals.filter(g => g !== val);
-  }
+  if (btn.classList.contains('selected')) { if (!state.goals.includes(val)) state.goals.push(val); }
+  else { state.goals = state.goals.filter(g => g !== val); }
   checkNextEnabled();
 }
 
 function goNext() {
   if (state.step === 1) state.location = document.getElementById('location-input').value.trim();
-  if (state.step < state.totalSteps) {
-    showStep(state.step + 1);
-  } else {
-    submitProfile();
-  }
+  if (state.step < state.totalSteps) { showStep(state.step + 1); }
+  else { submitProfile(); }
 }
 
-function goBack() {
-  if (state.step > 1) showStep(state.step - 1);
-}
+function goBack() { if (state.step > 1) showStep(state.step - 1); }
 
 function showStep(n) {
   document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
@@ -1329,56 +1186,27 @@ function showStep(n) {
   updateNav();
 }
 
-// ── Seasonal UI (YGW-019) ──
+// ── Seasonal copy ──
 const SEASONAL_COPY = {
-  spring: {
-    headline: "What to grow <em>this spring</em><br>in your garden",
-    sub:      "Spring is the best time to start. Tell us about your plot — we'll tell you exactly what to sow and plant right now.",
-    cta:      "Get your spring garden plan →",
-    tag:      "Your Spring Garden Plan",
-    loading:  "Checking what's emerging right now..."
-  },
-  summer: {
-    headline: "A summer garden <em>built for you,</em><br>right now",
-    sub:      "Summer's in full swing. Tell us about your plot and we'll tell you exactly what to grow in the heat.",
-    cta:      "Get your summer garden plan →",
-    tag:      "Your Summer Garden Plan",
-    loading:  "Finding what loves the heat..."
-  },
-  autumn: {
-    headline: "Plant now for <em>a stunning spring.</em><br>Your autumn guide.",
-    sub:      "Autumn is the best planting season. Tell us about your plot — we'll tell you what to get in the ground before the frosts.",
-    cta:      "Get your autumn garden plan →",
-    tag:      "Your Autumn Garden Plan",
-    loading:  "Checking what needs doing before frost..."
-  },
-  winter: {
-    headline: "Plan ahead — your <em>spring garden</em><br>starts now",
-    sub:      "Use the quiet months wisely. Tell us about your plot and we'll design your perfect spring garden.",
-    cta:      "Plan your spring garden now →",
-    tag:      "Your Spring Garden Plan",
-    loading:  "Thinking ahead to spring..."
-  }
+  spring: { headline: 'What to grow <em>this spring</em><br>in your garden', sub: 'Spring is the best time to start. Tell us about your plot — we\'ll tell you exactly what to sow and plant right now.', cta: 'Get your spring garden plan →', tag: 'Your Spring Garden Plan', loading: 'Checking what\'s emerging right now...' },
+  summer: { headline: 'A summer garden <em>built for you,</em><br>right now', sub: 'Summer\'s in full swing. Tell us about your plot and we\'ll tell you exactly what to grow in the heat.', cta: 'Get your summer garden plan →', tag: 'Your Summer Garden Plan', loading: 'Finding what loves the heat...' },
+  autumn: { headline: 'Plant now for <em>a stunning spring.</em><br>Your autumn guide.', sub: 'Autumn is the best planting season. Tell us about your plot — we\'ll tell you what to get in the ground before the frosts.', cta: 'Get your autumn garden plan →', tag: 'Your Autumn Garden Plan', loading: 'Checking what needs doing before frost...' },
+  winter: { headline: 'Plan ahead — your <em>spring garden</em><br>starts now', sub: 'Use the quiet months wisely. Tell us about your plot and we\'ll design your perfect spring garden.', cta: 'Plan your spring garden now →', tag: 'Your Spring Garden Plan', loading: 'Thinking ahead to spring...' }
 };
 
-// ── Loading messages ──
-const loadingMessages = [
-  'Reading your garden...',
-  'Checking your soil and climate...',
-  'Finding plants that will thrive...',
-  'Putting your plan together...'
-];
+const loadingMessages = ['Reading your garden...', 'Checking your soil and climate...', 'Finding plants that will thrive...', 'Putting your plan together...'];
 
 function applySeasonalUI() {
   const { season } = getCurrentUKSeason();
   const copy = SEASONAL_COPY[season];
   document.getElementById('hero-headline').innerHTML = copy.headline;
   document.getElementById('hero-sub').textContent   = copy.sub;
-  document.getElementById('hero-cta-btn').textContent = copy.cta;
   document.getElementById('result-tag').textContent = copy.tag;
+  document.getElementById('hero-season-badge').textContent = season.charAt(0).toUpperCase() + season.slice(1);
   loadingMessages[0] = copy.loading;
 }
-// ── Seasonal hero gradient + particles ──
+
+// ── Seasonal hero ──
 const particleCanvas = document.getElementById('particle-canvas');
 let currentSeason = getCurrentUKSeason().season;
 let seasonIsAuto = true;
@@ -1389,18 +1217,15 @@ function applyHeroSeason(season) {
   const stops = theme.gradient;
   const grad = stops.map((c, i) => `${c} ${Math.round((i / (stops.length - 1)) * 100)}%`).join(', ');
   document.getElementById('hero').style.background = `linear-gradient(160deg, ${grad})`;
-
-  // Size canvas to hero element
   const hero = document.getElementById('hero');
   particleCanvas.width  = hero.offsetWidth  || window.innerWidth;
-  particleCanvas.height = hero.offsetHeight || 300;
+  particleCanvas.height = hero.offsetHeight || 360;
   startParticles(particleCanvas, season);
-
-  // Override button states
   document.querySelectorAll('.season-override-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.season === season);
   });
   document.getElementById('season-mode-badge').textContent = seasonIsAuto ? 'AUTO' : 'MANUAL';
+  document.getElementById('hero-season-badge').textContent = season.charAt(0).toUpperCase() + season.slice(1);
 }
 
 function overrideSeason(season) {
@@ -1408,6 +1233,7 @@ function overrideSeason(season) {
   currentSeason = season;
   applyHeroSeason(season);
   applySeasonalUI();
+  setPreviewSeason(season);
 }
 window.overrideSeason = overrideSeason;
 
@@ -1417,8 +1243,102 @@ window.addEventListener('resize', () => {
 });
 
 applyHeroSeason(currentSeason);
-
 applySeasonalUI();
+
+// ── Seasonal preview strip ──
+const SEASON_META = {
+  spring: { ground:'#dff2d0', plants:[{x:.35,y:.5,r:18,c:'#f9a8d4'},{x:.6,y:.4,r:28,c:'#86efac'},{x:.2,y:.35,r:10,c:'#818cf8'},{x:.75,y:.65,r:14,c:'#c4b5fd'},{x:.5,y:.75,r:8,c:'#fda4af'}] },
+  summer: { ground:'#d4e8b8', plants:[{x:.35,y:.5,r:18,c:'#ec4899'},{x:.6,y:.4,r:28,c:'#16a34a'},{x:.2,y:.35,r:10,c:'#7c3aed'},{x:.75,y:.65,r:14,c:'#2563eb'},{x:.5,y:.75,r:8,c:'#65a30d'}] },
+  autumn: { ground:'#f0d8b0', plants:[{x:.35,y:.5,r:18,c:'#be185d'},{x:.6,y:.4,r:28,c:'#ca8a04'},{x:.2,y:.35,r:10,c:'#6b7280'},{x:.75,y:.65,r:14,c:'#a78bfa'},{x:.5,y:.75,r:8,c:'#d97706'}] },
+  winter: { ground:'#e8f0f8', plants:[{x:.35,y:.5,r:18,c:'#6b7280'},{x:.6,y:.4,r:28,c:'#374151'},{x:.2,y:.35,r:10,c:'#6b7280'},{x:.75,y:.65,r:14,c:'#14532d'},{x:.5,y:.75,r:8,c:'#9ca3af'}] }
+};
+
+function drawSeasonThumbnail(canvas, season) {
+  const meta = SEASON_META[season];
+  const W = canvas.width, H = canvas.height;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = meta.ground;
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(0,0,0,0.07)';
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x < W; x += 12) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 12) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  const inset = 7;
+  ctx.strokeStyle = '#2d8a42';
+  ctx.lineWidth = 1.5;
+  ctx.strokeRect(inset, inset, W - inset * 2, H - inset * 2);
+  meta.plants.forEach(p => {
+    const px = p.x * W, py = p.y * H;
+    const grad = ctx.createRadialGradient(px, py, 0, px, py, p.r);
+    grad.addColorStop(0, p.c);
+    grad.addColorStop(1, p.c + '00');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(px, py, p.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+['spring','summer','autumn','winter'].forEach(s => {
+  drawSeasonThumbnail(document.getElementById('prev-' + s), s);
+});
+
+let activePreviewSeason = currentSeason;
+function setPreviewSeason(s) {
+  activePreviewSeason = s;
+  document.querySelectorAll('.season-tab').forEach(t => t.classList.toggle('active', t.dataset.season === s));
+  document.querySelectorAll('.season-card').forEach(c => c.classList.toggle('active', c.dataset.season === s));
+}
+window.setPreviewSeason = setPreviewSeason;
+setPreviewSeason(currentSeason);
+
+// ── Archetype thumbnails ──
+const ARCHETYPES = [
+  {name:'Contemporary', hint:'Clean lines, structure', palette:{ground:'#e8eee8', plants:[{x:.5,y:.5,r:22,c:'#374151'},{x:.25,y:.6,r:8,c:'#15803d'},{x:.75,y:.4,r:8,c:'#15803d'},{x:.5,y:.82,r:5,c:'#6b7280'}]}},
+  {name:'Cottage', hint:'Abundant, romantic', palette:{ground:'#eef5e0', plants:[{x:.4,y:.45,r:14,c:'#ec4899'},{x:.65,y:.55,r:10,c:'#7c3aed'},{x:.25,y:.62,r:8,c:'#fda4af'},{x:.7,y:.3,r:18,c:'#22c55e'},{x:.5,y:.78,r:6,c:'#f9a8d4'}]}},
+  {name:'Woodland', hint:'Native, wildlife-first', palette:{ground:'#d8ecd0', plants:[{x:.5,y:.42,r:30,c:'#16a34a'},{x:.2,y:.65,r:12,c:'#15803d'},{x:.75,y:.62,r:8,c:'#86efac'},{x:.4,y:.78,r:5,c:'#818cf8'}]}},
+  {name:'Mediterranean', hint:'Drought-tolerant, sun', palette:{ground:'#e8e0d0', plants:[{x:.3,y:.5,r:10,c:'#7c3aed'},{x:.6,y:.4,r:8,c:'#0891b2'},{x:.5,y:.72,r:6,c:'#6d28d9'},{x:.75,y:.55,r:20,c:'#166534'},{x:.2,y:.35,r:7,c:'#a78bfa'}]}},
+  {name:'Family', hint:'Practical, resilient', palette:{ground:'#c8e8b0', plants:[{x:.5,y:.4,r:24,c:'#16a34a'},{x:.2,y:.72,r:8,c:'#ec4899'},{x:.78,y:.67,r:6,c:'#15803d'}]}},
+  {name:'Formal', hint:'Symmetry, topiary', palette:{ground:'#e0e8d8', plants:[{x:.5,y:.5,r:14,c:'#14532d'},{x:.25,y:.5,r:10,c:'#15803d'},{x:.75,y:.5,r:10,c:'#15803d'},{x:.5,y:.22,r:7,c:'#ec4899'},{x:.5,y:.78,r:7,c:'#ec4899'}]}},
+  {name:'Kitchen', hint:'Edible, herb-rich', palette:{ground:'#d8ecc8', plants:[{x:.35,y:.4,r:18,c:'#15803d'},{x:.65,y:.52,r:10,c:'#0891b2'},{x:.2,y:.67,r:8,c:'#7c3aed'},{x:.7,y:.72,r:6,c:'#22c55e'}]}},
+  {name:'Wildlife', hint:'Biodiversity-first', palette:{ground:'#d0e8c0', plants:[{x:.5,y:.45,r:28,c:'#15803d'},{x:.2,y:.62,r:6,c:'#818cf8'},{x:.75,y:.67,r:5,c:'#9333ea'},{x:.4,y:.78,r:4,c:'#2563eb'},{x:.65,y:.28,r:8,c:'#fde047'}]}}
+];
+
+function drawArchetypeThumbnail(canvas, arch) {
+  const W = canvas.width, H = canvas.height;
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = arch.palette.ground;
+  ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = 'rgba(0,0,0,0.05)';
+  ctx.lineWidth = 0.5;
+  for (let x = 0; x < W; x += 10) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+  for (let y = 0; y < H; y += 10) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+  ctx.strokeStyle = 'rgba(45,138,66,0.45)';
+  ctx.lineWidth = 1;
+  ctx.strokeRect(6, 6, W - 12, H - 12);
+  arch.palette.plants.forEach(p => {
+    const px = p.x * W, py = p.y * H;
+    const grad = ctx.createRadialGradient(px, py, 0, px, py, p.r);
+    grad.addColorStop(0, p.c);
+    grad.addColorStop(1, p.c + '00');
+    ctx.fillStyle = grad;
+    ctx.beginPath();
+    ctx.arc(px, py, p.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+}
+
+const archGrid = document.getElementById('archetype-grid');
+ARCHETYPES.forEach(arch => {
+  const card = document.createElement('div');
+  card.className = 'archetype-card';
+  card.innerHTML = `<canvas width="160" height="95"></canvas><div class="archetype-card-label"><span class="archetype-name">${arch.name}</span><span class="archetype-hint">${arch.hint}</span></div>`;
+  drawArchetypeThumbnail(card.querySelector('canvas'), arch);
+  card.addEventListener('click', () => window.location.href = 'app.html');
+  archGrid.appendChild(card);
+});
+
+// ── Loading ──
 let loadingInterval;
 function cycleLoadingText() {
   let i = 0;
@@ -1426,10 +1346,7 @@ function cycleLoadingText() {
   loadingInterval = setInterval(() => {
     i = (i + 1) % loadingMessages.length;
     el.style.opacity = '0';
-    setTimeout(() => {
-      el.textContent = loadingMessages[i];
-      el.style.opacity = '1';
-    }, 300);
+    setTimeout(() => { el.textContent = loadingMessages[i]; el.style.opacity = '1'; }, 300);
   }, 2200);
 }
 const loadingEl = document.getElementById('loading-text');
@@ -1443,54 +1360,19 @@ async function submitProfile() {
 
   const profile = buildGardenProfile(state);
   let systemPrompt;
-  try {
-    systemPrompt = await buildAugmentedSystemPrompt(profile, null, loadKnowledge);
-  } catch {
-    systemPrompt = buildSystemPrompt(profile, null); // fallback if knowledge load fails
-  }
-
+  try { systemPrompt = await buildAugmentedSystemPrompt(profile, null, loadKnowledge); }
+  catch { systemPrompt = buildSystemPrompt(profile, null); }
   const userMessage = buildUserMessage(profile);
 
   try {
     let responseText = '';
-
-    // Try Worker first, fall back to direct API for local dev
     if (WORKER_URL && WORKER_URL !== 'YOUR_CLOUDFLARE_WORKER_URL') {
-      const res = await fetch(WORKER_URL + '/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1200,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: userMessage }]
-        })
-      });
-      const data = await res.json();
-      responseText = data.content[0].text;
-    } else {
-      // Direct API call (Worker not yet configured)
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-api-key': 'REPLACE_WITH_KEY_FOR_LOCAL_TEST_ONLY',
-          'anthropic-version': '2023-06-01'
-        },
-        body: JSON.stringify({
-          model: 'claude-sonnet-4-20250514',
-          max_tokens: 1200,
-          system: systemPrompt,
-          messages: [{ role: 'user', content: userMessage }]
-        })
-      });
+      const res = await fetch(WORKER_URL + '/messages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 1200, system: systemPrompt, messages: [{ role: 'user', content: userMessage }] }) });
       const data = await res.json();
       responseText = data.content[0].text;
     }
-
     state.result = responseText;
     showResult(responseText);
-
   } catch (err) {
     clearInterval(loadingInterval);
     document.getElementById('loading').style.display = 'none';
@@ -1505,48 +1387,30 @@ async function submitProfile() {
 function showResult(text) {
   clearInterval(loadingInterval);
   document.getElementById('loading').style.display = 'none';
-
   const soilLabels = { clay:'Clay soil', sandy:'Sandy soil', loam:'Rich loam', chalky:'Chalky soil', peaty:'Peaty soil', unknown:'Unknown soil' };
   const aspectLabels = { south:'South-facing ☀️', north:'North-facing 🌥️', east:'East-facing 🌅', west:'West-facing 🌇', mixed:'Mixed aspect 🔄' };
-
-  // Title
   document.getElementById('result-title').textContent = 'Your ' + state.location + ' Garden Plan';
-  document.getElementById('result-subtitle').textContent =
-    `${soilLabels[state.soil]} · ${aspectLabels[state.aspect].replace(/[\u2600-\u27BF]/gu, '').trim()}`;
-
-  // Profile pills
+  document.getElementById('result-subtitle').textContent = `${soilLabels[state.soil]} · ${aspectLabels[state.aspect].replace(/[\u2600-\u27BF]/gu, '').trim()}`;
   const profileDiv = document.getElementById('result-profile');
   profileDiv.innerHTML = '';
-  [
-    { icon: '📍', text: state.location },
-    { icon: '🌍', text: soilLabels[state.soil] },
-    { icon: '🧭', text: aspectLabels[state.aspect] },
-    ...state.goals.map(g => ({ icon: GOAL_ICONS[g] || '🌿', text: GOAL_LABELS[g] || g }))
-  ].forEach(p => {
+  [{ icon: '📍', text: state.location }, { icon: '🌍', text: soilLabels[state.soil] }, { icon: '🧭', text: aspectLabels[state.aspect] }, ...state.goals.map(g => ({ icon: GOAL_ICONS[g] || '🌿', text: GOAL_LABELS[g] || g }))].forEach(p => {
     const pill = document.createElement('div');
     pill.className = 'profile-pill';
     pill.innerHTML = `<span>${p.icon}</span><span>${p.text}</span>`;
     profileDiv.appendChild(pill);
   });
-
-  // Body — parse markdown-ish text
-  const bodyDiv = document.getElementById('result-body');
-  bodyDiv.innerHTML = renderMarkdown(text);
-
+  document.getElementById('result-body').innerHTML = renderMarkdown(text);
   document.getElementById('result').style.display = 'block';
   document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
   document.getElementById('refine-panel').style.display = 'block';
 }
 
 function toggleRefine() {
-  const body = document.getElementById('refine-body');
-  const chevron = document.getElementById('refine-chevron');
-  body.classList.toggle('open');
-  chevron.classList.toggle('open');
+  document.getElementById('refine-body').classList.toggle('open');
+  document.getElementById('refine-chevron').classList.toggle('open');
 }
 
 function toggleRefineOpt(btn, field) {
-  // Single select for style
   btn.closest('.style-grid').querySelectorAll('.style-opt').forEach(b => b.classList.remove('selected'));
   btn.classList.add('selected');
   state.refinements.style = btn.dataset.value;
@@ -1556,11 +1420,8 @@ function toggleRefineMulti(btn, field) {
   const val = btn.dataset.value;
   btn.classList.toggle('selected');
   if (!state.refinements[field]) state.refinements[field] = [];
-  if (btn.classList.contains('selected')) {
-    if (!state.refinements[field].includes(val)) state.refinements[field].push(val);
-  } else {
-    state.refinements[field] = state.refinements[field].filter(v => v !== val);
-  }
+  if (btn.classList.contains('selected')) { if (!state.refinements[field].includes(val)) state.refinements[field].push(val); }
+  else { state.refinements[field] = state.refinements[field].filter(v => v !== val); }
 }
 
 async function submitRefinement() {
@@ -1568,50 +1429,26 @@ async function submitRefinement() {
   const spinner = document.getElementById('refine-spinner');
   btn.style.display = 'none';
   spinner.style.display = 'block';
-
   const profile = buildGardenProfile(state);
   let refinedSystemPrompt;
-  try {
-    refinedSystemPrompt = await buildAugmentedSystemPrompt(profile, state.refinements, loadKnowledge);
-  } catch {
-    refinedSystemPrompt = buildSystemPrompt(profile, state.refinements); // fallback
-  }
+  try { refinedSystemPrompt = await buildAugmentedSystemPrompt(profile, state.refinements, loadKnowledge); }
+  catch { refinedSystemPrompt = buildSystemPrompt(profile, state.refinements); }
   const userMessage = buildUserMessage(profile);
-
   try {
     let responseText = '';
-    const payload = {
-      model: 'claude-sonnet-4-20250514',
-      max_tokens: 1600,
-      system: refinedSystemPrompt,
-      messages: [{ role: 'user', content: userMessage }]
-    };
-
+    const payload = { model: 'claude-sonnet-4-20250514', max_tokens: 1600, system: refinedSystemPrompt, messages: [{ role: 'user', content: userMessage }] };
     if (WORKER_URL && WORKER_URL !== 'YOUR_CLOUDFLARE_WORKER_URL') {
       const res = await fetch(WORKER_URL + '/messages', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
       const data = await res.json();
       responseText = data.content[0].text;
-    } else {
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-api-key': 'REPLACE_WITH_KEY_FOR_LOCAL_TEST_ONLY', 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify(payload)
-      });
-      const data = await res.json();
-      responseText = data.content[0].text;
     }
-
     state.result = responseText;
     document.getElementById('result-body').innerHTML = renderMarkdown(responseText);
     spinner.style.display = 'none';
     btn.style.display = 'flex';
-
-    // Update profile pills to show refinements
     updateRefinementPills();
-
     document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
     showToast('Garden plan updated ✓');
-
   } catch (err) {
     spinner.style.display = 'none';
     btn.style.display = 'flex';
@@ -1622,69 +1459,44 @@ async function submitRefinement() {
 
 function updateRefinementPills() {
   const profileDiv = document.getElementById('result-profile');
-  // Remove existing refinement pills
   profileDiv.querySelectorAll('.pill-refinement').forEach(p => p.remove());
-
-  const styleLabels = STYLE_LABELS;
   const extras = [];
-  if (state.refinements.style) extras.push({ icon: '🎨', text: styleLabels[state.refinements.style] });
+  if (state.refinements.style) extras.push({ icon: '🎨', text: STYLE_LABELS[state.refinements.style] });
   if (state.refinements.safety.includes('dogs')) extras.push({ icon: '🐕', text: 'Dog-safe' });
   if (state.refinements.safety.includes('cats')) extras.push({ icon: '🐈', text: 'Cat-safe' });
   if (state.refinements.safety.includes('young-children')) extras.push({ icon: '👶', text: 'Child-safe' });
   if (state.refinements.plantTypes.includes('fast-growing')) extras.push({ icon: '⚡', text: 'Fast-growing' });
   if (state.refinements.plantTypes.includes('evergreen')) extras.push({ icon: '🌲', text: 'Evergreen' });
-
   extras.forEach(p => {
     const pill = document.createElement('div');
     pill.className = 'profile-pill pill-refinement';
     pill.style.borderColor = 'var(--moss)';
-    pill.innerHTML = `<span>\${p.icon}</span><span>\${p.text}</span>`;
+    pill.innerHTML = `<span>${p.icon}</span><span>${p.text}</span>`;
     profileDiv.appendChild(pill);
   });
 }
 
 // ── Share ──
 function shareResult() {
-  const shareText = formatShareText(
-    buildGardenProfile(state),
-    state.result,
-    window.location.href
-  );
-  if (navigator.share) {
-    navigator.share({ title: 'My Garden Plan', text: shareText }).catch(() => copyToClipboard(shareText));
-  } else {
-    copyToClipboard(shareText);
-  }
+  const shareText = formatShareText(buildGardenProfile(state), state.result, window.location.href);
+  if (navigator.share) { navigator.share({ title: 'My Garden Plan', text: shareText }).catch(() => copyToClipboard(shareText)); }
+  else { copyToClipboard(shareText); }
 }
-
 
 async function shareAsImage() {
   const profile = buildGardenProfile(state);
   if (!profile || !state.result) return;
-
-  const blob = await generateShareCard(profile, state.result, state.refinements, {
-    createCanvas: () => document.createElement('canvas')
-  });
-
-  if (!blob) {
-    shareResult();
-    return;
-  }
-
+  const blob = await generateShareCard(profile, state.result, state.refinements, { createCanvas: () => document.createElement('canvas') });
+  if (!blob) { shareResult(); return; }
   const file = new File([blob], 'my-garden-plan.png', { type: 'image/png' });
-  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-    navigator.share({ title: 'My Garden Plan', files: [file] }).catch(() => downloadImage(blob));
-  } else {
-    downloadImage(blob);
-  }
+  if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ title: 'My Garden Plan', files: [file] }).catch(() => downloadImage(blob)); }
+  else { downloadImage(blob); }
 }
 
 function downloadImage(blob) {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
-  a.href = url;
-  a.download = 'my-garden-plan.png';
-  a.click();
+  a.href = url; a.download = 'my-garden-plan.png'; a.click();
   URL.revokeObjectURL(url);
   showToast('Image saved ✓');
 }
@@ -1692,78 +1504,58 @@ function downloadImage(blob) {
 function copyToClipboard(text) {
   navigator.clipboard.writeText(text).then(() => showToast('Copied to clipboard ✓')).catch(() => {
     const ta = document.createElement('textarea');
-    ta.value = text;
-    document.body.appendChild(ta);
-    ta.select();
-    document.execCommand('copy');
-    ta.remove();
+    ta.value = text; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); ta.remove();
     showToast('Copied to clipboard ✓');
   });
 }
 
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 3000);
 }
 
-// ── Upgrade modal (fake door test) ──
+// ── Upgrade modal ──
 let upgradeClicked = false;
 function openUpgrade() {
   document.getElementById('modal').classList.add('open');
-  // Track: this is the fake door click we're measuring
-  if (!upgradeClicked) {
-    upgradeClicked = true;
-    console.log('[AARRR Revenue] Fake door clicked — upgrade intent registered');
-    // TODO: replace with your analytics event
-  }
+  if (!upgradeClicked) { upgradeClicked = true; console.log('[AARRR Revenue] Fake door clicked'); }
 }
 function closeUpgrade() { document.getElementById('modal').classList.remove('open'); }
 function closeUpgradeIfOutside(e) { if (e.target === document.getElementById('modal')) closeUpgrade(); }
 function joinWaitlist() {
   document.getElementById('waitlist-msg').style.display = 'block';
   document.querySelector('.btn-modal-cta').style.display = 'none';
-  console.log('[AARRR Revenue] Waitlist joined — strong purchase intent');
-  // TODO: connect to your email capture (Mailchimp, ConvertKit, etc.)
+  console.log('[AARRR Revenue] Waitlist joined');
 }
 
 // ── Restart ──
 function restartWizard() {
   state.step = 1; state.location = ''; state.soil = ''; state.aspect = ''; state.goals = []; state.result = '';
   document.getElementById('result').style.display = 'none';
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('wizard').style.display = 'block';
   document.getElementById('location-input').value = '';
   document.querySelectorAll('.opt.selected, .goal-opt.selected').forEach(el => el.classList.remove('selected'));
   document.getElementById('waitlist-msg').style.display = 'none';
   document.querySelector('.btn-modal-cta').style.display = 'block';
   upgradeClicked = false;
   showStep(1);
-  document.getElementById('wizard').style.display = 'block';
-  document.getElementById('wizard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('advisor-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-// ── Enter key submits active step (YGW-048) ──
+// ── Enter key ──
 document.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
   if (e.target.tagName === 'TEXTAREA') return;
-
-  const wizard  = document.getElementById('wizard');
+  const wizard = document.getElementById('wizard');
   const btnNext = document.getElementById('btn-next');
-  if (wizard && wizard.style.display !== 'none' && btnNext && !btnNext.disabled) {
-    e.preventDefault();
-    goNext();
-    return;
-  }
-
+  if (wizard && wizard.style.display !== 'none' && btnNext && !btnNext.disabled) { e.preventDefault(); goNext(); return; }
   const btnRefine = document.getElementById('btn-refine');
-  if (btnRefine && !btnRefine.disabled && btnRefine.offsetParent !== null) {
-    e.preventDefault();
-    submitRefinement();
-  }
+  if (btnRefine && !btnRefine.disabled && btnRefine.offsetParent !== null) { e.preventDefault(); submitRefinement(); }
 });
 
-// ── Expose all onclick-called functions to global scope ──
-// Module scripts are not in global scope — inline onclick handlers need window.xxx
+// ── Global scope ──
 window.startWizard          = startWizard;
 window.selectOption         = selectOption;
 window.toggleGoal           = toggleGoal;
@@ -1780,6 +1572,7 @@ window.closeUpgrade         = closeUpgrade;
 window.closeUpgradeIfOutside = closeUpgradeIfOutside;
 window.joinWaitlist         = joinWaitlist;
 window.restartWizard        = restartWizard;
+// toggleSideNav is a plain global, no window assignment needed
 </script>
 </body>
 </html>
