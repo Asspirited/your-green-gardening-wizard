@@ -719,12 +719,14 @@ buildTimelineBtns();
 
 // ── Build palette (grouped by category) ──
 const CATEGORY_LABELS = {
-  trees:      '🌳 Trees',
-  shrubs:     '🌿 Shrubs & Hedges',
-  perennials: '🌸 Perennials & Bulbs',
-  ground:     '🟩 Ground Surfaces',
-  water:      '💧 Water Features',
-  structures: '🏗 Structures',
+  trees:       '🌳 Trees',
+  shrubs:      '🌿 Shrubs & Climbers',
+  perennials:  '🌸 Perennials & Bulbs',
+  ground:      '🟩 Ground Surfaces',
+  water:       '💧 Water Features',
+  hardscaping: '🧱 Hard Landscaping',
+  buildings:   '🏠 Buildings',
+  features:    '✨ Garden Features',
 };
 
 // ── Layer 1 Archetype Palette (ADR-006) ──
@@ -959,7 +961,8 @@ function selectPlant(id) {
 
 // ── Archetype palette (Layer 1 — ADR-006) ──
 const SEQ_LABELS = { ground:'Ground', structures:'Structures', trees:'Trees',
-                     shrubs:'Shrubs', perennials:'Perennials', water:'Water' };
+                     shrubs:'Shrubs', perennials:'Perennials', water:'Water',
+                     hardscaping:'Hard Landscaping', buildings:'Buildings', features:'Garden Features' };
 
 function buildSuggestedItem(plant) {
   const el = document.createElement('div');
