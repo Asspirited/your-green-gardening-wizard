@@ -74,6 +74,44 @@ Phase 1 MVP — Consumer garden advisor. Conversational. Single page.
 
 ---
 
+## YGW Standing Design Principles
+
+**Typography pairing (ADR-009, fixed — do not change without ADR)**
+- Display/headings: Playfair Display — italic 500 for section labels, upright 500/600 for headlines
+- UI/body: DM Sans — 400 regular, 500 medium
+- Latin plant names: Playfair Display italic, always
+
+**CSS variable system (canonical)**
+```
+--green-deep: #1a5c2a  (primary brand, used sparingly)
+--green-mid:  #2d8a42  (active states, borders)
+--green-light:#85d4a0  (light accent)
+--cream:      #faf7f0  (primary background)
+--parchment:  #f0ead8  (secondary background, about strips)
+--ink:        #1c2218  (primary text)
+--mist:       #eef4ec  (tertiary background, tags, step numbers)
+```
+
+**Colour usage rule**
+Green as accent not flood. Cream/parchment backgrounds throughout.
+Green used for: active states, primary CTAs, the deep green callout strip.
+Never as a page or section background colour.
+
+**Seasonal coherence rule**
+All surfaces (canvas grid, landing page, proposal output) respond to the same season
+in the same palette system. A user switching season should feel the whole product
+breathe with it, not just one component.
+
+**Canvas tool rule**
+No animations or particle effects on the canvas tool (app.html).
+Seasonal colouring only — grid palette, plant colours, surface tones.
+The canvas is a professional working tool, not a marketing surface.
+
+**Professional user test (YGW)**
+"Would a professional landscape designer trust this to present to their client?"
+
+---
+
 ## Peer Collaboration Model
 
 Challenge freely. Rod has limited coding skills but tests well. Suggest experiments and quantification of ideas. Flag risks early.

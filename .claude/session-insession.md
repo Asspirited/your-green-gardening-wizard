@@ -94,6 +94,56 @@ Phrases: "like RIA", "persona", "scoring agent", "like the assessor"
 
 ---
 
+## STANDING LENS: UI/UX quality standard
+
+Before building any YGW UI, state:
+1. Who is using this (landscaper in client meeting vs. consumer browsing)?
+2. What is the ONE thing this screen must make effortless?
+3. What could go wrong visually or interactively?
+
+After building, run before presenting output:
+
+### Layout and composition
+- [ ] No element overlaps at 375px, 768px, 1280px
+- [ ] Absolute-positioned elements checked against all other positioned elements
+- [ ] Content does not overflow at narrow widths
+- [ ] Whitespace intentional — neither cramped nor wasteful
+- [ ] Visual hierarchy clear: primary action dominant, secondary recessive
+
+### Typography
+- [ ] Playfair Display loaded correctly (not system serif fallback)
+- [ ] Latin plant names in italic Playfair throughout
+- [ ] Sufficient contrast on all backgrounds including seasonal gradients
+- [ ] No accidental font substitutions
+
+### Colour and visual language
+- [ ] Green as accent not flood (cream/parchment backgrounds throughout)
+- [ ] Interactive elements visually distinct from static
+- [ ] Hover and active states on all clickable elements
+
+### Interaction
+- [ ] Season switching redraws all canvas icons within 100ms
+- [ ] Primary CTA visible without scrolling on first load
+- [ ] State changes communicated visually
+- [ ] Nothing silently fails
+
+### The professional user test (YGW)
+- [ ] Would a professional landscape designer trust this to present to their client?
+- [ ] Is every alignment intentional?
+- [ ] Does it feel like a professional tool or an assembled prototype?
+
+### Responsive check
+- [ ] Tested mentally at 375px, 768px, 1280px
+- [ ] No horizontal scroll at any standard width
+- [ ] Touch targets 44px minimum on mobile
+
+### UI/UX session note
+Note any UI/UX issues spotted but not fixed:
+"UI debt: [description] — [screen] — [priority: fix next / backlog]"
+Log as YGW-UX-NNN backlog items.
+
+---
+
 ## Pipeline Rule
 100% statement and branch coverage required. Full green before merge. No exceptions.
 

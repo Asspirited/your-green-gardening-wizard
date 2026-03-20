@@ -23,12 +23,19 @@ List every decision made this session that isn't captured in code or a backlog i
 - Commercial / strategic decisions from Oz or Jerry
 Format: `DECISION [date]: [what was decided] — [why]`
 
-### Step 4: HDD hypothesis update
-Has this session's work confirmed, challenged, or refined the current hypothesis?  
-State the updated hypothesis explicitly, even if unchanged.
+### Step 4: HDD advancement check
 
-Current Phase 1 hypothesis (update as learned):  
-*"A conversational garden advisor that remembers your garden profile will provide enough value to retain users and validate the knowledge engine before building spatial tools."*
+Answer every session before closing:
+
+1. Did today's session advance HDD-001? Yes / No / Partial
+2. If yes — what specifically moved forward?
+3. If no — what was the reason?
+   (valid: explicit pivot agreed, scaffolding work, consumer feature agreed as intentional)
+4. What is the next concrete action that would advance HDD-001?
+5. Who owns that action and by when?
+
+Has this session confirmed, challenged, or refined the current hypothesis?
+State the updated hypothesis explicitly, even if unchanged.
 
 ### Step 5: SWOT update (if applicable)
 If the session produced strategic learning (user feedback, commercial input, technical discovery):

@@ -19,11 +19,24 @@ Fetch `/docs/ygw-backlog.md`. Identify:
 - Any items **In Progress** from last session
 - Top 3 open items by priority
 
-### Step 4: HDD check
-What is the current hypothesis we're testing?  
-Default Phase 1 hypothesis: *"A conversational garden advisor that remembers your garden profile will provide enough value to retain users and validate the knowledge engine before building spatial tools."*
+### Step 4: HDD hypothesis status
 
-Has anything happened since last session that updates this hypothesis? (User feedback, commercial discussions, new co-founder input?)
+State all open HDD hypotheses and their current status.
+
+```
+HDD-001: "Landscapers will pay for AI-generated client proposals if output quality
+          passes the Ollie test."
+Status:   [OPEN / CONFIRMED / REFUTED / PIVOTED]
+Evidence: [What we have so far, or "None yet"]
+Next validation action: [Specific next step]
+```
+
+If HDD-001 is OPEN, state explicitly:
+"Today's work should primarily serve the landscaper proposal workflow unless
+a pivot is agreed and recorded as an ADR."
+
+Has anything happened since last session that updates this hypothesis?
+(User feedback, Oz/Jerry input, Ollie reaction, commercial discussions?)
 
 ### Step 5: SWOT check (at phase transitions or if hypothesis has changed)
 If hypothesis has changed or we're at a phase boundary:

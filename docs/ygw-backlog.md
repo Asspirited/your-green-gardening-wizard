@@ -396,6 +396,7 @@ Feature: Overwrite saved plot
     And the updatedAt timestamp is refreshed
 ```
 
+| YGW-UX-005 | Logo — The Green Wizard mark on index.html homepage | 6.0 | 📋 Open |
 | YGW-054 | Canvas season toggle — show placed garden in Spring/Summer/Autumn/Winter | 7.5 | 📋 Open |
 | YGW-055 | Seasonal shade cover — plant foliage spread adjusts per season (bare deciduous in winter) | 6.5 | 📋 Open |
 | YGW-056 | Save plot — name it, save to localStorage | 9.0 | 🔨 Building |
