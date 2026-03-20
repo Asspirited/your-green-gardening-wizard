@@ -751,7 +751,7 @@ Feature: Plant Palette Generator
 | YGW-071 | Quick quote helper — landscaper enters site dimensions + palette; tool outputs materials list + estimated cost range | 8.5 | P | Sticky | Landscaper | 📋 Open |
 | YGW-072 | Shareable before/after photo framing — user uploads before photo; AI overlays annotated plan vision; optimised for social | 7.5 | D | Viral | Amateur | 💡 Idea |
 | YGW-073 | Seasonal reveal card — animated/static card showing garden across 4 seasons; timed for seasonal posting | 7.0 | D | Viral | Amateur | 💡 Idea |
-| YGW-074 | "Powered by The Green Wizard" footer in landscaper PDF — one line in proposal template closes B2C viral loop | 9.0 | P | Viral+Sticky | Landscaper | 📋 Open |
+| YGW-074 | "Powered by The Green Wizard" footer in landscaper PDF — one line in proposal template closes B2C viral loop | 9.0 | P | Viral+Sticky | Landscaper | ✅ Done |
 
 > **YGW-074 note:** Highest leverage / lowest effort in the viral column. Every PDF Ollie sends to a client is an acquisition touchpoint. One line of text in the proposal template. No code change needed beyond the PDF CSS/template.
 > **YGW-071 note:** Serves the sticky engine directly for the Landscaper persona. Pairs with YGW-066 (Plant Palette Generator) — same workflow, next step.
@@ -824,21 +824,25 @@ Order confirmed by Rod for next discussion session:
 **Engine of Growth: Sticky primary, B2B2C referral tail (ADR-010, 2026-03-20)**
 Landscaper features come before pure-Viral consumer features until HDD-001 is validated.
 YGW-066-AC-007 (Ollie test) blocks merge of all landscaper column items.
+CD3 re-scored 2026-03-20 after YGW-066, YGW-071, YGW-074 built this session.
 
-| Rank | ID | Title | Engine | Blocker |
-|---|---|---|---|---|
-| 1 | **YGW-066** | Plant Palette Generator (Ollie gate) | Sticky | Build first — HDD-001 instrument |
-| 2 | **YGW-071** | Quick Quote Helper | Sticky | None — spec ready |
-| 3 | **YGW-074** | "Powered by The Green Wizard" footer in landscaper PDF | Viral (passive) | None — one line in template |
-| 4 | YGW-064 | Stripe billing + trial gate (landscaper) | Paid | Rod: Stripe account |
-| 5 | YGW-022 | Seasonal re-engagement email | Sticky | Rod: RESEND_API_KEY |
-| 6 | YGW-061 | "Fix my garden" mode | Sticky | None |
-| 7 | YGW-BL-020 | Homepage section reorder | — | None |
-| 8 | YGW-072 | Before/after photo framing | Viral | Prereq: Ollie test passed |
-| 9 | YGW-073 | Seasonal reveal card | Viral | Prereq: Ollie test passed |
-| 10 | YGW-062 | Photo-based plant scan | Sticky | None |
+| Rank | ID | Title | CD3 Score | Engine | Blocker |
+|---|---|---|---|---|---|
+| 1 | YGW-066 | Plant Palette Generator | — | Sticky | ✅ Built — awaiting Ollie test to merge |
+| 2 | YGW-071 | Quick Quote Helper | — | Sticky | ✅ Built — awaiting Ollie test to merge |
+| 3 | YGW-074 | "Powered by The Green Wizard" footer | — | Viral (passive) | ✅ Done |
+| 4 | **YGW-064** | Stripe billing + trial gate (landscaper) | **11.0** | Paid | Rod: Stripe account |
+| 5 | **YGW-061** | "Fix my garden" mode | **7.0** | Sticky | None — highest unblocked item |
+| 6 | YGW-022 | Seasonal re-engagement email | 7.0 | Sticky | Rod: RESEND_API_KEY |
+| 7 | YGW-070 | Designer Mode (Oz) | 5.0 | Sticky | Oz availability |
+| 8 | YGW-062 | Photo-based plant scan | 3.5 | Sticky | YGW-061 first |
+| 9 | YGW-025 | Year-round interest planner | 3.5 | Sticky | None |
+| 10 | YGW-046 | Cycling hero images | 2.5 | Viral | None |
 
-> **Note on YGW-072 and YGW-073:** Both Viral features are held until YGW-066-AC-007 passes. Viral mechanics only work if output quality is share-worthy. Ollie test validates that prerequisite.
+> **YGW-064** scores highest (11.0) but is blocked on Rod's Stripe account — unblock this outside the session.
+> **YGW-061** is the highest unblocked item. Note: consumer-facing while HDD-001 is open — confirmed intentional (Rod 2026-03-20).
+> **YGW-072 and YGW-073:** Both Viral features held until YGW-066-AC-007 passes. Dropped from top 10 until Ollie test runs.
+> **CD3 formula:** (Customer value + Dependencies − Complexity) + (SWOT × 1.5)
 
 ---
 
