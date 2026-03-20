@@ -17,6 +17,7 @@ import {
   buildColourClause,
   buildPlantTypeClause,
   buildExtrasClause,
+  buildGrowthHorizonContext,
   buildSeasonalPrompt,
   getCurrentUKSeason,
   buildSeasonalContext,
@@ -947,6 +948,90 @@ describe('generateShareCard', () => {
     });
     assert.strictEqual(capturedCanvas.width, 1080);
     assert.strictEqual(capturedCanvas.height, 1080);
+  });
+
+});
+
+// ─────────────────────────────────────────────
+// buildGrowthHorizonContext
+// ─────────────────────────────────────────────
+describe('buildGrowthHorizonContext', () => {
+
+  test('returns empty string for null', () => {
+    assert.strictEqual(buildGrowthHorizonContext(null), '');
+  });
+
+  test('returns empty string for undefined', () => {
+    assert.strictEqual(buildGrowthHorizonContext(undefined), '');
+  });
+
+  test('returns empty string for invalid value', () => {
+    assert.strictEqual(buildGrowthHorizonContext('20yr'), '');
+  });
+
+  test('returns empty string for empty string', () => {
+    assert.strictEqual(buildGrowthHorizonContext(''), '');
+  });
+
+  test('2yr returns fragment mentioning quick/fast', () => {
+    const result = buildGrowthHorizonContext('2yr');
+    assert.ok(result.length > 0);
+    assert.ok(result.toLowerCase().includes('quick') || result.toLowerCase().includes('fast'));
+  });
+
+  test('5yr returns fragment mentioning balanced', () => {
+    const result = buildGrowthHorizonContext('5yr');
+    assert.ok(result.length > 0);
+    assert.ok(result.toLowerCase().includes('balanced') || result.toLowerCase().includes('steadily'));
+  });
+
+  test('10yr returns fragment mentioning legacy or long', () => {
+    const result = buildGrowthHorizonContext('10yr');
+    assert.ok(result.length > 0);
+    assert.ok(result.toLowerCase().includes('legacy') || result.toLowerCase().includes('long term'));
+  });
+
+  test('buildSystemPrompt injects horizon clause when profile has horizon', () => {
+    const profile = { location: 'London', horizon: '10yr' };
+    const prompt = buildSystemPrompt(profile, null, new Date('2025-06-01'));
+    assert.ok(prompt.includes('LEGACY'));
+  });
+
+  test('buildSystemPrompt omits horizon clause when profile has no horizon', () => {
+    const profile = { location: 'London', horizon: null };
+    const prompt = buildSystemPrompt(profile, null, new Date('2025-06-01'));
+    assert.ok(!prompt.includes('GROWTH HORIZON'));
+  });
+
+  test('buildGardenProfile passes valid horizon through', () => {
+    const state = { location: 'Bristol', soil: 'clay', aspect: 'south', goals: ['colour'], horizon: '5yr' };
+    const profile = buildGardenProfile(state);
+    assert.strictEqual(profile.horizon, '5yr');
+  });
+
+  test('buildGardenProfile sets horizon null for invalid value', () => {
+    const state = { location: 'Bristol', soil: 'clay', aspect: 'south', goals: ['colour'], horizon: 'bad' };
+    const profile = buildGardenProfile(state);
+    assert.strictEqual(profile.horizon, null);
+  });
+
+  test('buildGardenProfile sets horizon null when absent', () => {
+    const state = { location: 'Bristol', soil: 'clay', aspect: 'south', goals: ['colour'] };
+    const profile = buildGardenProfile(state);
+    assert.strictEqual(profile.horizon, null);
+  });
+
+  test('buildUserMessage includes horizon line when set', () => {
+    const profile = { location: 'Bristol', soil: 'clay', aspect: 'south', goals: ['colour'], horizon: '2yr' };
+    const msg = buildUserMessage(profile);
+    assert.ok(msg.includes('Growth horizon'));
+    assert.ok(msg.includes('Quick impact'));
+  });
+
+  test('buildUserMessage omits horizon line when null', () => {
+    const profile = { location: 'Bristol', soil: 'clay', aspect: 'south', goals: ['colour'], horizon: null };
+    const msg = buildUserMessage(profile);
+    assert.ok(!msg.includes('Growth horizon'));
   });
 
 });

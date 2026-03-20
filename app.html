@@ -437,6 +437,7 @@
   .season-btn.active { background: var(--season-cta, var(--forest)); color: white; border-color: transparent; }
 
   @media (max-width: 700px) {
+    html, body { overscroll-behavior-x: contain; }
     .plant-palette {
       position: fixed; top: 0; left: 0; height: 100%; width: 85vw; max-width: 320px;
       z-index: 300; transform: translateX(-110%); transition: transform 0.25s ease;
@@ -451,8 +452,9 @@
     }
     .info-panel.drawer-open { transform: translateX(0); }
     .drawer-close-btn { display: flex; }
-    .mob-open-btn { display: flex !important; }
+    .mob-open-btn { display: none !important; }
     .toolbar-sep.mob-hide { display: none; }
+    .mob-fab { display: flex !important; }
   }
   .drawer-backdrop {
     display: none; position: fixed; inset: 0;
@@ -465,6 +467,17 @@
   }
   .drawer-close-btn:hover { color: var(--ink); }
   .mob-open-btn { display: none !important; }
+  .mob-fab {
+    display: none !important;
+    position: fixed; bottom: 20px; z-index: 310;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--forest); color: white; border: none;
+    font-size: 1.4rem; cursor: pointer;
+    align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.28);
+  }
+  .mob-fab-left  { left: 16px; }
+  .mob-fab-right { right: 16px; }
 
   /* ── Current plot name in toolbar ── */
   .plot-name-label {
@@ -631,6 +644,10 @@
     </button>
   </div>
 </div>
+
+<!-- Mobile FABs (hidden on desktop, fixed bottom corners on mobile) -->
+<button class="mob-fab mob-fab-left"  onclick="openDrawer('left')"  title="Plant palette">🌿</button>
+<button class="mob-fab mob-fab-right" onclick="openDrawer('right')" title="Info panel">ℹ️</button>
 
 <!-- Mobile drawer backdrop -->
 <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeDrawer()"></div>

@@ -381,3 +381,20 @@ On mobile: both panels are `position: fixed`, off-screen by default (translateX 
 Any three-column flex layout on mobile must account for viewport width. Either collapse side panels to drawers or use a tab/bottom-sheet pattern. Test layout at 375px before merging any canvas or layout work.
 
 ---
+
+## WL-023 — Mobile drawer open buttons invisible (toolbar overflow) + swipe triggers browser back
+
+**Status:** Fixed 2026-03-20
+**Raised:** 2026-03-20
+**Type:** Live bug — mobile drawers completely inaccessible
+
+### What happened
+The 🌿 / ℹ️ buttons were placed inside the toolbar as `mob-open-btn` elements. On mobile the toolbar is full of tool buttons — the open-btn elements were off the right edge of the screen, clipped, never visible. Additionally, horizontal swipe on mobile was triggering the browser's back-navigation gesture rather than canvas interaction.
+
+### Fix applied
+Replaced toolbar mob-open-btn elements with fixed-position floating action buttons (FABs): 🌿 bottom-left, ℹ️ bottom-right. Always visible, can't be crowded out. Added `overscroll-behavior-x: contain` on `html, body` at mobile breakpoint to suppress browser swipe-back navigation.
+
+### Prevention
+Never put mobile-only UI controls inside the toolbar — it can be full of desktop controls and overflow. Fixed FABs or a bottom action bar are the reliable patterns. Any mobile-only control must be tested at 375px viewport before merging.
+
+---

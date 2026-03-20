@@ -449,7 +449,7 @@ Feature: Overwrite saved plot
 
 | ID | Title | Score | Kano | Status |
 |---|---|---|---|---|
-| YGW-060 | Growth horizon selector — user sets "I want it to look mature in 2yr / 5yr / 10yr"; AI adjusts species selection, spacing, and initial-planting density accordingly | 9.5 | D | 📋 Open |
+| YGW-060 | Growth horizon selector — user sets "I want it to look mature in 2yr / 5yr / 10yr"; AI adjusts species selection, spacing, and initial-planting density accordingly | 9.5 | D | ✅ Done |
 | YGW-061 | "Fix my garden" mode — wizard variant for existing gardens; user describes what's there, AI advises what to keep, remove, add, and improve | 9.0 | D | 📋 Open |
 | YGW-062 | Photo-based existing plant scan — upload photo of garden; AI identifies existing plants; feeds into Fix My Garden mode or standalone advice | 8.5 | D | 📋 Open |
 | YGW-063 | RHS plant database integration — live cultivar data, hardiness ratings, RHS Award of Garden Merit flags in recommendations | 9.5 | P | 💡 Idea |

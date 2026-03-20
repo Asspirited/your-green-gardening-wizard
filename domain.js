@@ -67,17 +67,19 @@ export const STYLE_LABELS = {
  */
 export function buildGardenProfile(wizardState) {
   if (!wizardState) return null;
-  const { location, soil, aspect, goals } = wizardState;
+  const { location, soil, aspect, goals, horizon } = wizardState;
   if (!location || location.trim().length < 2) return null;
   if (!soil || !SOIL_LABELS[soil]) return null;
   if (!aspect || !ASPECT_LABELS[aspect]) return null;
   if (!goals || !Array.isArray(goals) || goals.length === 0) return null;
 
+  const VALID_HORIZONS = ['2yr', '5yr', '10yr'];
   return {
     location: location.trim(),
     soil,
     aspect,
-    goals: goals.filter(g => GOAL_LABELS[g])
+    goals: goals.filter(g => GOAL_LABELS[g]),
+    horizon: VALID_HORIZONS.includes(horizon) ? horizon : null
   };
 }
 
@@ -92,11 +94,15 @@ export function buildGardenProfile(wizardState) {
  */
 export function buildUserMessage(profile) {
   const goalList = profile.goals.map(g => GOAL_LABELS[g]).join(', ');
+  const HORIZON_LABELS = { '2yr': 'Quick impact (2 years)', '5yr': 'Balanced (5 years)', '10yr': 'Legacy (10+ years)' };
+  const horizonLine = profile.horizon && HORIZON_LABELS[profile.horizon]
+    ? `\n- Growth horizon: ${HORIZON_LABELS[profile.horizon]}`
+    : '';
   return `My garden profile:
 - Location: ${profile.location}
 - Soil type: ${SOIL_LABELS[profile.soil]}
 - Aspect: ${ASPECT_LABELS[profile.aspect]}
-- What I want: ${goalList}
+- What I want: ${goalList}${horizonLine}
 
 Please give me personalised plant recommendations and garden design ideas for my specific conditions.`;
 }
@@ -104,6 +110,22 @@ Please give me personalised plant recommendations and garden design ideas for my
 // ─────────────────────────────────────────────
 // Prompt clause builders (single responsibility)
 // ─────────────────────────────────────────────
+
+/**
+ * Builds the growth horizon context clause.
+ * @param {string|null} horizon - '2yr', '5yr', or '10yr'
+ * @returns {string} Prompt fragment or empty string
+ */
+export function buildGrowthHorizonContext(horizon) {
+  const HORIZON_FRAGMENTS = {
+    '2yr': '\n\nGROWTH HORIZON — QUICK IMPACT (2 years): The gardener wants results fast. Prioritise plants that establish and perform within 1–2 seasons: fast-growing perennials, annual fillers, container-ready plants, and shrubs known for quick establishment. Flag the expected year-1 and year-2 appearance for each key recommendation. Avoid slow-growing trees or shrubs that take 5+ years to reach impact. If a slow plant is essential, note the timeline honestly.',
+    '5yr': '\n\nGROWTH HORIZON — BALANCED (5 years): The gardener wants a garden that builds steadily and looks good throughout. Mix fast-establishing plants for early colour with medium-term structural shrubs and perennials that mature in 3–5 years. Note which plants provide immediate interest vs. which are the backbone at year 5. Avoid plants that take a decade or more to reach their statement size unless they are small-garden staples.',
+    '10yr': '\n\nGROWTH HORIZON — LEGACY (10+ years): The gardener is planting for the long term. Include statement trees, large structural shrubs, and slow-maturing plants that will define the garden in a decade. Provide a layered planting plan: fast annuals/perennials for years 1–3, medium shrubs for years 3–7, and the legacy trees/large shrubs as the eventual centrepiece. Be explicit about what the garden will look like at year 1, year 5, and year 10+'
+  };
+
+  if (!horizon || !HORIZON_FRAGMENTS[horizon]) return '';
+  return HORIZON_FRAGMENTS[horizon];
+}
 
 /**
  * Builds the safety constraint clause.
@@ -302,6 +324,7 @@ export function buildSystemPrompt(profile = null, refinements = null, date = new
   const clauses = [
     BASE_PROMPT,
     buildSeasonalContext(profile?.location, date),
+    buildGrowthHorizonContext(profile?.horizon),
     buildSafetyClause(refinements?.safety),
     buildStyleClause(refinements?.style),
     buildColourClause(refinements?.colours),
