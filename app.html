@@ -160,6 +160,26 @@
   .archetype-chip.active { background: var(--sage); border-color: var(--sage); color: white; font-weight: 600; }
   .plant-item.avoided { opacity: 0.38; }
   .plant-item.avoided .plant-name::after { content: ' ⚠'; font-size: 0.72em; color: #e65100; }
+  /* ── Palette search + custom element ── */
+  .palette-search-wrap { padding: 7px 8px 5px; border-bottom: 1px solid var(--parch); }
+  .palette-search-wrap input { width: 100%; box-sizing: border-box; border: 1px solid rgba(0,0,0,0.12); border-radius: 100px; padding: 5px 10px; font-size: 0.75rem; font-family: inherit; outline: none; background: var(--parch); color: var(--ink); }
+  .palette-search-wrap input:focus { border-color: var(--sage); background: white; }
+  .custom-panel { padding: 8px 10px; border-bottom: 1px solid var(--parch); background: #f9fdf9; }
+  .custom-panel-prompt { font-size: 0.72rem; color: #666; margin-bottom: 6px; }
+  .btn-add-custom { width: 100%; background: white; border: 1.5px dashed var(--sage); border-radius: 8px; padding: 6px 10px; font-size: 0.72rem; color: var(--moss); cursor: pointer; text-align: center; transition: all 0.12s; }
+  .btn-add-custom:hover { background: var(--parch); }
+  .custom-form { margin-top: 8px; }
+  .custom-form-row { display: flex; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .custom-form-label { font-size: 0.68rem; color: #888; white-space: nowrap; width: 40px; flex-shrink: 0; }
+  .custom-form-input { flex: 1; border: 1px solid rgba(0,0,0,0.15); border-radius: 6px; padding: 4px 6px; font-size: 0.78rem; font-family: inherit; outline: none; width: 0; }
+  .custom-form-input:focus { border-color: var(--sage); }
+  .custom-form-unit { font-size: 0.68rem; color: #aaa; }
+  .custom-swatches { display: flex; gap: 5px; flex-wrap: wrap; }
+  .custom-swatch { width: 18px; height: 18px; border-radius: 50%; border: 2px solid transparent; cursor: pointer; transition: transform 0.1s; }
+  .custom-swatch:hover { transform: scale(1.15); }
+  .custom-swatch.selected { border-color: var(--ink); }
+  .btn-add-custom-confirm { width: 100%; background: var(--moss); color: white; border: none; border-radius: 8px; padding: 7px 10px; font-size: 0.74rem; font-weight: 500; font-family: inherit; cursor: pointer; margin-top: 4px; transition: background 0.12s; }
+  .btn-add-custom-confirm:hover { background: var(--forest); }
   .palette-suggested .palette-category { background: #eaf7ef; border-left: 3px solid var(--sage); }
   /* ── Archetype hint in info panel ── */
   .archetype-hint {
@@ -285,7 +305,7 @@
     border-left: 1px solid rgba(0,0,0,0.1);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    overflow-y: auto;
     flex-shrink: 0;
   }
   .info-section {
@@ -595,6 +615,25 @@
   <aside class="plant-palette">
     <div class="palette-header">Plants</div>
     <div id="archetype-picker" class="archetype-picker"></div>
+    <div class="palette-search-wrap">
+      <input type="text" id="palette-search" placeholder="Search or add plant…" autocomplete="off" />
+    </div>
+    <div class="custom-panel" id="custom-panel" style="display:none">
+      <div class="custom-panel-prompt" id="custom-panel-prompt"></div>
+      <button class="btn-add-custom" id="btn-add-custom" onclick="showCustomForm()">+ Add as custom element</button>
+      <div class="custom-form" id="custom-form" style="display:none">
+        <div class="custom-form-row">
+          <span class="custom-form-label">Spread</span>
+          <input type="number" id="custom-spread" value="1.0" min="0.1" max="30" step="0.5" class="custom-form-input" />
+          <span class="custom-form-unit">m</span>
+        </div>
+        <div class="custom-form-row">
+          <span class="custom-form-label">Colour</span>
+          <div class="custom-swatches" id="custom-swatches"></div>
+        </div>
+        <button class="btn-add-custom-confirm" onclick="addCustomPlant()">Add to palette →</button>
+      </div>
+    </div>
     <div class="palette-scroll" id="palette-list"></div>
   </aside>
 
@@ -606,6 +645,14 @@
 
   <!-- Info panel -->
   <aside class="info-panel">
+    <div class="info-section">
+      <div class="info-label">Growth timeline</div>
+      <div class="timeline-btns" id="timeline-btns"></div>
+    </div>
+    <div class="info-section">
+      <div class="info-label">Season</div>
+      <div class="season-btns" id="season-btns"></div>
+    </div>
     <div class="info-section">
       <div class="info-label">Garden area</div>
       <div class="info-value" id="info-area">—</div>
@@ -619,19 +666,11 @@
       <div class="info-label">Quantity guide <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.65rem;color:#aaa">(to fill boundary)</span></div>
       <ul class="qty-guide-list" id="qty-guide-list"></ul>
     </div>
-    <div class="info-section">
-      <div class="info-label">Growth timeline</div>
-      <div class="timeline-btns" id="timeline-btns"></div>
-    </div>
-    <div class="info-section">
-      <div class="info-label">Season</div>
-      <div class="season-btns" id="season-btns"></div>
-    </div>
     <div class="info-section" id="archetype-guide-section" style="display:none">
       <div class="info-label">Style guide</div>
       <div class="archetype-hint" id="archetype-hint"></div>
     </div>
-    <div class="info-section" style="flex:1">
+    <div class="info-section">
       <div class="info-label">How to use</div>
       <div class="info-hint" id="mode-hint">Click <strong>Draw boundary</strong> then click on the canvas to mark your garden corners. Double-click or click the first point to close.</div>
     </div>
@@ -959,6 +998,144 @@ function selectPlant(id) {
   });
   if (state.mode !== 'place') setMode('place');
 }
+
+// ── Palette search + custom plants ──
+const CUSTOM_COLOURS = ['#5a8a4a','#8b5a2b','#4a7ab5','#7b5ea7','#d4a054','#888888'];
+let customSelectedColour = CUSTOM_COLOURS[0];
+
+// Build colour swatches once
+(function initSwatches() {
+  const wrap = document.getElementById('custom-swatches');
+  CUSTOM_COLOURS.forEach((c, i) => {
+    const s = document.createElement('div');
+    s.className = 'custom-swatch' + (i === 0 ? ' selected' : '');
+    s.style.background = c;
+    s.dataset.colour = c;
+    s.addEventListener('click', () => {
+      wrap.querySelectorAll('.custom-swatch').forEach(x => x.classList.remove('selected'));
+      s.classList.add('selected');
+      customSelectedColour = c;
+    });
+    wrap.appendChild(s);
+  });
+})();
+
+// Restore custom plants from localStorage
+(function restoreCustomPlants() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('ygw-custom-plants') || '[]');
+    saved.forEach(p => { if (!PLANTS.find(x => x.id === p.id)) { PLANTS.push(p); renderCustomPaletteItem(p); } });
+  } catch (e) { /* ignore */ }
+})();
+
+function renderCustomPaletteItem(plant) {
+  let group = paletteList.querySelector('.palette-group[data-cat="custom"]');
+  if (!group) {
+    const header = document.createElement('div');
+    header.className = 'palette-category open';
+    header.dataset.cat = 'custom';
+    header.textContent = '⭐ My plants';
+    header.addEventListener('click', () => {
+      header.classList.toggle('open');
+      group.classList.toggle('open');
+    });
+    group = document.createElement('div');
+    group.className = 'palette-group open';
+    group.dataset.cat = 'custom';
+    paletteList.insertBefore(header, paletteList.firstChild);
+    paletteList.insertBefore(group, header.nextSibling);
+  }
+  const el = document.createElement('div');
+  el.className = 'plant-item';
+  el.dataset.id = plant.id;
+  el.innerHTML = `
+    <div class="plant-dot" style="background:${plant.dotColour}"></div>
+    <div class="plant-info">
+      <div class="plant-name">${plant.name}</div>
+      <div class="plant-meta">custom · ${plant.spreadMetres}m spread</div>
+    </div>`;
+  el.addEventListener('click', () => selectPlant(plant.id));
+  group.appendChild(el);
+}
+
+function filterPalette(query) {
+  const q = query.trim().toLowerCase();
+  const customPanel = document.getElementById('custom-panel');
+  if (!q) {
+    document.querySelectorAll('#palette-list .plant-item').forEach(el => el.style.display = '');
+    document.querySelectorAll('#palette-list .palette-category').forEach(el => el.style.display = '');
+    document.querySelectorAll('#palette-list .palette-group').forEach(el => el.style.display = '');
+    customPanel.style.display = 'none';
+    return;
+  }
+  let anyVisible = false;
+  document.querySelectorAll('#palette-list .palette-group').forEach(group => {
+    let groupVisible = false;
+    group.querySelectorAll('.plant-item').forEach(item => {
+      const plant = PLANTS.find(p => p.id === item.dataset.id);
+      const match = plant && (plant.name.toLowerCase().includes(q) || (plant.latinName && plant.latinName.toLowerCase().includes(q)));
+      item.style.display = match ? '' : 'none';
+      if (match) { groupVisible = true; anyVisible = true; }
+    });
+    const header = paletteList.querySelector(`.palette-category[data-cat="${group.dataset.cat}"]`);
+    group.style.display = groupVisible ? '' : 'none';
+    if (header) {
+      header.style.display = groupVisible ? '' : 'none';
+      if (groupVisible) { group.classList.add('open'); header.classList.add('open'); }
+    }
+  });
+  if (!anyVisible) {
+    document.getElementById('custom-panel-prompt').textContent = `No results for "${query.trim()}"`;
+    customPanel.style.display = 'block';
+  } else {
+    customPanel.style.display = 'none';
+    document.getElementById('custom-form').style.display = 'none';
+  }
+}
+
+function showCustomForm() {
+  document.getElementById('custom-form').style.display = 'block';
+  document.getElementById('btn-add-custom').style.display = 'none';
+  document.getElementById('custom-spread').focus();
+}
+
+function addCustomPlant() {
+  const name = document.getElementById('palette-search').value.trim();
+  if (!name) return;
+  const spread = parseFloat(document.getElementById('custom-spread').value) || 1.0;
+  const colour = customSelectedColour;
+  const id = 'custom-' + Date.now();
+  const plant = {
+    id, name, latinName: null, category: 'custom', type: 'custom',
+    shape: 'circle', subtype: 'evergreen',
+    spreadMetres: spread,
+    heightMetres: { mature: Math.round(spread / 2), tenYear: Math.round(spread / 4) },
+    heightCategory: spread >= 6 ? 'canopy' : spread >= 2 ? 'understory' : 'low',
+    evergreen: true, nativeUK: false, dotColour: colour,
+    seasonalColours: { spring: colour, summer: colour, autumn: colour, winter: colour },
+    notes: 'Custom element',
+  };
+  PLANTS.push(plant);
+  try {
+    const existing = JSON.parse(localStorage.getItem('ygw-custom-plants') || '[]');
+    existing.push(plant);
+    localStorage.setItem('ygw-custom-plants', JSON.stringify(existing));
+  } catch (e) { /* ignore */ }
+  renderCustomPaletteItem(plant);
+  // Reset search and panel
+  document.getElementById('palette-search').value = '';
+  document.getElementById('custom-panel').style.display = 'none';
+  document.getElementById('custom-form').style.display = 'none';
+  document.getElementById('btn-add-custom').style.display = '';
+  document.getElementById('custom-spread').value = '1.0';
+  filterPalette('');
+  selectPlant(id);
+  showToast(`${name} added to palette`);
+}
+
+document.getElementById('palette-search').addEventListener('input', function() {
+  filterPalette(this.value);
+});
 
 // ── Archetype palette (Layer 1 — ADR-006) ──
 const SEQ_LABELS = { ground:'Ground', structures:'Structures', trees:'Trees',
@@ -2097,6 +2274,14 @@ function escapeHtml(s) {
 
 // Initial render
 render();
+
+window.showCustomForm    = showCustomForm;
+window.addCustomPlant    = addCustomPlant;
+window.savePlot          = savePlot;
+window.openPlotsPanel    = openPlotsPanel;
+window.closePlotsPanel   = closePlotsPanel;
+window.loadPlot          = loadPlot;
+window.deletePlotById    = deletePlotById;
 </script>
 </body>
 </html>

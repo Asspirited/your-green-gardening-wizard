@@ -330,3 +330,37 @@ When adding new element categories that aren't plants, check all UI copy that re
 Primary navigation must never be hidden on mobile. Test banner nav at 375px as part of every UI change to index.html.
 
 ---
+
+## WL-020 — Save plot / load plot / delete plot buttons broke silently (module export missing)
+
+**Status:** Fixed 2026-03-20
+**Raised:** 2026-03-20
+**Type:** Live bug — module scope, onclick attributes not wired to window
+
+### What happened
+`savePlot()`, `openPlotsPanel()`, `closePlotsPanel()`, `loadPlot()`, `deletePlotById()` are all defined inside `<script type="module">` in app.html. The save-plot button uses `onclick="savePlot()"` which requires a global. No `window.savePlot = savePlot` assignment existed. All plot save/load/delete actions silently failed.
+
+### Fix applied
+Added `window.savePlot`, `window.openPlotsPanel`, `window.closePlotsPanel`, `window.loadPlot`, `window.deletePlotById` exports at bottom of module.
+
+### Prevention
+Any function referenced in an `onclick=""` attribute that lives in a `<script type="module">` MUST have an explicit `window.fn = fn` export. After adding any new onclick-triggered function in the module: check the window exports block.
+
+---
+
+## WL-021 — Right info panel overflow hidden — quantity list not scrollable
+
+**Status:** Fixed 2026-03-20
+**Raised:** 2026-03-20
+**Type:** CSS bug — overflow clipped the entire panel
+
+### What happened
+`.info-panel { overflow: hidden }`. As the quantity guide list grew (28 plants × ~20px each = ~560px), content was clipped. Users with a closed boundary saw no quantity rows at all.
+
+### Fix applied
+Changed `.info-panel { overflow-y: auto }`.
+
+### Prevention
+Any flex column panel that contains variable-length content must use `overflow-y: auto`, not `overflow: hidden`.
+
+---
