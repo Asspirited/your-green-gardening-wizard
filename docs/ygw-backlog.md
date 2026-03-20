@@ -344,6 +344,9 @@ Feature: Bulk developer API
 | YGW-050 | Canvas plant palette — categories collapsed by default, only Trees open | 5.0 | ✅ Done |
 | YGW-051 | Canvas plant palette — accordion: expanding one category closes others | 5.0 | ✅ Done |
 | YGW-053 | Canvas element sizing — lengthMetres for wall/fence/path/rill; rect+ellipse renderer uses both axes | 7.0 | ✅ Done |
+| YGW-052 | Layer 1 Archetype Palette — 8 styles, ranked suggestions, avoid list, design sequence guide | 9.0 | ✅ Done |
+| YGW-054 | Canvas season toggle — show placed garden in Spring/Summer/Autumn/Winter | 7.5 | 📋 Open |
+| YGW-055 | Seasonal shade cover — plant foliage spread adjusts per season (bare deciduous in winter) | 6.5 | 📋 Open |
 
 ---
 

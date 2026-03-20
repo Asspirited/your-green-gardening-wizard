@@ -135,6 +135,58 @@
     text-transform: uppercase;
     color: var(--moss);
   }
+  /* ── Archetype picker ── */
+  .archetype-picker {
+    padding: 8px 8px 6px;
+    border-bottom: 1px solid var(--parch);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .archetype-chip {
+    font-size: 0.57rem;
+    padding: 3px 7px;
+    border-radius: 99px;
+    border: 1.5px solid #ddd;
+    cursor: pointer;
+    background: white;
+    color: #666;
+    transition: all 0.12s;
+    white-space: nowrap;
+    line-height: 1.4;
+  }
+  .archetype-chip:hover { border-color: var(--sage); color: var(--moss); }
+  .archetype-chip.active { background: var(--sage); border-color: var(--sage); color: white; font-weight: 600; }
+  .plant-item.avoided { opacity: 0.38; }
+  .plant-item.avoided .plant-name::after { content: ' ⚠'; font-size: 0.72em; color: #e65100; }
+  .palette-suggested .palette-category { background: #eaf7ef; border-left: 3px solid var(--sage); }
+  /* ── Archetype hint in info panel ── */
+  .archetype-hint {
+    font-size: 0.72rem;
+    color: var(--moss);
+    line-height: 1.5;
+  }
+  .archetype-hint .arch-tagline {
+    font-style: italic;
+    color: #666;
+    margin-bottom: 6px;
+  }
+  .arch-seq {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+    margin-top: 4px;
+  }
+  .arch-seq-step {
+    font-size: 0.6rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    background: var(--parch);
+    color: var(--moss);
+    font-weight: 500;
+  }
+  .arch-seq-step.done { background: #eaf7ef; }
+
   .palette-category {
     padding: 6px 10px 6px;
     font-size: 0.62rem;
@@ -401,6 +453,7 @@
   <!-- Plant palette -->
   <aside class="plant-palette">
     <div class="palette-header">Plants</div>
+    <div id="archetype-picker" class="archetype-picker"></div>
     <div class="palette-scroll" id="palette-list"></div>
   </aside>
 
@@ -432,6 +485,10 @@
     <div class="info-section">
       <div class="info-label">Season</div>
       <div class="season-btns" id="season-btns"></div>
+    </div>
+    <div class="info-section" id="archetype-guide-section" style="display:none">
+      <div class="info-label">Style guide</div>
+      <div class="archetype-hint" id="archetype-hint"></div>
     </div>
     <div class="info-section" style="flex:1">
       <div class="info-label">How to use</div>
@@ -479,6 +536,7 @@ const state = {
   plants: [],            // [{plantId, x, y}] in metres
   selectedPlantId: null,
   selectedPlantIndex: null,
+  archetypeKey: null,
   scale: 60,             // px per metre
   offsetX: 0,
   offsetY: 0,
@@ -521,6 +579,90 @@ const CATEGORY_LABELS = {
   ground:     '🟩 Ground Surfaces',
   water:      '💧 Water Features',
   structures: '🏗 Structures',
+};
+
+// ── Layer 1 Archetype Palette (ADR-006) ──
+const ARCHETYPES = {
+  contemporary: {
+    label: '◼ Contemporary',
+    tagline: 'Clean lines, minimal palette, year-round structure.',
+    sequence: ['ground','structures','trees','shrubs','perennials'],
+    suggest: ['patio','gravel','rill','wall','pergola','seating-area','sculpture',
+              'taxus-baccata','pinus-sylvestris',
+              'buxus-sempervirens','photinia-red-robin',
+              'miscanthus-sinensis','agapanthus-africanus','allium-purple-sensation'],
+    avoid:   ['quercus-robur','lawn','wildflower-meadow','bark-mulch',
+              'rosa-gertrude-jekyll','crocus-vernus'],
+  },
+  cottage: {
+    label: '🌸 Cottage',
+    tagline: 'Informal planting, soft colour, layered interest.',
+    sequence: ['ground','structures','trees','shrubs','perennials'],
+    suggest: ['lawn','bark-mulch','path','fence','bird-bath','compost',
+              'malus-domestica','prunus-kanzan',
+              'rosa-gertrude-jekyll','lavandula-angustifolia','salvia-rosmarinus','hydrangea-paniculata',
+              'crocus-vernus','salvia-nemorosa','agapanthus-africanus','allium-purple-sensation'],
+    avoid:   ['rill','sculpture','pinus-sylvestris','gravel'],
+  },
+  woodland: {
+    label: '🌲 Woodland',
+    tagline: 'Native species, shade layers, wildlife corridors.',
+    sequence: ['ground','water','trees','shrubs','perennials'],
+    suggest: ['bark-mulch','wildflower-meadow','pond','bird-bath',
+              'quercus-robur','betula-pendula',
+              'rosa-gertrude-jekyll','hydrangea-paniculata',
+              'miscanthus-sinensis','salvia-nemorosa','crocus-vernus'],
+    avoid:   ['patio','gravel','decking','rill','sculpture',
+              'buxus-sempervirens','agapanthus-africanus','taxus-baccata'],
+  },
+  mediterranean: {
+    label: '☀ Mediterranean',
+    tagline: 'Drought-tolerant, sun-baked, fragrant.',
+    sequence: ['ground','structures','trees','shrubs','perennials'],
+    suggest: ['patio','gravel','pergola','wall','fountain','seating-area',
+              'taxus-baccata','pinus-sylvestris',
+              'lavandula-angustifolia','salvia-rosmarinus','buxus-sempervirens',
+              'agapanthus-africanus','allium-purple-sensation','miscanthus-sinensis'],
+    avoid:   ['lawn','wildflower-meadow','bark-mulch','pond','hydrangea-paniculata'],
+  },
+  family: {
+    label: '👨‍👩‍👧 Family',
+    tagline: 'Safe, resilient, multi-use zones.',
+    sequence: ['ground','structures','trees','shrubs','perennials'],
+    suggest: ['lawn','bark-mulch','path','fence','seating-area','fire-pit','bird-bath',
+              'betula-pendula','malus-domestica','prunus-kanzan',
+              'lavandula-angustifolia','hydrangea-paniculata','rosa-gertrude-jekyll',
+              'crocus-vernus','salvia-nemorosa'],
+    avoid:   ['rill','sculpture','taxus-baccata','quercus-robur','gravel'],
+  },
+  formal: {
+    label: '⬛ Formal',
+    tagline: 'Symmetry, clipped structure, year-round geometry.',
+    sequence: ['ground','structures','trees','shrubs','perennials'],
+    suggest: ['patio','gravel','rill','wall','sculpture','pergola','path',
+              'taxus-baccata','buxus-sempervirens','photinia-red-robin',
+              'agapanthus-africanus','allium-purple-sensation','miscanthus-sinensis'],
+    avoid:   ['wildflower-meadow','bark-mulch','malus-domestica','lawn'],
+  },
+  productive: {
+    label: '🥕 Productive',
+    tagline: 'Edible plants, growing infrastructure, working garden.',
+    sequence: ['ground','structures','trees','shrubs','perennials'],
+    suggest: ['bark-mulch','lawn','path','greenhouse','shed','compost','fence',
+              'malus-domestica',
+              'salvia-rosmarinus','lavandula-angustifolia','bird-bath'],
+    avoid:   ['sculpture','rill','fountain','agapanthus-africanus','pinus-sylvestris'],
+  },
+  wildlife: {
+    label: '🦋 Wildlife',
+    tagline: 'Habitat layers, native plants, pollinator-first.',
+    sequence: ['water','ground','trees','shrubs','perennials'],
+    suggest: ['wildflower-meadow','pond','bark-mulch','lawn','bird-bath','compost',
+              'quercus-robur','betula-pendula',
+              'rosa-gertrude-jekyll','lavandula-angustifolia',
+              'crocus-vernus','hydrangea-paniculata','salvia-nemorosa'],
+    avoid:   ['gravel','patio','buxus-sempervirens','sculpture','rill','fountain'],
+  },
 };
 
 const paletteList = document.getElementById('palette-list');
@@ -571,6 +713,100 @@ function selectPlant(id) {
   });
   if (state.mode !== 'place') setMode('place');
 }
+
+// ── Archetype palette (Layer 1 — ADR-006) ──
+const SEQ_LABELS = { ground:'Ground', structures:'Structures', trees:'Trees',
+                     shrubs:'Shrubs', perennials:'Perennials', water:'Water' };
+
+function buildSuggestedItem(plant) {
+  const el = document.createElement('div');
+  el.className = 'plant-item';
+  el.dataset.id = plant.id;
+  el.innerHTML = `
+    <div class="plant-dot" style="background:${plant.dotColour}"></div>
+    <div class="plant-info">
+      <div class="plant-name">${plant.name}</div>
+      <div class="plant-meta">${plant.type} · ${plant.lengthMetres ? `${plant.lengthMetres}×${plant.spreadMetres}m` : `${plant.spreadMetres}m`}</div>
+    </div>`;
+  el.addEventListener('click', () => selectPlant(plant.id));
+  return el;
+}
+
+function setArchetype(key) {
+  state.archetypeKey = key;
+
+  // Update chip states
+  document.querySelectorAll('.archetype-chip').forEach(chip => {
+    chip.classList.toggle('active', chip.dataset.key === key);
+  });
+
+  // Remove existing suggested group
+  paletteList.querySelector('.palette-category[data-cat="suggested"]')?.remove();
+  paletteList.querySelector('.palette-group[data-cat="suggested"]')?.remove();
+
+  // Clear avoided styling
+  document.querySelectorAll('.plant-item.avoided').forEach(el => el.classList.remove('avoided'));
+
+  const guideSection = document.getElementById('archetype-guide-section');
+  const hintEl = document.getElementById('archetype-hint');
+
+  if (!key) {
+    guideSection.style.display = 'none';
+    return;
+  }
+
+  const arch = ARCHETYPES[key];
+
+  // Build suggested group at top of palette
+  const suggestHeader = document.createElement('div');
+  suggestHeader.className = 'palette-category open';
+  suggestHeader.dataset.cat = 'suggested';
+  suggestHeader.textContent = `✦ ${arch.label.replace(/^[^\s]+\s/, '')} suggestions`;
+
+  const suggestGroup = document.createElement('div');
+  suggestGroup.className = 'palette-group open';
+  suggestGroup.dataset.cat = 'suggested';
+
+  suggestHeader.addEventListener('click', () => {
+    const wasOpen = suggestHeader.classList.contains('open');
+    document.querySelectorAll('.palette-category').forEach(h => h.classList.remove('open'));
+    document.querySelectorAll('.palette-group').forEach(g => g.classList.remove('open'));
+    if (!wasOpen) { suggestHeader.classList.add('open'); suggestGroup.classList.add('open'); }
+  });
+
+  arch.suggest.forEach(id => {
+    const plant = PLANTS.find(p => p.id === id);
+    if (plant) suggestGroup.appendChild(buildSuggestedItem(plant));
+  });
+
+  paletteList.insertBefore(suggestGroup, paletteList.firstChild);
+  paletteList.insertBefore(suggestHeader, paletteList.firstChild);
+
+  // Mark avoided items (in accordion groups, not the suggested group)
+  arch.avoid.forEach(id => {
+    paletteList.querySelectorAll(`.palette-group:not([data-cat="suggested"]) .plant-item[data-id="${id}"]`)
+      .forEach(el => el.classList.add('avoided'));
+  });
+
+  // Style guide in info panel
+  guideSection.style.display = '';
+  const seqSteps = arch.sequence.map(s => `<span class="arch-seq-step">${SEQ_LABELS[s] || s}</span>`).join('');
+  hintEl.innerHTML = `
+    <div class="arch-tagline">${arch.tagline}</div>
+    <div>Place in this order:</div>
+    <div class="arch-seq">${seqSteps}</div>`;
+}
+
+// Build archetype chips
+const archetypePicker = document.getElementById('archetype-picker');
+Object.entries(ARCHETYPES).forEach(([key, arch]) => {
+  const chip = document.createElement('div');
+  chip.className = 'archetype-chip';
+  chip.dataset.key = key;
+  chip.textContent = arch.label;
+  chip.addEventListener('click', () => setArchetype(chip.classList.contains('active') ? null : key));
+  archetypePicker.appendChild(chip);
+});
 
 // ── Coordinate helpers ──
 function toCanvas(mx, my) {
