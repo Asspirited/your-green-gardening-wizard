@@ -416,6 +416,21 @@ _(continued)_
 
 ---
 
+## EPIC J — Build session 2026-03-20
+
+| ID | Title | Score | Status |
+|---|---|---|---|
+| YGW-BL-011 | Wire canvas to plants.json — replace hardcoded CATEGORIES with fetch on load | 9.0 | 🔨 Building |
+| YGW-BL-012 | Seasonal grid colouring in canvas — ground/minor/major/boundary shift per season | 9.0 | 🔨 Building |
+| YGW-BL-013 | Palette icons — landscape architecture symbols (YGW-UX-001) | 8.0 | 🔨 Building |
+| YGW-BL-014 | Latin name italic typography in palette and proposal output (YGW-UX-003) | 6.0 | 🔨 Building |
+| YGW-BL-015 | Product rename to "The Green Wizard" throughout visible UI (YGW-UX-004) | 6.5 | 🔨 Building |
+| YGW-BL-016 | Landing page full rebuild — 6-section marketing page (YGW-UX-002) | 8.5 | 🔨 Building |
+| YGW-BL-017 | UI/UX quality gate — checklist passes before any merge (YGW-UX-005) | 7.0 | 🔨 Building |
+| YGW-BL-018 | Font consistency audit — unified Playfair Display + DM Sans hierarchy, consistent usage for headings/body/labels across index.html, app.html, landscaper.html | 6.5 | 📋 Open |
+
+---
+
 ## EPIC H — Phase 4+ ideas
 
 | ID | Title | Score | Status |

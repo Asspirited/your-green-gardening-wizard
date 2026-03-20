@@ -4,6 +4,25 @@
 
 ---
 
+## RAISE NEW WORK — routing rule (non-negotiable)
+
+Any time a bug, gap, idea, or observation emerges mid-session:
+
+| Type | Where it goes | Example |
+|------|--------------|---------|
+| Live bug / broken feature | **WL-NNN** in `docs/ygw-wastelog.md` | mobile dropdown broken |
+| Waste / bad process / repeated failure | **WL-NNN** in `docs/ygw-wastelog.md` | wrong token created again |
+| New feature / improvement / idea | **BL-NNN** in `docs/ygw-backlog.md` (EPIC J or appropriate) | add font audit |
+| Architecture / UX decision | **ADR** in `docs/decisions/YYYYMMDD-NNN-title.md` | rename product |
+
+**Sequence:**
+1. Identify type above — bug/waste → WL, feature/idea → BL, decision → ADR
+2. Assign next number (count existing WL-NNN or BL-NNN entries)
+3. Write entry immediately — do not defer
+4. Never file a bug as a BL item
+
+---
+
 ## Standard Triggers (all LeanSpirited products)
 
 ### Trigger: Strategic decision pending

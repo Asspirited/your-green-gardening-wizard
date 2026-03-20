@@ -242,3 +242,23 @@ Every canary run showed RED when auth was actually working. Eroded trust in the 
 Use `-i` flag on all email greps. Do not use `wrangler secret list` with cfat_ tokens — use the live worker ping as the Anthropic key check instead.
 
 ---
+
+## WL-015 — Mobile Tools dropdown does not expand on index.html (FIXED)
+
+**Status:** Fixed 2026-03-20
+**Raised:** 2026-03-20
+**Type:** Live bug — onclick attribute + module script timing
+
+### What happened
+The "🌿 Tools ▼" button in the advisor section side-nav used `onclick="toggleSideNav()"`. The function is defined inside `<script type="module">`. If the module throws any error before the `window.toggleSideNav = toggleSideNav` assignment at the end, the global function is never exposed and the onclick silently fails. On mobile (slower parsing), this is more likely.
+
+### Fix applied
+Removed `onclick` attribute from the button. Added `document.getElementById('sideNavToggle').addEventListener('click', toggleSideNav)` directly inside the module, immediately after the function definition. Event listener is in module scope — no global assignment required, no timing risk.
+
+### What it cost
+Mobile users saw an unresponsive Tools bar. Landscaper demo on mobile showed broken navigation.
+
+### Prevention
+Never use `onclick="functionName()"` for functions defined in `<script type="module">`. Always use `addEventListener` inside the module. The `window.functionName = fn` pattern is fragile — it requires the entire module to execute without error first.
+
+---
