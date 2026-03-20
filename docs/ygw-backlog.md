@@ -784,6 +784,41 @@ Order confirmed by Rod for next discussion session:
 
 ---
 
+## EPIC N — Collector Mode (2026-03-20)
+
+*Distinct persona from landscaper. Skilled amateur / collector: rarity, drama, combos, talking-point plants. Not conditions-driven. Wants to be surprised and educated simultaneously. Different voice, different prompts, different entry point from EPIC L.*
+
+| ID | Title | Score | Kano | Engine | Persona | Status |
+|---|---|---|---|---|---|---|
+| YGW-075 | Combo Explorer — click a plant, get AI-rated combo options (RAG + star pairing) with opinionated rationale | 8.0 | D | Sticky | Collector | 💡 Idea — hold until HDD-001 validated |
+
+> **YGW-075 note:** Interaction model and prompt architecture fully designed (.claude/combo-explorer-design.md). Prototype built in Claude.ai session (hardcoded data). Needs: Worker endpoint `/combo-explorer`, AI-generated ratings, integration with Plant Palette output. Do NOT build Worker endpoint until HDD-001 (Ollie test) returns a result. Collector persona not yet validated as a growth segment.
+
+### YGW-075 — Combo Explorer
+
+**Epic:** N — Collector Mode
+**Design doc:** `.claude/combo-explorer-design.md`
+**Depends on:** YGW-066 validated (HDD-001)
+**HDD connection:** HDD-002 (not yet written) — do skilled amateurs pay for combo intelligence?
+
+**User story:** As a skilled amateur gardener, I want to click a plant in my palette and see which plants combine well with it — ranked by how exciting and compatible the pairing is — so I can make confident, interesting choices rather than just safe ones.
+
+**Key design decisions (from Claude.ai prototype session):**
+- Star pairing is opinionated (most exciting + compatible), not just safest. Exactly one per plant.
+- Card sort: Star → Green → Amber → Red. Order carries meaning before click.
+- Separate Worker endpoint (`/combo-explorer`) — different output schema and register from Plant Palette.
+- Collector voice: specific, opinionated, willing to say "this is the one." Not client-safe.
+- Entry point: Option A recommended — run Plant Palette first, then "Explore combos" on result.
+
+**Open questions (resolve before building):**
+1. Entry point confirmed? (Option A = post-palette, Option B = own flow, Option C = curated sets)
+2. Should red cards be shown? (Educational value vs UI clutter)
+3. Collector mode vs landscaper mode — same product or separate landing?
+
+**Gherkin:** Not yet written. Write when HDD-001 validated and collector persona confirmed as growth segment.
+
+---
+
 ## Priority queue — next 10 to build
 
 **Engine of Growth: Sticky primary, B2B2C referral tail (ADR-010, 2026-03-20)**
@@ -824,4 +859,4 @@ YGW-066-AC-007 (Ollie test) blocks merge of all landscaper column items.
 
 ---
 
-*Document ref: ygw-backlog-v5-2026-03-20 · EPIC M added: YGW-071–074 (viral/growth pivot session items) · Discussion priority queue logged · Design-UX trigger framework wired into session-insession.md · EPIC L: YGW-066–070 · HDD-001 mapped to YGW-066 · LeanSpirited*
+*Document ref: ygw-backlog-v6-2026-03-20 · EPIC N added: YGW-075 Combo Explorer (collector mode, hold until HDD-001 validated) · EPIC M added: YGW-071–074 · EPIC L: YGW-066–070 · HDD-001 mapped to YGW-066 · LeanSpirited*
