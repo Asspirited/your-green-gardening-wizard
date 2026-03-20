@@ -479,6 +479,22 @@
   }
   .reset-btn:hover { color: var(--rust); }
 
+  /* Powered by attribution */
+  .powered-by {
+    margin-top: 32px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(90,110,58,0.15);
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    letter-spacing: 0.05em;
+  }
+  .powered-by a {
+    color: var(--green-mid);
+    text-decoration: none;
+  }
+  .powered-by a:hover { text-decoration: underline; }
+
   /* Footer */
   footer {
     margin-top: 60px;
@@ -645,6 +661,10 @@
         <span class="section-label">Paste into proposal</span>
       </div>
       <p id="clientCopyText"></p>
+    </div>
+
+    <div class="powered-by">
+      Powered by <a href="https://your-green-gardening-wizard.leanspirited.workers.dev" target="_blank">The Green Wizard</a>
     </div>
   </div>
 
@@ -824,6 +844,7 @@ function renderPalette(data) {
     copyText += `FOR THE CLIENT:\n${data.client_description}\n`;
   }
 
+  copyText += `\n---\nPowered by The Green Wizard — https://your-green-gardening-wizard.leanspirited.workers.dev`;
   lastPaletteText = copyText;
   document.getElementById('resultsSection').classList.add('visible');
   document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
