@@ -236,6 +236,24 @@
     flex-shrink: 0;
   }
 
+  /* ── Quantity guide ── */
+  .qty-guide-list { list-style: none; padding: 0; margin: 0; }
+  .qty-guide-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.75rem;
+    color: #444;
+    padding: 3px 0;
+    border-bottom: 1px solid #f5f5f0;
+  }
+  .qty-guide-item:last-child { border-bottom: none; }
+  .qty-guide-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+  .qty-guide-name { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .qty-guide-rec { font-weight: 600; color: var(--forest); margin-left: auto; white-space: nowrap; font-size: 0.72rem; }
+  .qty-guide-placed { font-size: 0.68rem; color: #aaa; }
+  .qty-guide-empty { font-size: 0.75rem; color: #aaa; }
+
   /* ── Toast ── */
   .toast {
     position: absolute;
@@ -347,6 +365,10 @@
     <div class="info-section">
       <div class="info-label">Plants placed</div>
       <ul class="plant-count-list" id="plant-count-list"></ul>
+    </div>
+    <div class="info-section" id="qty-guide-section" style="display:none">
+      <div class="info-label">Quantity guide <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.65rem;color:#aaa">(to fill boundary)</span></div>
+      <ul class="qty-guide-list" id="qty-guide-list"></ul>
     </div>
     <div class="info-section">
       <div class="info-label">Season</div>
@@ -645,16 +667,25 @@ function render() {
   updateInfoPanel();
 }
 
+// ── Quantity estimator ──
+// How many of a plant to fill the boundary — simple grid spacing: 1 per spread²
+function estimateQty(plant, area_m2) {
+  return Math.ceil(area_m2 / (plant.spread * plant.spread));
+}
+
 // ── Info panel ──
 function updateInfoPanel() {
-  const areaEl   = document.getElementById('info-area');
+  const areaEl    = document.getElementById('info-area');
   const areaSubEl = document.getElementById('info-area-sub');
-  const countEl  = document.getElementById('plant-count-list');
+  const countEl   = document.getElementById('plant-count-list');
+  const qtySection = document.getElementById('qty-guide-section');
+  const qtyList    = document.getElementById('qty-guide-list');
 
+  let area_m2 = null;
   if (state.boundaryClosed && state.boundary.length >= 3) {
-    const m2 = polygonArea(state.boundary);
-    areaEl.textContent = m2.toFixed(1) + ' m²';
-    areaSubEl.textContent = (m2 * 10.764).toFixed(0) + ' sq ft';
+    area_m2 = polygonArea(state.boundary);
+    areaEl.textContent = area_m2.toFixed(1) + ' m²';
+    areaSubEl.textContent = (area_m2 * 10.764).toFixed(0) + ' sq ft';
   } else {
     areaEl.textContent = '—';
     areaSubEl.textContent = '';
@@ -675,6 +706,27 @@ function updateInfoPanel() {
       li.innerHTML = `<div class="plant-count-dot" style="background:${plant.dotColour}"></div>${n}× ${plant.name}`;
       countEl.appendChild(li);
     });
+  }
+
+  // Quantity guide — only show when boundary is closed
+  if (area_m2 !== null) {
+    qtySection.style.display = '';
+    qtyList.innerHTML = '';
+    PLANTS.forEach(plant => {
+      const rec  = estimateQty(plant, area_m2);
+      const placed = counts[plant.id] || 0;
+      const li = document.createElement('li');
+      li.className = 'qty-guide-item';
+      li.innerHTML = `
+        <div class="qty-guide-dot" style="background:${plant.dotColour}"></div>
+        <span class="qty-guide-name" title="${plant.name}">${plant.name}</span>
+        <span class="qty-guide-rec">~${rec}</span>
+        ${placed > 0 ? `<span class="qty-guide-placed">(${placed} placed)</span>` : ''}
+      `;
+      qtyList.appendChild(li);
+    });
+  } else {
+    qtySection.style.display = 'none';
   }
 }
 
@@ -929,13 +981,16 @@ function exportPDF() {
   // Plant schedule
   const counts = {};
   state.plants.forEach(p => { counts[p.plantId] = (counts[p.plantId] || 0) + 1; });
+  const area_m2_pdf = state.boundaryClosed ? polygonArea(state.boundary) : 0;
   const plantRows = Object.entries(counts).map(([id, n]) => {
     const plant = PLANTS.find(p => p.id === id);
     if (!plant) return '';
+    const rec = area_m2_pdf > 0 ? '~' + estimateQty(plant, area_m2_pdf) : '—';
     return `<tr>
       <td><span class="dot" style="background:${plant.dotColour}"></span>${plant.name}</td>
       <td>${plant.type}</td>
       <td>${n}</td>
+      <td>${rec}</td>
       <td>${plant.spread}m</td>
       <td>${plant.height}m</td>
     </tr>`;
@@ -1028,13 +1083,14 @@ function exportPDF() {
       <tr>
         <th>Plant</th>
         <th>Type</th>
-        <th>Qty</th>
+        <th>Placed</th>
+        <th>Rec. to fill</th>
         <th>Spread</th>
         <th>Height</th>
       </tr>
     </thead>
     <tbody>
-      ${plantRows || '<tr><td colspan="5" style="text-align:center;color:#aaa;padding:20px">No plants placed in this plan</td></tr>'}
+      ${plantRows || '<tr><td colspan="6" style="text-align:center;color:#aaa;padding:20px">No plants placed in this plan</td></tr>'}
     </tbody>
   </table>
 
