@@ -341,6 +341,8 @@ Feature: Bulk developer API
 | YGW-045 | Plant growth timeline — canvas shows spread at Now/1yr/3yr/5yr/10yr | 9.0 | ✅ Done |
 | YGW-047 | Left-hand nav panel on landing page — tool switcher for Ollie demo | 7.0 | ✅ Done |
 | YGW-049 | 37-element library from plants.json — 6 categories, 7 shapes, seasonal colours | 9.0 | ✅ Done |
+| YGW-050 | Canvas plant palette — categories collapsed by default, only Trees open | 5.0 | ✅ Done |
+| YGW-051 | Canvas plant palette — accordion: expanding one category closes others | 5.0 | ✅ Done |
 
 ---
 

@@ -59,6 +59,39 @@ Phrases: "like RIA", "persona", "scoring agent", "like the assessor"
 → Raise a backlog item for the integration.
 → Do NOT create coupling in Phase 1 code.
 
+### Trigger: Decision made
+**Pattern signals:**
+- "we'll go with...", "let's do...", "agreed", "that's the right call"
+- A design option is chosen over alternatives
+- A technology, architecture, or UX approach is selected
+- A constraint is established ("always", "never", "from now on")
+- A rollout sequence or phasing decision is confirmed
+- A backlog item is explicitly deferred or deprioritised
+
+**Sequence on trigger:**
+1. Identify decision type (product / architecture / UX / data / process)
+2. Write L-ADR immediately — do not defer to session end
+3. Append to `/docs/decisions/YYYYMMDD-NNN-short-title.md`
+4. Confirm to Rod: "ADR written — [title]"
+5. Continue session without interruption
+
+### Trigger: Persona drift
+**Pattern signals:**
+- Work in session is primarily consumer-facing (end customer UX, marketing copy,
+  lifestyle features) and HDD-001 is still open
+- A feature is being designed that doesn't directly serve the landscaper
+  proposal workflow
+- Session has gone 30+ minutes without anything that advances HDD-001
+
+**Sequence on trigger:**
+1. Check HDD-001 status from session-startup context
+2. If open: flag once — *"Note: current work serves the consumer persona /
+   general product. HDD-001 (landscaper proposal workflow) is still open —
+   confirm this is intentional before continuing."*
+3. Rod confirms or redirects — either is fine, flag is advisory not blocking
+4. Do NOT repeat the flag in the same session unless direction changes again
+5. Log in closedown: whether today's session advanced HDD-001 and how
+
 ---
 
 ## Pipeline Rule
@@ -113,3 +146,52 @@ Before fixing, automating, or spending time on anything non-trivial, apply the t
 If fix_time > (frequency × time_saved × ~260 sessions/year over 5 years) → note it, park it, move on.
 Applies to: tooling tweaks, minor bugs, process improvements, "wouldn't it be nice if".
 Does NOT apply to: correctness bugs, security issues, anything blocking delivery.
+
+---
+
+## L-ADR Format (canonical)
+
+File naming: `YYYYMMDD-NNN-short-hyphenated-title.md`
+
+```markdown
+# ADR-NNN: [Title]
+
+**Date:** YYYY-MM-DD
+**Status:** Decided | Superseded by ADR-NNN | Under review
+**Deciders:** Rod (LeanSpirited) [+ Oz / Jerry / Ollie if relevant]
+**Tags:** product | architecture | ux | data | process
+
+## Context
+3–5 sentences max.
+
+## Decision
+One paragraph. No hedging.
+
+## Alternatives considered
+| Option | Why rejected |
+|--------|-------------|
+| ... | ... |
+
+## Consequences
+**Positive:** What this enables.
+**Negative / trade-offs:** What this costs.
+**Neutral:** What changes but is neither good nor bad.
+
+## Linked items
+- Backlog: YGW-NNN (if applicable)
+- Supersedes: ADR-NNN (if applicable)
+- Related: ADR-NNN (if applicable)
+```
+
+ADRs are immutable once written. To change a decision, write a new ADR with status "Supersedes ADR-NNN".
+ADR log lives in `/docs/decisions/`. Maintain a running count of ADRs written each session.
+
+## Session Obligations (continuous)
+
+**ADR log** — maintain running count of ADRs written this session.
+At any point Rod asks "what decisions have we made?", list ADR titles and statuses from this session.
+
+**End-of-session prep** (feeds session-closedown.md):
+- ADR session summary: titles, IDs, one-line status for each ADR written
+- Flag any decisions made verbally but not yet written as ADRs
+- Confirm `/docs/decisions/` index is current

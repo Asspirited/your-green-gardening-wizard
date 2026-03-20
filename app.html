@@ -136,7 +136,7 @@
     color: var(--moss);
   }
   .palette-category {
-    padding: 6px 10px 2px;
+    padding: 6px 10px 6px;
     font-size: 0.62rem;
     font-weight: 600;
     letter-spacing: 0.08em;
@@ -145,14 +145,34 @@
     background: #f9f9f6;
     border-bottom: 1px solid #eee;
     margin-top: 4px;
-    position: sticky;
-    top: 0;
-    z-index: 1;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .palette-category::after {
+    content: '›';
+    font-size: 1rem;
+    font-weight: 400;
+    transition: transform 0.18s;
+    display: inline-block;
+    transform: rotate(90deg);
+  }
+  .palette-category.open::after {
+    transform: rotate(-90deg);
+  }
+  .palette-group {
+    display: none;
+    padding: 4px 8px 0;
+  }
+  .palette-group.open {
+    display: block;
   }
   .palette-scroll {
     flex: 1;
     overflow-y: auto;
-    padding: 8px;
+    padding: 0 0 8px;
   }
   .plant-item {
     display: flex;
@@ -505,13 +525,31 @@ const CATEGORY_LABELS = {
 
 const paletteList = document.getElementById('palette-list');
 let lastCategory = null;
+let currentGroup = null;
+let isFirstCategory = true;
 PLANTS.forEach(plant => {
   if (plant.category !== lastCategory) {
     const header = document.createElement('div');
-    header.className = 'palette-category';
+    header.className = 'palette-category' + (isFirstCategory ? ' open' : '');
+    header.dataset.cat = plant.category;
     header.textContent = CATEGORY_LABELS[plant.category] || plant.category;
+    const group = document.createElement('div');
+    group.className = 'palette-group' + (isFirstCategory ? ' open' : '');
+    group.dataset.cat = plant.category;
+    header.addEventListener('click', () => {
+      const wasOpen = header.classList.contains('open');
+      document.querySelectorAll('.palette-category').forEach(h => h.classList.remove('open'));
+      document.querySelectorAll('.palette-group').forEach(g => g.classList.remove('open'));
+      if (!wasOpen) {
+        header.classList.add('open');
+        group.classList.add('open');
+      }
+    });
     paletteList.appendChild(header);
+    paletteList.appendChild(group);
+    currentGroup = group;
     lastCategory = plant.category;
+    isFirstCategory = false;
   }
   const el = document.createElement('div');
   el.className = 'plant-item';
@@ -523,7 +561,7 @@ PLANTS.forEach(plant => {
       <div class="plant-meta">${plant.type} · ${plant.spreadMetres}m</div>
     </div>`;
   el.addEventListener('click', () => selectPlant(plant.id));
-  paletteList.appendChild(el);
+  currentGroup.appendChild(el);
 });
 
 function selectPlant(id) {
