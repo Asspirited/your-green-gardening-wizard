@@ -100,8 +100,9 @@ This is not "questioning Rod" — it's how good work gets done.
 After every `git push` that ships a user-facing feature, update the features log:
 `/mnt/c/Users/roden/Downloads/ygw-features-delivered-YYYY-MM-DD.md`
 - Keep the file dated to TODAY (create new file if date has changed)
-- Add the feature to the relevant section
-- Mark any newly-done backlog items as Done in the table
+- Add the feature to the relevant features section
+- Add any newly-done items to the **Closed backlog items** table (all ✅ Done, ever)
+- Mark any newly-done backlog items as Done in the open/priority tables
 This file is the Ollie/Jerry progress report. Keep it current.
 
 ### Rule: Is it worth doing? (xkcd.com/1205)
