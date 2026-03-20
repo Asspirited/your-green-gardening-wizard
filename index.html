@@ -219,8 +219,58 @@
     margin: 12px 16px;
   }
 
-  /* Hide side-nav on small screens */
-  @media (max-width: 767px) { .side-nav { display: none; } }
+  /* Mobile: side-nav collapses to full-width top strip */
+  .side-nav-toggle {
+    display: none;
+  }
+  @media (max-width: 767px) {
+    .app-shell {
+      flex-direction: column;
+    }
+    .side-nav {
+      width: 100%;
+      min-height: auto;
+      position: static;
+      padding: 0;
+    }
+    .side-nav-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 12px 20px;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.8);
+      font-size: 0.9rem;
+      font-weight: 600;
+      font-family: var(--font-ui);
+      cursor: pointer;
+      letter-spacing: 0.02em;
+    }
+    .side-nav-toggle-arrow {
+      font-size: 0.75rem;
+      transition: transform 0.2s;
+    }
+    .side-nav.expanded .side-nav-toggle-arrow {
+      transform: rotate(180deg);
+    }
+    .side-nav-body {
+      display: none;
+      padding-bottom: 8px;
+    }
+    .side-nav.expanded .side-nav-body {
+      display: block;
+    }
+    .side-nav-section {
+      margin-top: 8px;
+    }
+  }
+  @media (min-width: 768px) {
+    .side-nav-body {
+      display: block !important;
+    }
+  }
 
   /* ── Main layout ── */
   main {
@@ -787,7 +837,13 @@
 
 <div class="app-shell">
 
-<nav class="side-nav" aria-label="YGW tools">
+<nav class="side-nav" aria-label="YGW tools" id="sideNav">
+  <button class="side-nav-toggle" id="sideNavToggle" aria-expanded="false" aria-controls="sideNavBody" onclick="toggleSideNav()">
+    🌿 Tools
+    <span class="side-nav-toggle-arrow">▼</span>
+  </button>
+
+  <div class="side-nav-body" id="sideNavBody">
   <div class="side-nav-section">Tools</div>
 
   <a class="side-nav-item active" onclick="return false;" href="#">
@@ -820,6 +876,7 @@
     Garden Report
     <span class="side-nav-badge">soon</span>
   </span>
+  </div><!-- /.side-nav-body -->
 </nav>
 
 <main>
@@ -1185,6 +1242,14 @@ const state = {
 // ── IMPORTANT: Replace this URL with your Cloudflare Worker URL after deployment ──
 // During local testing, this calls the Anthropic API directly (requires API key in Worker)
 const WORKER_URL = 'https://ygw-api-proxy.leanspirited.workers.dev';
+
+// ── Side nav toggle (mobile) ──
+function toggleSideNav() {
+  const nav = document.getElementById('sideNav');
+  const btn = document.getElementById('sideNavToggle');
+  const expanded = nav.classList.toggle('expanded');
+  btn.setAttribute('aria-expanded', expanded);
+}
 
 // ── Wizard flow ──
 function startWizard() {
