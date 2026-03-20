@@ -438,7 +438,7 @@ _(continued)_
 | YGW-BL-027 | "Place Plants" toolbar label wrong after library expansion — renamed to "Place element" (WL-018) | 5.0 | ✅ Done |
 | YGW-BL-028 | Font consistency audit — standardise Playfair Display weights across app.html + landscaper.html; fix faux-bold; fix landscaper brand name (BL-018) | 6.5 | ✅ Done |
 | YGW-BL-026 | Custom plant search — user can type any plant name not in the library, canvas places it as a generic element with user-defined spread/colour; AI or fallback lookup provides basic metadata | 7.5 | ✅ Done |
-| YGW-BL-029 | Quantity guide grouped by category with accordion — mirrors left panel; clicking a category collapses/expands both panels simultaneously | 6.0 | 📋 Open |
+| YGW-BL-029 | Quantity guide grouped by category with accordion — mirrors left panel; clicking a category collapses/expands both panels simultaneously | 6.0 | ✅ Done |
 
 ---
 

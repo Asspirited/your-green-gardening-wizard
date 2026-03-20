@@ -353,6 +353,12 @@
 
   /* ── Quantity guide ── */
   .qty-guide-list { list-style: none; padding: 0; margin: 0; }
+  .qty-cat-header { font-size: 0.65rem; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--moss); padding: 6px 0 4px; cursor: pointer; user-select: none; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--parch); margin-top: 4px; }
+  .qty-cat-header:first-child { border-top: none; margin-top: 0; }
+  .qty-cat-header::after { content: '▲'; font-size: 0.55rem; color: #bbb; transition: transform 0.18s; }
+  .qty-cat-header.collapsed::after { transform: rotate(180deg); }
+  .qty-cat-group { overflow: hidden; }
+  .qty-cat-group.collapsed { display: none; }
   .qty-guide-item {
     display: flex;
     align-items: center;
@@ -664,7 +670,7 @@
     </div>
     <div class="info-section" id="qty-guide-section" style="display:none">
       <div class="info-label">Quantity guide <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:0.65rem;color:#aaa">(to fill boundary)</span></div>
-      <ul class="qty-guide-list" id="qty-guide-list"></ul>
+      <div id="qty-guide-list"></div>
     </div>
     <div class="info-section" id="archetype-guide-section" style="display:none">
       <div class="info-label">Style guide</div>
@@ -720,6 +726,7 @@ const state = {
   boundaryClosed: false,
   plants: [],            // [{plantId, x, y}] in metres
   selectedPlantId: null,
+  openCategory: 'trees',
   selectedPlantIndex: null,
   archetypeKey: null,
   scale: 60,             // px per metre
@@ -962,12 +969,7 @@ PLANTS.forEach(plant => {
     group.dataset.cat = plant.category;
     header.addEventListener('click', () => {
       const wasOpen = header.classList.contains('open');
-      document.querySelectorAll('.palette-category').forEach(h => h.classList.remove('open'));
-      document.querySelectorAll('.palette-group').forEach(g => g.classList.remove('open'));
-      if (!wasOpen) {
-        header.classList.add('open');
-        group.classList.add('open');
-      }
+      syncCategory(plant.category, !wasOpen);
     });
     paletteList.appendChild(header);
     paletteList.appendChild(group);
@@ -990,6 +992,27 @@ PLANTS.forEach(plant => {
   el.addEventListener('click', () => selectPlant(plant.id));
   currentGroup.appendChild(el);
 });
+
+// ── Category sync (left palette ↔ right qty guide) ──
+function syncCategory(cat, openIt) {
+  state.openCategory = openIt ? cat : null;
+  // Left panel
+  document.querySelectorAll('#palette-list .palette-category').forEach(h => {
+    const match = h.dataset.cat === cat;
+    h.classList.toggle('open', openIt && match);
+  });
+  document.querySelectorAll('#palette-list .palette-group').forEach(g => {
+    const match = g.dataset.cat === cat;
+    g.classList.toggle('open', openIt && match);
+  });
+  // Right panel qty guide
+  document.querySelectorAll('.qty-cat-header').forEach(h => {
+    h.classList.toggle('collapsed', !(openIt && h.dataset.cat === cat));
+  });
+  document.querySelectorAll('.qty-cat-group').forEach(g => {
+    g.classList.toggle('collapsed', !(openIt && g.dataset.cat === cat));
+  });
+}
 
 function selectPlant(id) {
   state.selectedPlantId = id;
@@ -1645,24 +1668,39 @@ function updateInfoPanel() {
     });
   }
 
-  // Quantity guide — only show when boundary is closed
+  // Quantity guide — grouped by category, accordion, synced with left panel
   if (area_m2 !== null) {
     qtySection.style.display = '';
     qtyList.innerHTML = '';
-    // Only show qty guide for plants (not ground/water/structures)
-    PLANTS.filter(p => ['trees','shrubs','perennials'].includes(p.category)).forEach(plant => {
-      const currentSpread = plant.spreadMetres * getSpreadFactor(plant);
-      const rec  = Math.ceil(area_m2 / (currentSpread * currentSpread));
-      const placed = counts[plant.id] || 0;
-      const li = document.createElement('li');
-      li.className = 'qty-guide-item';
-      li.innerHTML = `
-        <div class="qty-guide-dot" style="background:${plant.dotColour}"></div>
-        <span class="qty-guide-name" title="${plant.name}">${plant.name}</span>
-        <span class="qty-guide-rec">~${rec}</span>
-        ${placed > 0 ? `<span class="qty-guide-placed">(${placed} placed)</span>` : ''}
-      `;
-      qtyList.appendChild(li);
+    const QTY_CATS = ['trees','shrubs','perennials'];
+    QTY_CATS.forEach(cat => {
+      const catPlants = PLANTS.filter(p => p.category === cat);
+      if (!catPlants.length) return;
+      const isOpen = state.openCategory === cat || (state.openCategory == null && cat === 'trees');
+      const header = document.createElement('div');
+      header.className = 'qty-cat-header' + (isOpen ? '' : ' collapsed');
+      header.dataset.cat = cat;
+      header.textContent = CATEGORY_LABELS[cat] || cat;
+      const group = document.createElement('ul');
+      group.className = 'qty-guide-list qty-cat-group' + (isOpen ? '' : ' collapsed');
+      group.dataset.cat = cat;
+      header.addEventListener('click', () => syncCategory(cat, header.classList.contains('collapsed')));
+      catPlants.forEach(plant => {
+        const currentSpread = plant.spreadMetres * getSpreadFactor(plant);
+        const rec   = Math.ceil(area_m2 / (currentSpread * currentSpread));
+        const placed = counts[plant.id] || 0;
+        const li = document.createElement('li');
+        li.className = 'qty-guide-item';
+        li.innerHTML = `
+          <div class="qty-guide-dot" style="background:${plant.dotColour}"></div>
+          <span class="qty-guide-name" title="${plant.name}">${plant.name}</span>
+          <span class="qty-guide-rec">~${rec}</span>
+          ${placed > 0 ? `<span class="qty-guide-placed">(${placed} placed)</span>` : ''}
+        `;
+        group.appendChild(li);
+      });
+      qtyList.appendChild(header);
+      qtyList.appendChild(group);
     });
   } else {
     qtySection.style.display = 'none';
