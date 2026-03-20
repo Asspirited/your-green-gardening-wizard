@@ -357,7 +357,7 @@
 
   <footer>
     <span>The Green Wizard — Quick Quote Helper (feature branch)</span>
-    <span>LeanSpirited 2026</span>
+    <span>Powered by <a href="https://your-green-gardening-wizard.leanspirited.workers.dev" target="_blank" style="color:inherit">The Green Wizard</a> · LeanSpirited 2026</span>
   </footer>
 </div>
 
@@ -430,12 +430,12 @@ Respond ONLY with valid JSON. No preamble. No markdown. Exact structure:
 }`;
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
+    const res = await fetch('https://ygw-api-proxy.leanspirited.workers.dev/messages', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
+        max_tokens: 1500,
         messages: [{ role: 'user', content: prompt }]
       })
     });
@@ -496,7 +496,7 @@ function renderQuote(q, size, type, region) {
   copyText += `\nSCOPE NOTES:\n`;
   (q.scope_notes || []).forEach(n => { copyText += `• ${n}\n`; });
   copyText += `\nSAY TO CLIENT:\n${q.meeting_script}\n`;
-  copyText += `\n[Indicative only. Excludes VAT and design fees.]`;
+  copyText += `\n[Indicative only. Excludes VAT and design fees.]\nPowered by The Green Wizard — https://your-green-gardening-wizard.leanspirited.workers.dev`;
 
   document.getElementById('results').classList.add('on');
   document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
