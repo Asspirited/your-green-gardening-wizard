@@ -558,7 +558,7 @@ PLANTS.forEach(plant => {
     <div class="plant-dot" style="background:${plant.dotColour}"></div>
     <div class="plant-info">
       <div class="plant-name">${plant.name}</div>
-      <div class="plant-meta">${plant.type} · ${plant.spreadMetres}m</div>
+      <div class="plant-meta">${plant.type} · ${plant.lengthMetres ? `${plant.lengthMetres}×${plant.spreadMetres}m` : `${plant.spreadMetres}m`}</div>
     </div>`;
   el.addEventListener('click', () => selectPlant(plant.id));
   currentGroup.appendChild(el);
@@ -779,9 +779,10 @@ function drawBlobFill(c, r, colour, seed) {
   }
 }
 
-function drawRectFill(c, r, colour) {
-  const w = r * 2, h = r * 1.4;
-  const x = c.x - r, y = c.y - h / 2;
+function drawRectFill(c, r, colour, rLen) {
+  const half = rLen || r;
+  const w = half * 2, h = r * 2;
+  const x = c.x - half, y = c.y - r;
   if (state.view === 'proposal') {
     ctx.fillStyle = colour + 'cc'; ctx.fillRect(x, y, w, h);
     ctx.strokeStyle = colour; ctx.lineWidth = 1.5; ctx.strokeRect(x, y, w, h);
@@ -799,8 +800,8 @@ function drawRectFill(c, r, colour) {
   }
 }
 
-function drawEllipseFill(c, r, colour) {
-  const rx = r, ry = r * 0.6;
+function drawEllipseFill(c, r, colour, rLen) {
+  const rx = rLen || r, ry = r;
   ctx.beginPath(); ctx.ellipse(c.x, c.y, rx, ry, 0, 0, Math.PI * 2);
   if (state.view === 'proposal') {
     const grad = ctx.createRadialGradient(c.x, c.y - ry * 0.3, ry * 0.1, c.x, c.y, Math.max(rx, ry));
@@ -887,20 +888,21 @@ function drawElements() {
     if (!el) return;
     const c = toCanvas(placed.x, placed.y);
     const r = Math.max(4, (el.spreadMetres / 2) * state.scale * getSpreadFactor(el));
+    const rLen = el.lengthMetres ? Math.max(4, (el.lengthMetres / 2) * state.scale * getSpreadFactor(el)) : null;
     const colour = getElementColour(el);
 
     switch (el.shape) {
       case 'triangle': drawTriangleFill(c, r, colour); break;
       case 'blob':     drawBlobFill(c, r, colour, originalIdx); break;
-      case 'rect':     drawRectFill(c, r, colour); break;
-      case 'ellipse':  drawEllipseFill(c, r, colour); break;
+      case 'rect':     drawRectFill(c, r, colour, rLen); break;
+      case 'ellipse':  drawEllipseFill(c, r, colour, rLen); break;
       case 'zone':     drawZoneFill(c, r, colour, el.patternType); break;
       default:         drawCircleFill(c, r, colour); break;
     }
 
     // Selected indicator
     if (originalIdx === state.selectedPlantIndex) {
-      ctx.beginPath(); ctx.arc(c.x, c.y, r + 4, 0, Math.PI * 2);
+      ctx.beginPath(); ctx.arc(c.x, c.y, Math.max(r, rLen || 0) + 4, 0, Math.PI * 2);
       ctx.strokeStyle = '#333'; ctx.lineWidth = 1.5;
       ctx.setLineDash([4, 3]); ctx.stroke(); ctx.setLineDash([]);
     }
@@ -1181,7 +1183,7 @@ function handleSelectClick(cx, cy) {
     const plant = PLANTS.find(p => p.id === pl.plantId);
     if (!plant) continue;
     const dist = Math.hypot(m.x - pl.x, m.y - pl.y);
-    if (dist <= plant.spreadMetres / 2) { found = i; break; }
+    if (dist <= Math.max(plant.spreadMetres, plant.lengthMetres || 0) / 2) { found = i; break; }
   }
   state.selectedPlantIndex = found >= 0 ? found : null;
   render();

@@ -343,6 +343,7 @@ Feature: Bulk developer API
 | YGW-049 | 37-element library from plants.json — 6 categories, 7 shapes, seasonal colours | 9.0 | ✅ Done |
 | YGW-050 | Canvas plant palette — categories collapsed by default, only Trees open | 5.0 | ✅ Done |
 | YGW-051 | Canvas plant palette — accordion: expanding one category closes others | 5.0 | ✅ Done |
+| YGW-053 | Canvas element sizing — lengthMetres for wall/fence/path/rill; rect+ellipse renderer uses both axes | 7.0 | ✅ Done |
 
 ---
 
