@@ -693,6 +693,18 @@
   .btn-refine:disabled { background: #ccc; cursor: not-allowed; }
   .refine-spinner { display: none; text-align: center; padding: 20px; color: var(--moss); font-size: 0.875rem; }
   .refine-spinner .spinner { width: 32px; height: 32px; margin: 0 auto 10px; }
+  .save-plan-panel { background: var(--mist); border: 1px solid rgba(0,0,0,0.07); border-radius: var(--radius); margin-top: 16px; padding: 24px 28px; }
+  .save-plan-title { font-family: var(--font-display); font-size: 1rem; font-weight: 600; color: var(--forest); margin-bottom: 4px; }
+  .save-plan-sub { font-size: 0.82rem; color: #888; margin-bottom: 16px; }
+  .save-plan-row { display: flex; gap: 10px; }
+  .save-plan-input { flex: 1; border: 1px solid rgba(0,0,0,0.15); border-radius: 100px; padding: 11px 18px; font-family: var(--font-ui); font-size: 0.9rem; outline: none; background: white; }
+  .save-plan-input:focus { border-color: var(--moss); }
+  .btn-save-plan { background: var(--moss); color: white; border: none; border-radius: 100px; padding: 11px 22px; font-family: var(--font-ui); font-weight: 500; font-size: 0.9rem; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
+  .btn-save-plan:hover { background: var(--forest); }
+  .btn-save-plan:disabled { background: #ccc; cursor: not-allowed; }
+  .save-plan-success { display: none; align-items: center; gap: 10px; background: white; border: 1px solid var(--mint); border-radius: 10px; padding: 14px 18px; font-size: 0.875rem; color: var(--forest); margin-top: 12px; flex-wrap: wrap; }
+  .save-plan-success a { color: var(--moss); word-break: break-all; }
+  .save-plan-error { display: none; color: #c0392b; font-size: 0.82rem; margin-top: 8px; }
   .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26,58,42,0.7); z-index: 200; align-items: center; justify-content: center; padding: 20px; }
   .modal-overlay.open { display: flex; }
   .modal { background: white; border-radius: var(--radius); max-width: 420px; width: 100%; overflow: hidden; animation: modalIn 0.2s ease; }
@@ -1021,6 +1033,20 @@
     </main>
 
   </div><!-- /.app-shell -->
+
+  <div class="save-plan-panel" id="save-plan-panel" style="display:none">
+    <div class="save-plan-title">Save your garden plan</div>
+    <div class="save-plan-sub">Enter your email and we'll send you a link to return to this plan anytime.</div>
+    <div class="save-plan-row">
+      <input class="save-plan-input" id="save-plan-email" type="email" placeholder="your@email.com" />
+      <button class="btn-save-plan" id="btn-save-plan" onclick="savePlan()">Save my plan</button>
+    </div>
+    <div class="save-plan-error" id="save-plan-error"></div>
+    <div class="save-plan-success" id="save-plan-success">
+      <span>✅ Saved!</span>
+      <a id="save-plan-link" href="#" target="_blank">Open your plan link</a>
+    </div>
+  </div>
 
   <div class="refine-panel" id="refine-panel" style="display:none">
     <div class="refine-header" onclick="toggleRefine()">
@@ -1437,6 +1463,7 @@ function showResult(text) {
   document.getElementById('result-body').innerHTML = renderMarkdown(text);
   document.getElementById('result').style.display = 'block';
   document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.getElementById('save-plan-panel').style.display = 'block';
   document.getElementById('refine-panel').style.display = 'block';
 }
 
@@ -1564,9 +1591,81 @@ function joinWaitlist() {
   console.log('[AARRR Revenue] Waitlist joined');
 }
 
+// ── Save / load profile ──
+async function savePlan() {
+  const emailEl = document.getElementById('save-plan-email');
+  const errorEl = document.getElementById('save-plan-error');
+  const btn     = document.getElementById('btn-save-plan');
+  const successEl = document.getElementById('save-plan-success');
+  const email = emailEl.value.trim();
+  errorEl.style.display = 'none';
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errorEl.textContent = 'Please enter a valid email address.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  if (!state.saveUuid) state.saveUuid = crypto.randomUUID();
+  try {
+    const res = await fetch(`${WORKER_URL}/save-profile`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, profile: buildGardenProfile(state), uuid: state.saveUuid, result: state.result }),
+    });
+    if (!res.ok) throw new Error('Save failed');
+    const link = `${location.origin}${location.pathname}?profile=${state.saveUuid}`;
+    document.getElementById('save-plan-link').href = link;
+    document.getElementById('save-plan-link').textContent = link;
+    successEl.style.display = 'flex';
+    emailEl.style.display = 'none';
+    btn.style.display = 'none';
+  } catch (e) {
+    errorEl.textContent = 'Something went wrong — please try again.';
+    errorEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Save my plan';
+  }
+}
+
+async function tryLoadProfile() {
+  const id = new URLSearchParams(location.search).get('profile');
+  if (!id) return;
+  try {
+    const res = await fetch(`${WORKER_URL}/load-profile?id=${encodeURIComponent(id)}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.profile || !data.result) return;
+    const p = data.profile;
+    state.location = p.location || '';
+    state.soil     = p.soil     || '';
+    state.aspect   = p.aspect   || '';
+    state.goals    = Array.isArray(p.goals) ? p.goals : [];
+    state.result   = data.result;
+    state.saveUuid = data.uuid;
+    document.getElementById('location-input').value = state.location;
+    showResult(data.result);
+    const panel = document.getElementById('save-plan-panel');
+    panel.style.display = 'block';
+    const link = `${location.origin}${location.pathname}?profile=${id}`;
+    document.getElementById('save-plan-link').href = link;
+    document.getElementById('save-plan-link').textContent = link;
+    document.getElementById('save-plan-success').style.display = 'flex';
+    document.getElementById('save-plan-email').style.display = 'none';
+    document.getElementById('btn-save-plan').style.display = 'none';
+  } catch (e) { /* silently fail — profile load is best-effort */ }
+}
+
 // ── Restart ──
 function restartWizard() {
-  state.step = 1; state.location = ''; state.soil = ''; state.aspect = ''; state.goals = []; state.result = '';
+  state.step = 1; state.location = ''; state.soil = ''; state.aspect = ''; state.goals = []; state.result = ''; state.saveUuid = null;
+  document.getElementById('save-plan-panel').style.display = 'none';
+  document.getElementById('save-plan-email').style.display = '';
+  document.getElementById('btn-save-plan').style.display = '';
+  document.getElementById('btn-save-plan').disabled = false;
+  document.getElementById('btn-save-plan').textContent = 'Save my plan';
+  document.getElementById('save-plan-success').style.display = 'none';
+  document.getElementById('save-plan-error').style.display = 'none';
   document.getElementById('result').style.display = 'none';
   document.getElementById('loading').style.display = 'none';
   document.getElementById('wizard').style.display = 'block';
@@ -1607,7 +1706,10 @@ window.closeUpgrade         = closeUpgrade;
 window.closeUpgradeIfOutside = closeUpgradeIfOutside;
 window.joinWaitlist         = joinWaitlist;
 window.restartWizard        = restartWizard;
+window.savePlan             = savePlan;
 // toggleSideNav is a plain global, no window assignment needed
+
+tryLoadProfile();
 </script>
 </body>
 </html>

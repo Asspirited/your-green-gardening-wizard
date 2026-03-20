@@ -226,7 +226,7 @@ Feature: Seasonal re-engagement email
 
 | ID | Title | Score | Status |
 |---|---|---|---|
-| YGW-021 | Email capture + profile save (KV) | 9.0 | ⏸ Parked |
+| YGW-021 | Email capture + profile save (KV) | 9.0 | ✅ Done |
 | YGW-023 | Affiliate plant links (nursery CTAs) | 6.5 | 📋 Open |
 | YGW-026 | Basic bed planner (list-based) | 5.0 | 📋 Open |
 
@@ -427,7 +427,7 @@ _(continued)_
 | YGW-BL-015 | Product rename to "The Green Wizard" throughout visible UI (YGW-UX-004) | 6.5 | ✅ Done |
 | YGW-BL-016 | Landing page full rebuild — 6-section marketing page (YGW-UX-002) | 8.5 | ✅ Done |
 | YGW-BL-017 | UI/UX quality gate — checklist passes before any merge (YGW-UX-005) | 7.0 | ✅ Done |
-| YGW-BL-018 | Font consistency audit — unified Playfair Display + DM Sans hierarchy, consistent usage for headings/body/labels across index.html, app.html, landscaper.html | 6.5 | 📋 Open |
+| YGW-BL-018 | Font consistency audit — unified Playfair Display + DM Sans hierarchy, consistent usage for headings/body/labels across index.html, app.html, landscaper.html | 6.5 | ✅ Done |
 | YGW-BL-019 | "Free Plant Advisor" heading on index.html is too small and does not stand out — make it prominent (larger, bolder, more visual weight) | 7.0 | ✅ Done |
 | YGW-BL-020 | Review index.html section ordering — reorder sections so most useful/compelling content appears highest on the page; reduce scroll-to-value | 7.5 | 📋 Open |
 | YGW-BL-021 | Expand plot design element range — add more plant/structure types across all shape/category/subtype combinations; increase canvas design vocabulary | 8.0 | ✅ Done |

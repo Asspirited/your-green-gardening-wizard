@@ -5,3 +5,7 @@ account_id = "ce5ebfc99d1b37a7537a039d0b09d0b6"
 
 # After deploying, set your API key as a secret (never commit it):
 #   wrangler secret put ANTHROPIC_API_KEY
+
+[[kv_namespaces]]
+binding = "YGW_PROFILES"
+id      = "b61ee717de2b4589a8b4f85557152b5d"
