@@ -297,6 +297,10 @@ At any point Rod asks "what decisions have we made?", list ADR titles and status
 3. **Double Diamond** — is this a Discover/Define idea (need to learn more) or Develop/Deliver (know enough to build)?
 4. Score with CD3 before committing to Gherkin.
 
+### Trigger: COMBO_EXPLORER
+**When to fire:** Combo explorer feature, plant relationship UX, collector mode, advanced user features, `/features/combo-explorer` endpoint.
+**Action:** Fetch `.claude/combo-explorer-design.md` before proceeding.
+
 ### Trigger: ONBOARDING_DESIGN
 **When to fire:** Any work on landing page, first-use flow, soft gate, saved projects, demo brief, or return-visit features.
 **Action:** Fetch `.claude/onboarding-design.md` before proceeding.
