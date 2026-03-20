@@ -92,16 +92,27 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 22px;
+    gap: 10px;
   }
   .banner-links a {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: rgba(255,255,255,0.72);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--green-deep);
+    background: #e8c96a;
     text-decoration: none;
-    transition: color 0.15s;
+    padding: 7px 16px;
+    border-radius: 20px;
+    border: 1.5px solid rgba(212,172,56,0.6);
+    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    white-space: nowrap;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+    letter-spacing: 0.01em;
   }
-  .banner-links a:hover { color: #fff; }
+  .banner-links a:hover {
+    background: #f0d878;
+    transform: translateY(-1px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+  }
   .banner-season {
     display: flex;
     align-items: center;
@@ -452,18 +463,33 @@
 
   .advisor-divider {
     background: var(--parchment);
-    border-top: 1px solid #ddd5c0;
-    padding: 20px 28px 0;
+    border-top: 3px solid var(--green-deep);
+    padding: 36px 28px 0;
     text-align: center;
+  }
+  .advisor-divider-badge {
+    display: inline-block;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--green-deep);
+    background: rgba(45,138,66,0.1);
+    border: 1px solid rgba(45,138,66,0.25);
+    border-radius: 20px;
+    padding: 3px 10px;
+    margin-bottom: 12px;
   }
   .advisor-divider h2 {
     font-family: var(--font-display);
-    font-size: 1.1rem;
+    font-size: clamp(1.5rem, 3vw, 2.2rem);
     font-weight: 500;
-    color: var(--ink);
-    margin-bottom: 4px;
+    font-style: italic;
+    color: var(--green-deep);
+    margin-bottom: 8px;
+    line-height: 1.2;
   }
-  .advisor-divider p { font-size: 0.72rem; color: #7a7060; margin-bottom: 18px; }
+  .advisor-divider p { font-size: 0.8rem; color: #7a7060; margin-bottom: 24px; max-width: 360px; margin-left: auto; margin-right: auto; }
 
   /* ══ EXISTING WIZARD STYLES (preserved) ══ */
 
@@ -877,7 +903,8 @@
 <!-- ══ PLANT ADVISOR (existing, preserved) ══ -->
 <div id="advisor-section">
   <div class="advisor-divider">
-    <h2>Free plant advisor</h2>
+    <div class="advisor-divider-badge">Free · No account needed</div>
+    <h2>Your free plant advisor</h2>
     <p>Tell us about your plot — we'll recommend exactly what to grow.</p>
   </div>
 

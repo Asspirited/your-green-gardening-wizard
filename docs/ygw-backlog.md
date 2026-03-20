@@ -430,6 +430,8 @@ _(continued)_
 | YGW-BL-018 | Font consistency audit — unified Playfair Display + DM Sans hierarchy, consistent usage for headings/body/labels across index.html, app.html, landscaper.html | 6.5 | 📋 Open |
 | YGW-BL-019 | "Free Plant Advisor" heading on index.html is too small and does not stand out — make it prominent (larger, bolder, more visual weight) | 7.0 | 📋 Open |
 | YGW-BL-020 | Review index.html section ordering — reorder sections so most useful/compelling content appears highest on the page; reduce scroll-to-value | 7.5 | 📋 Open |
+| YGW-BL-021 | Expand plot design element range — add more plant/structure types across all shape/category/subtype combinations; increase canvas design vocabulary | 8.0 | 📋 Open |
+| YGW-BL-022 | Banner nav links (Plot Designer, Landscaper, Plant Advisor) are plain text — make them gold-and-green pill buttons to match Green Wizard logo; make them prominent and clickable | 8.0 | 🔨 Building |
 
 ---
 

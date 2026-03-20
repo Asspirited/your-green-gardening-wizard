@@ -662,7 +662,12 @@ const TIMELINE_LABELS = ['Now', '1 yr', '3 yr', '5 yr', '10 yr'];
 
 function getSpreadFactor(el) {
   const curve = GROWTH_CURVES[el.type] || GROWTH_CURVES.shrub;
-  return curve[state.timelineIdx];
+  let factor = curve[state.timelineIdx];
+  // Deciduous plants show bare skeleton in winter — 35% smaller spread (no leaf canopy)
+  if (state.season === 'winter' && el.evergreen === false) {
+    factor *= 0.65;
+  }
+  return factor;
 }
 
 // ── State ──
@@ -1397,18 +1402,23 @@ function render() {
   drawGrid();
   drawBoundary();
   drawElements();
-  // Timeline overlay label — only when not at 10yr (mature)
+  // Overlay badges (top-left: season | top-right: year if not mature)
+  ctx.font = 'bold 13px DM Sans, system-ui, sans-serif';
+  ctx.textAlign = 'left';
+  const seasonLabel = state.season.charAt(0).toUpperCase() + state.season.slice(1);
+  const sw = ctx.measureText(seasonLabel).width + 20;
+  ctx.fillStyle = 'rgba(26,58,42,0.75)';
+  ctx.beginPath(); ctx.roundRect(12, 12, sw, 26, 4); ctx.fill();
+  ctx.fillStyle = '#b7e4c7';
+  ctx.fillText(seasonLabel, 22, 29);
+
   if (state.timelineIdx < 4) {
     const label = 'Year: ' + TIMELINE_LABELS[state.timelineIdx];
-    ctx.font = 'bold 13px DM Sans, system-ui, sans-serif';
-    ctx.textAlign = 'left';
     const w = ctx.measureText(label).width + 20;
     ctx.fillStyle = 'rgba(26,58,42,0.75)';
-    ctx.beginPath();
-    ctx.roundRect(12, 12, w, 26, 4);
-    ctx.fill();
+    ctx.beginPath(); ctx.roundRect(12 + sw + 6, 12, w, 26, 4); ctx.fill();
     ctx.fillStyle = '#b7e4c7';
-    ctx.fillText(label, 22, 29);
+    ctx.fillText(label, 12 + sw + 6 + 10, 29);
   }
   updateInfoPanel();
 }
