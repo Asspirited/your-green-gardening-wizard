@@ -8,12 +8,20 @@
     "shape": "circle",
     "subtype": "deciduous",
     "spreadMetres": 15,
-    "heightMetres": { "mature": 25, "tenYear": 4 },
+    "heightMetres": {
+      "mature": 25,
+      "tenYear": 4
+    },
     "heightCategory": "canopy",
     "evergreen": false,
     "nativeUK": true,
     "dotColour": "#2e7d32",
-    "seasonalColours": { "spring": "#90c070", "summer": "#2e7d32", "autumn": "#bf7a3f", "winter": "#795548" },
+    "seasonalColours": {
+      "spring": "#90c070",
+      "summer": "#2e7d32",
+      "autumn": "#bf7a3f",
+      "winter": "#795548"
+    },
     "notes": "UK's most important native tree for biodiversity. Allow 15m+ clearance from buildings and drainage."
   },
   {
@@ -25,12 +33,20 @@
     "shape": "circle",
     "subtype": "deciduous",
     "spreadMetres": 8,
-    "heightMetres": { "mature": 18, "tenYear": 6 },
+    "heightMetres": {
+      "mature": 18,
+      "tenYear": 6
+    },
     "heightCategory": "canopy",
     "evergreen": false,
     "nativeUK": true,
     "dotColour": "#558b2f",
-    "seasonalColours": { "spring": "#aed581", "summer": "#558b2f", "autumn": "#f9a825", "winter": "#9e9e9e" },
+    "seasonalColours": {
+      "spring": "#aed581",
+      "summer": "#558b2f",
+      "autumn": "#f9a825",
+      "winter": "#9e9e9e"
+    },
     "notes": "Elegant, fast-growing UK native. Distinctive white bark year-round. Suits most soil types."
   },
   {
@@ -42,12 +58,20 @@
     "shape": "circle",
     "subtype": "deciduous",
     "spreadMetres": 5,
-    "heightMetres": { "mature": 5, "tenYear": 3 },
+    "heightMetres": {
+      "mature": 5,
+      "tenYear": 3
+    },
     "heightCategory": "tall",
     "evergreen": false,
     "nativeUK": false,
     "dotColour": "#388e3c",
-    "seasonalColours": { "spring": "#f8bbd0", "summer": "#4caf50", "autumn": "#ff8f00", "winter": "#6d4c41" },
+    "seasonalColours": {
+      "spring": "#f8bbd0",
+      "summer": "#4caf50",
+      "autumn": "#ff8f00",
+      "winter": "#6d4c41"
+    },
     "notes": "Spring blossom and autumn fruit. Choose a rootstock for final size. Needs cross-pollination partner."
   },
   {
@@ -59,12 +83,20 @@
     "shape": "triangle",
     "subtype": "conifer",
     "spreadMetres": 8,
-    "heightMetres": { "mature": 20, "tenYear": 4 },
+    "heightMetres": {
+      "mature": 20,
+      "tenYear": 4
+    },
     "heightCategory": "canopy",
     "evergreen": true,
     "nativeUK": true,
     "dotColour": "#2e5339",
-    "seasonalColours": { "spring": "#2e5339", "summer": "#2e5339", "autumn": "#2e5339", "winter": "#2e5339" },
+    "seasonalColours": {
+      "spring": "#2e5339",
+      "summer": "#2e5339",
+      "autumn": "#2e5339",
+      "winter": "#2e5339"
+    },
     "notes": "UK's only native pine. Iconic Caledonian forest tree. Tolerates poor, sandy, acidic soils."
   },
   {
@@ -76,12 +108,20 @@
     "shape": "triangle",
     "subtype": "conifer",
     "spreadMetres": 5,
-    "heightMetres": { "mature": 10, "tenYear": 2 },
+    "heightMetres": {
+      "mature": 10,
+      "tenYear": 2
+    },
     "heightCategory": "canopy",
     "evergreen": true,
     "nativeUK": true,
     "dotColour": "#1b4a2b",
-    "seasonalColours": { "spring": "#1b4a2b", "summer": "#1b4a2b", "autumn": "#1b4a2b", "winter": "#1b4a2b" },
+    "seasonalColours": {
+      "spring": "#1b4a2b",
+      "summer": "#1b4a2b",
+      "autumn": "#1b4a2b",
+      "winter": "#1b4a2b"
+    },
     "notes": "Very slow-growing UK native. Excellent for hedging and topiary. Highly toxic berries — caution with children and pets."
   },
   {
@@ -93,13 +133,96 @@
     "shape": "circle",
     "subtype": "deciduous",
     "spreadMetres": 6,
-    "heightMetres": { "mature": 8, "tenYear": 5 },
+    "heightMetres": {
+      "mature": 8,
+      "tenYear": 5
+    },
     "heightCategory": "tall",
     "evergreen": false,
     "nativeUK": false,
     "dotColour": "#f48fb1",
-    "seasonalColours": { "spring": "#f8bbd0", "summer": "#388e3c", "autumn": "#e64a19", "winter": "#78909c" },
+    "seasonalColours": {
+      "spring": "#f8bbd0",
+      "summer": "#388e3c",
+      "autumn": "#e64a19",
+      "winter": "#78909c"
+    },
     "notes": "Spectacular double-pink blossom in April. Compact enough for most gardens. Autumn colour bonus."
+  },
+  {
+    "id": "amelanchier-lamarckii",
+    "name": "Snowy Mespilus",
+    "latinName": "Amelanchier lamarckii",
+    "category": "trees",
+    "type": "tree",
+    "shape": "circle",
+    "subtype": "deciduous",
+    "spreadMetres": 6,
+    "heightMetres": {
+      "mature": 8,
+      "tenYear": 5
+    },
+    "heightCategory": "tall",
+    "evergreen": false,
+    "nativeUK": false,
+    "dotColour": "#f8bbd0",
+    "seasonalColours": {
+      "spring": "#f8bbd0",
+      "summer": "#388e3c",
+      "autumn": "#e65100",
+      "winter": "#795548"
+    },
+    "notes": "The finest small tree for most UK gardens. White blossom cloud in April, vivid orange-red autumn colour. Multi-stem form preferred."
+  },
+  {
+    "id": "ilex-aquifolium",
+    "name": "Holly",
+    "latinName": "Ilex aquifolium",
+    "category": "trees",
+    "type": "tree",
+    "shape": "circle",
+    "subtype": "deciduous",
+    "spreadMetres": 5,
+    "heightMetres": {
+      "mature": 10,
+      "tenYear": 3
+    },
+    "heightCategory": "tall",
+    "evergreen": true,
+    "nativeUK": true,
+    "dotColour": "#1b5e20",
+    "seasonalColours": {
+      "spring": "#2e7d32",
+      "summer": "#1b5e20",
+      "autumn": "#1b5e20",
+      "winter": "#b71c1c"
+    },
+    "notes": "UK native. Glossy evergreen foliage with red berries in winter for birds. Plant one male to five female plants for berries."
+  },
+  {
+    "id": "olea-europaea",
+    "name": "Olive Tree",
+    "latinName": "Olea europaea",
+    "category": "trees",
+    "type": "tree",
+    "shape": "circle",
+    "subtype": "deciduous",
+    "spreadMetres": 4,
+    "heightMetres": {
+      "mature": 6,
+      "tenYear": 3
+    },
+    "heightCategory": "tall",
+    "evergreen": true,
+    "nativeUK": false,
+    "dotColour": "#9e9d24",
+    "seasonalColours": {
+      "spring": "#aeb42c",
+      "summer": "#9e9d24",
+      "autumn": "#9e9d24",
+      "winter": "#9e9d24"
+    },
+    "notes": "Silver-grey architectural foliage year-round. Needs free-draining soil and full sun. Hardy to -10°C once established."
   },
   {
     "id": "rosa-gertrude-jekyll",
@@ -110,12 +233,20 @@
     "shape": "blob",
     "subtype": "informal",
     "spreadMetres": 1.2,
-    "heightMetres": { "mature": 1.5, "tenYear": 1.5 },
+    "heightMetres": {
+      "mature": 1.5,
+      "tenYear": 1.5
+    },
     "heightCategory": "medium",
     "evergreen": false,
     "nativeUK": false,
     "dotColour": "#e8607a",
-    "seasonalColours": { "spring": "#ef9a9a", "summer": "#e8607a", "autumn": "#c0392b", "winter": "#795548" },
+    "seasonalColours": {
+      "spring": "#ef9a9a",
+      "summer": "#e8607a",
+      "autumn": "#c0392b",
+      "winter": "#795548"
+    },
     "notes": "David Austin English rose, classic deep pink, intensely fragrant. Repeat-flowering June–October."
   },
   {
@@ -127,12 +258,20 @@
     "shape": "blob",
     "subtype": "informal",
     "spreadMetres": 0.6,
-    "heightMetres": { "mature": 0.6, "tenYear": 0.6 },
+    "heightMetres": {
+      "mature": 0.6,
+      "tenYear": 0.6
+    },
     "heightCategory": "low",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#9b72cf",
-    "seasonalColours": { "spring": "#ce93d8", "summer": "#9b72cf", "autumn": "#7e57c2", "winter": "#78909c" },
+    "seasonalColours": {
+      "spring": "#ce93d8",
+      "summer": "#9b72cf",
+      "autumn": "#7e57c2",
+      "winter": "#78909c"
+    },
     "notes": "Silver-grey foliage year-round, purple spikes July–August. Drought-tolerant once established. Cut back hard after flowering."
   },
   {
@@ -144,12 +283,20 @@
     "shape": "rect",
     "subtype": "formal",
     "spreadMetres": 0.4,
-    "heightMetres": { "mature": 1.0, "tenYear": 0.8 },
+    "heightMetres": {
+      "mature": 1,
+      "tenYear": 0.8
+    },
     "heightCategory": "medium",
     "evergreen": true,
     "nativeUK": true,
     "dotColour": "#1b5e20",
-    "seasonalColours": { "spring": "#388e3c", "summer": "#1b5e20", "autumn": "#1b5e20", "winter": "#1b5e20" },
+    "seasonalColours": {
+      "spring": "#388e3c",
+      "summer": "#1b5e20",
+      "autumn": "#1b5e20",
+      "winter": "#1b5e20"
+    },
     "notes": "Classic formal hedging. Susceptible to box blight — consider Ilex crenata as alternative. Clip twice yearly."
   },
   {
@@ -160,13 +307,21 @@
     "type": "shrub",
     "shape": "blob",
     "subtype": "informal",
-    "spreadMetres": 2.0,
-    "heightMetres": { "mature": 2.5, "tenYear": 2.0 },
+    "spreadMetres": 2,
+    "heightMetres": {
+      "mature": 2.5,
+      "tenYear": 2
+    },
     "heightCategory": "tall",
     "evergreen": false,
     "nativeUK": false,
     "dotColour": "#c8e6c9",
-    "seasonalColours": { "spring": "#c8e6c9", "summer": "#a5d6a7", "autumn": "#ffe082", "winter": "#9e9e9e" },
+    "seasonalColours": {
+      "spring": "#c8e6c9",
+      "summer": "#a5d6a7",
+      "autumn": "#ffe082",
+      "winter": "#9e9e9e"
+    },
     "notes": "Lime-white flower heads July–September, fading to pink-beige. Tolerates shade. Cut back hard in March."
   },
   {
@@ -178,12 +333,20 @@
     "shape": "blob",
     "subtype": "informal",
     "spreadMetres": 0.8,
-    "heightMetres": { "mature": 0.8, "tenYear": 0.8 },
+    "heightMetres": {
+      "mature": 0.8,
+      "tenYear": 0.8
+    },
     "heightCategory": "low",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#546e7a",
-    "seasonalColours": { "spring": "#64b5f6", "summer": "#546e7a", "autumn": "#546e7a", "winter": "#546e7a" },
+    "seasonalColours": {
+      "spring": "#64b5f6",
+      "summer": "#546e7a",
+      "autumn": "#546e7a",
+      "winter": "#546e7a"
+    },
     "notes": "Aromatic evergreen herb. Blue flowers attract early bees. Needs well-drained soil and full sun. Edible."
   },
   {
@@ -194,14 +357,98 @@
     "type": "shrub",
     "shape": "circle",
     "subtype": "formal",
-    "spreadMetres": 2.0,
-    "heightMetres": { "mature": 3.0, "tenYear": 2.5 },
+    "spreadMetres": 2,
+    "heightMetres": {
+      "mature": 3,
+      "tenYear": 2.5
+    },
     "heightCategory": "tall",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#388e3c",
-    "seasonalColours": { "spring": "#e53935", "summer": "#388e3c", "autumn": "#388e3c", "winter": "#2e7d32" },
+    "seasonalColours": {
+      "spring": "#e53935",
+      "summer": "#388e3c",
+      "autumn": "#388e3c",
+      "winter": "#2e7d32"
+    },
     "notes": "Vivid red new growth in spring. Evergreen screening shrub. Can be clipped formally. Tolerates most soils."
+  },
+  {
+    "id": "camellia-japonica",
+    "name": "Camellia",
+    "latinName": "Camellia japonica",
+    "category": "shrubs",
+    "type": "shrub",
+    "shape": "circle",
+    "subtype": "formal",
+    "spreadMetres": 2,
+    "heightMetres": {
+      "mature": 3,
+      "tenYear": 2
+    },
+    "heightCategory": "tall",
+    "evergreen": true,
+    "nativeUK": false,
+    "dotColour": "#c2185b",
+    "seasonalColours": {
+      "spring": "#e91e63",
+      "summer": "#1b5e20",
+      "autumn": "#1b5e20",
+      "winter": "#1b5e20"
+    },
+    "notes": "Spectacular spring blooms on glossy evergreen foliage. Requires acid soil (pH 5.5–6.5) and shelter from morning frost."
+  },
+  {
+    "id": "phyllostachys-aurea",
+    "name": "Bamboo",
+    "latinName": "Phyllostachys aurea",
+    "category": "shrubs",
+    "type": "shrub",
+    "shape": "rect",
+    "subtype": "formal",
+    "spreadMetres": 1,
+    "lengthMetres": 2,
+    "heightMetres": {
+      "mature": 4,
+      "tenYear": 3
+    },
+    "heightCategory": "tall",
+    "evergreen": true,
+    "nativeUK": false,
+    "dotColour": "#558b2f",
+    "seasonalColours": {
+      "spring": "#7cb342",
+      "summer": "#558b2f",
+      "autumn": "#558b2f",
+      "winter": "#558b2f"
+    },
+    "notes": "Clump-forming golden bamboo. Excellent for screening. Use root barrier to prevent spread. Rustling in wind is a design asset."
+  },
+  {
+    "id": "wisteria-sinensis",
+    "name": "Wisteria",
+    "latinName": "Wisteria sinensis",
+    "category": "shrubs",
+    "type": "shrub",
+    "shape": "blob",
+    "subtype": "informal",
+    "spreadMetres": 3,
+    "heightMetres": {
+      "mature": 8,
+      "tenYear": 5
+    },
+    "heightCategory": "canopy",
+    "evergreen": false,
+    "nativeUK": false,
+    "dotColour": "#9575cd",
+    "seasonalColours": {
+      "spring": "#7e57c2",
+      "summer": "#558b2f",
+      "autumn": "#c5e1a5",
+      "winter": "#795548"
+    },
+    "notes": "Spectacular purple racemes in May. Train against a south or west-facing wall. Prune twice yearly: August and February."
   },
   {
     "id": "miscanthus-sinensis",
@@ -212,12 +459,20 @@
     "shape": "blob",
     "subtype": "grass",
     "spreadMetres": 1.2,
-    "heightMetres": { "mature": 1.8, "tenYear": 1.8 },
+    "heightMetres": {
+      "mature": 1.8,
+      "tenYear": 1.8
+    },
     "heightCategory": "medium",
     "evergreen": false,
     "nativeUK": false,
     "dotColour": "#a5d6a7",
-    "seasonalColours": { "spring": "#c5e1a5", "summer": "#a5d6a7", "autumn": "#ffcc80", "winter": "#d7ccc8" },
+    "seasonalColours": {
+      "spring": "#c5e1a5",
+      "summer": "#a5d6a7",
+      "autumn": "#ffcc80",
+      "winter": "#d7ccc8"
+    },
     "notes": "Elegant arching blades. Feathery silver plumes October–February. Cut back hard in late February before new growth."
   },
   {
@@ -229,12 +484,20 @@
     "shape": "blob",
     "subtype": "perennial",
     "spreadMetres": 0.5,
-    "heightMetres": { "mature": 0.6, "tenYear": 0.6 },
+    "heightMetres": {
+      "mature": 0.6,
+      "tenYear": 0.6
+    },
     "heightCategory": "low",
     "evergreen": false,
     "nativeUK": false,
     "dotColour": "#5c6bc0",
-    "seasonalColours": { "spring": "#9fa8da", "summer": "#5c6bc0", "autumn": "#78909c", "winter": "#9e9e9e" },
+    "seasonalColours": {
+      "spring": "#9fa8da",
+      "summer": "#5c6bc0",
+      "autumn": "#78909c",
+      "winter": "#9e9e9e"
+    },
     "notes": "Deep violet-blue spikes on dark stems. Repeat-flowers if deadheaded. Drought-tolerant. Pollinators adore it."
   },
   {
@@ -246,12 +509,20 @@
     "shape": "circle",
     "subtype": "bulb",
     "spreadMetres": 0.1,
-    "heightMetres": { "mature": 0.1, "tenYear": 0.1 },
+    "heightMetres": {
+      "mature": 0.1,
+      "tenYear": 0.1
+    },
     "heightCategory": "ground",
     "evergreen": false,
     "nativeUK": false,
     "dotColour": "#ab47bc",
-    "seasonalColours": { "spring": "#ab47bc", "summer": "#9e9e9e", "autumn": "#9e9e9e", "winter": "#9e9e9e" },
+    "seasonalColours": {
+      "spring": "#ab47bc",
+      "summer": "#9e9e9e",
+      "autumn": "#9e9e9e",
+      "winter": "#9e9e9e"
+    },
     "notes": "First colour of the year, February–March. Plant in autumn, 5cm deep, in drifts of 50+. Naturalises in lawn."
   },
   {
@@ -263,12 +534,20 @@
     "shape": "blob",
     "subtype": "perennial",
     "spreadMetres": 0.5,
-    "heightMetres": { "mature": 0.7, "tenYear": 0.7 },
+    "heightMetres": {
+      "mature": 0.7,
+      "tenYear": 0.7
+    },
     "heightCategory": "low",
     "evergreen": false,
     "nativeUK": false,
     "dotColour": "#42a5f5",
-    "seasonalColours": { "spring": "#90caf9", "summer": "#42a5f5", "autumn": "#78909c", "winter": "#9e9e9e" },
+    "seasonalColours": {
+      "spring": "#90caf9",
+      "summer": "#42a5f5",
+      "autumn": "#78909c",
+      "winter": "#9e9e9e"
+    },
     "notes": "Striking blue globe flowers July–September. Needs well-drained soil and shelter. Pot up in colder regions."
   },
   {
@@ -280,13 +559,146 @@
     "shape": "circle",
     "subtype": "bulb",
     "spreadMetres": 0.15,
-    "heightMetres": { "mature": 0.9, "tenYear": 0.9 },
+    "heightMetres": {
+      "mature": 0.9,
+      "tenYear": 0.9
+    },
     "heightCategory": "medium",
     "evergreen": false,
     "nativeUK": false,
     "dotColour": "#7b1fa2",
-    "seasonalColours": { "spring": "#9c27b0", "summer": "#7b1fa2", "autumn": "#9e9e9e", "winter": "#9e9e9e" },
+    "seasonalColours": {
+      "spring": "#9c27b0",
+      "summer": "#7b1fa2",
+      "autumn": "#9e9e9e",
+      "winter": "#9e9e9e"
+    },
     "notes": "Deep purple architectural globes May–June. Plant in autumn, 10cm deep. Seedheads ornamental all summer."
+  },
+  {
+    "id": "hosta-fortunei",
+    "name": "Hosta",
+    "latinName": "Hosta fortunei",
+    "category": "perennials",
+    "type": "perennial",
+    "shape": "blob",
+    "subtype": "perennial",
+    "spreadMetres": 0.6,
+    "heightMetres": {
+      "mature": 0.5,
+      "tenYear": 0.5
+    },
+    "heightCategory": "low",
+    "evergreen": false,
+    "nativeUK": false,
+    "dotColour": "#81c784",
+    "seasonalColours": {
+      "spring": "#c5e1a5",
+      "summer": "#81c784",
+      "autumn": "#ffd54f",
+      "winter": "#9e9e9e"
+    },
+    "notes": "The definitive shade perennial. Architectural ribbed foliage. Protect from slugs with sharp grit or copper tape. Divide every 3–5 years."
+  },
+  {
+    "id": "geranium-rozanne",
+    "name": "Cranesbill",
+    "latinName": "Geranium 'Rozanne'",
+    "category": "perennials",
+    "type": "perennial",
+    "shape": "blob",
+    "subtype": "perennial",
+    "spreadMetres": 0.6,
+    "heightMetres": {
+      "mature": 0.4,
+      "tenYear": 0.4
+    },
+    "heightCategory": "low",
+    "evergreen": false,
+    "nativeUK": false,
+    "dotColour": "#5c6bc0",
+    "seasonalColours": {
+      "spring": "#9fa8da",
+      "summer": "#5c6bc0",
+      "autumn": "#9fa8da",
+      "winter": "#9e9e9e"
+    },
+    "notes": "Chelsea Plant of the Centenary. Violet-blue flowers May–October — one of the longest-flowering perennials. Trouble-free. Excellent between paving."
+  },
+  {
+    "id": "iris-germanica",
+    "name": "Bearded Iris",
+    "latinName": "Iris germanica",
+    "category": "perennials",
+    "type": "perennial",
+    "shape": "blob",
+    "subtype": "perennial",
+    "spreadMetres": 0.4,
+    "heightMetres": {
+      "mature": 0.9,
+      "tenYear": 0.9
+    },
+    "heightCategory": "medium",
+    "evergreen": false,
+    "nativeUK": false,
+    "dotColour": "#7b1fa2",
+    "seasonalColours": {
+      "spring": "#9c27b0",
+      "summer": "#c5e1a5",
+      "autumn": "#a5d6a7",
+      "winter": "#9e9e9e"
+    },
+    "notes": "Architectural strap foliage with dramatic flowers in May–June. Plant rhizomes at soil surface to bake in sun. Divide every 4 years."
+  },
+  {
+    "id": "dryopteris-filix-mas",
+    "name": "Male Fern",
+    "latinName": "Dryopteris filix-mas",
+    "category": "perennials",
+    "type": "perennial",
+    "shape": "blob",
+    "subtype": "perennial",
+    "spreadMetres": 0.9,
+    "heightMetres": {
+      "mature": 1,
+      "tenYear": 1
+    },
+    "heightCategory": "medium",
+    "evergreen": false,
+    "nativeUK": true,
+    "dotColour": "#388e3c",
+    "seasonalColours": {
+      "spring": "#aed581",
+      "summer": "#388e3c",
+      "autumn": "#8d6e63",
+      "winter": "#6d4c41"
+    },
+    "notes": "UK native fern for deep shade. Dramatic arching fronds. Pairs with hostas and astilbes. Excellent in north-facing borders."
+  },
+  {
+    "id": "echinacea-purpurea",
+    "name": "Coneflower",
+    "latinName": "Echinacea purpurea",
+    "category": "perennials",
+    "type": "perennial",
+    "shape": "blob",
+    "subtype": "perennial",
+    "spreadMetres": 0.5,
+    "heightMetres": {
+      "mature": 0.9,
+      "tenYear": 0.9
+    },
+    "heightCategory": "medium",
+    "evergreen": false,
+    "nativeUK": false,
+    "dotColour": "#e91e63",
+    "seasonalColours": {
+      "spring": "#a5d6a7",
+      "summer": "#e91e63",
+      "autumn": "#ff8f00",
+      "winter": "#795548"
+    },
+    "notes": "Prairie garden staple. Pink daisy flowers July–September. Leave seedheads for goldfinches in winter. Drought-tolerant."
   },
   {
     "id": "lawn",
@@ -297,13 +709,21 @@
     "shape": "zone",
     "subtype": "ground",
     "patternType": "solid",
-    "spreadMetres": 3.0,
-    "heightMetres": { "mature": 0.05, "tenYear": 0.05 },
+    "spreadMetres": 3,
+    "heightMetres": {
+      "mature": 0.05,
+      "tenYear": 0.05
+    },
     "heightCategory": "ground",
     "evergreen": true,
     "nativeUK": true,
     "dotColour": "#66bb6a",
-    "seasonalColours": { "spring": "#81c784", "summer": "#66bb6a", "autumn": "#aed581", "winter": "#78909c" },
+    "seasonalColours": {
+      "spring": "#81c784",
+      "summer": "#66bb6a",
+      "autumn": "#aed581",
+      "winter": "#78909c"
+    },
     "notes": "Place a zone to mark a lawn area. Renders as a ground layer beneath all plants."
   },
   {
@@ -315,13 +735,21 @@
     "shape": "zone",
     "subtype": "ground",
     "patternType": "dots",
-    "spreadMetres": 2.0,
-    "heightMetres": { "mature": 0.05, "tenYear": 0.05 },
+    "spreadMetres": 2,
+    "heightMetres": {
+      "mature": 0.05,
+      "tenYear": 0.05
+    },
     "heightCategory": "ground",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#bdbdbd",
-    "seasonalColours": { "spring": "#bdbdbd", "summer": "#bdbdbd", "autumn": "#bdbdbd", "winter": "#bdbdbd" },
+    "seasonalColours": {
+      "spring": "#bdbdbd",
+      "summer": "#bdbdbd",
+      "autumn": "#bdbdbd",
+      "winter": "#bdbdbd"
+    },
     "notes": "Low-maintenance, permeable surface. Useful under dry-loving plants. Weed-suppressing membrane recommended."
   },
   {
@@ -333,13 +761,21 @@
     "shape": "zone",
     "subtype": "ground",
     "patternType": "hatching",
-    "spreadMetres": 2.0,
-    "heightMetres": { "mature": 0.15, "tenYear": 0.15 },
+    "spreadMetres": 2,
+    "heightMetres": {
+      "mature": 0.15,
+      "tenYear": 0.15
+    },
     "heightCategory": "ground",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#a1887f",
-    "seasonalColours": { "spring": "#a1887f", "summer": "#a1887f", "autumn": "#a1887f", "winter": "#a1887f" },
+    "seasonalColours": {
+      "spring": "#a1887f",
+      "summer": "#a1887f",
+      "autumn": "#a1887f",
+      "winter": "#a1887f"
+    },
     "notes": "Use hardwood or composite for longevity. Anti-slip finish essential in UK climate. Annual oiling extends life."
   },
   {
@@ -351,13 +787,21 @@
     "shape": "zone",
     "subtype": "ground",
     "patternType": "grid",
-    "spreadMetres": 2.0,
-    "heightMetres": { "mature": 0.05, "tenYear": 0.05 },
+    "spreadMetres": 2,
+    "heightMetres": {
+      "mature": 0.05,
+      "tenYear": 0.05
+    },
     "heightCategory": "ground",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#9e9e9e",
-    "seasonalColours": { "spring": "#9e9e9e", "summer": "#9e9e9e", "autumn": "#9e9e9e", "winter": "#9e9e9e" },
+    "seasonalColours": {
+      "spring": "#9e9e9e",
+      "summer": "#9e9e9e",
+      "autumn": "#9e9e9e",
+      "winter": "#9e9e9e"
+    },
     "notes": "Porcelain, natural stone, or concrete flags. Lay on sharp sand and MOT type 1 sub-base. Allow 1:80 fall for drainage."
   },
   {
@@ -369,13 +813,21 @@
     "shape": "zone",
     "subtype": "ground",
     "patternType": "crosshatch",
-    "spreadMetres": 2.0,
-    "heightMetres": { "mature": 0.07, "tenYear": 0.07 },
+    "spreadMetres": 2,
+    "heightMetres": {
+      "mature": 0.07,
+      "tenYear": 0.07
+    },
     "heightCategory": "ground",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#6d4c41",
-    "seasonalColours": { "spring": "#6d4c41", "summer": "#6d4c41", "autumn": "#6d4c41", "winter": "#6d4c41" },
+    "seasonalColours": {
+      "spring": "#6d4c41",
+      "summer": "#6d4c41",
+      "autumn": "#6d4c41",
+      "winter": "#6d4c41"
+    },
     "notes": "Suppresses weeds, retains moisture, improves soil structure as it breaks down. Replenish every 2–3 years."
   },
   {
@@ -387,13 +839,21 @@
     "shape": "zone",
     "subtype": "ground",
     "patternType": "meadow",
-    "spreadMetres": 3.0,
-    "heightMetres": { "mature": 0.4, "tenYear": 0.4 },
+    "spreadMetres": 3,
+    "heightMetres": {
+      "mature": 0.4,
+      "tenYear": 0.4
+    },
     "heightCategory": "ground",
     "evergreen": false,
     "nativeUK": true,
     "dotColour": "#8bc34a",
-    "seasonalColours": { "spring": "#aed581", "summer": "#8bc34a", "autumn": "#ffcc02", "winter": "#78909c" },
+    "seasonalColours": {
+      "spring": "#aed581",
+      "summer": "#8bc34a",
+      "autumn": "#ffcc02",
+      "winter": "#78909c"
+    },
     "notes": "Dramatic biodiversity gain. Sow on poor, disturbed soil. Mow once in October. Use yellow rattle to suppress grass."
   },
   {
@@ -404,13 +864,21 @@
     "type": "water",
     "shape": "ellipse",
     "subtype": "pond",
-    "spreadMetres": 2.0,
-    "heightMetres": { "mature": -0.5, "tenYear": -0.5 },
+    "spreadMetres": 2,
+    "heightMetres": {
+      "mature": -0.5,
+      "tenYear": -0.5
+    },
     "heightCategory": "ground",
     "evergreen": true,
     "nativeUK": true,
     "dotColour": "#29b6f6",
-    "seasonalColours": { "spring": "#4fc3f7", "summer": "#29b6f6", "autumn": "#0288d1", "winter": "#90caf9" },
+    "seasonalColours": {
+      "spring": "#4fc3f7",
+      "summer": "#29b6f6",
+      "autumn": "#0288d1",
+      "winter": "#90caf9"
+    },
     "notes": "Single most beneficial wildlife feature. Even 60cm deep attracts newts, frogs, dragonflies within weeks of filling."
   },
   {
@@ -422,12 +890,20 @@
     "shape": "circle",
     "subtype": "ornamental",
     "spreadMetres": 0.4,
-    "heightMetres": { "mature": 0.8, "tenYear": 0.8 },
+    "heightMetres": {
+      "mature": 0.8,
+      "tenYear": 0.8
+    },
     "heightCategory": "low",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#4fc3f7",
-    "seasonalColours": { "spring": "#4fc3f7", "summer": "#29b6f6", "autumn": "#0288d1", "winter": "#90caf9" },
+    "seasonalColours": {
+      "spring": "#4fc3f7",
+      "summer": "#29b6f6",
+      "autumn": "#0288d1",
+      "winter": "#90caf9"
+    },
     "notes": "Moving water deters mosquitoes and provides ambient sound. Solar pumps avoid cabling. Drain in hard frosts."
   },
   {
@@ -439,13 +915,21 @@
     "shape": "ellipse",
     "subtype": "rill",
     "spreadMetres": 0.4,
-    "lengthMetres": 4.0,
-    "heightMetres": { "mature": -0.2, "tenYear": -0.2 },
+    "lengthMetres": 4,
+    "heightMetres": {
+      "mature": -0.2,
+      "tenYear": -0.2
+    },
     "heightCategory": "ground",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#29b6f6",
-    "seasonalColours": { "spring": "#4fc3f7", "summer": "#29b6f6", "autumn": "#0288d1", "winter": "#90caf9" },
+    "seasonalColours": {
+      "spring": "#4fc3f7",
+      "summer": "#29b6f6",
+      "autumn": "#0288d1",
+      "winter": "#90caf9"
+    },
     "notes": "Narrow formal water channel. Contemporary garden element. Recirculating pump required. Align with key sightlines."
   },
   {
@@ -457,13 +941,72 @@
     "shape": "circle",
     "subtype": "ornamental",
     "spreadMetres": 0.3,
-    "heightMetres": { "mature": 0.6, "tenYear": 0.6 },
+    "heightMetres": {
+      "mature": 0.6,
+      "tenYear": 0.6
+    },
     "heightCategory": "low",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#81d4fa",
-    "seasonalColours": { "spring": "#81d4fa", "summer": "#4fc3f7", "autumn": "#29b6f6", "winter": "#90caf9" },
+    "seasonalColours": {
+      "spring": "#81d4fa",
+      "summer": "#4fc3f7",
+      "autumn": "#29b6f6",
+      "winter": "#90caf9"
+    },
     "notes": "Place near shrubs so birds can escape predators. Clean and refill weekly. Break ice in winter. Vital in dry spells."
+  },
+  {
+    "id": "swimming-pool",
+    "name": "Swimming Pool",
+    "latinName": "Swimming pool / plunge pool",
+    "category": "water",
+    "type": "water",
+    "shape": "ellipse",
+    "subtype": "pond",
+    "spreadMetres": 3,
+    "lengthMetres": 8,
+    "heightMetres": {
+      "mature": -1.5,
+      "tenYear": -1.5
+    },
+    "heightCategory": "ground",
+    "evergreen": true,
+    "nativeUK": false,
+    "dotColour": "#0288d1",
+    "seasonalColours": {
+      "spring": "#29b6f6",
+      "summer": "#0288d1",
+      "autumn": "#0277bd",
+      "winter": "#4fc3f7"
+    },
+    "notes": "Allow 1m clear surround. Orient for maximum sun. Plunge pools (4×2m) are increasingly popular. Infinity edge suits sloping sites."
+  },
+  {
+    "id": "hot-tub",
+    "name": "Hot Tub",
+    "latinName": "Hot tub / spa",
+    "category": "water",
+    "type": "water",
+    "shape": "circle",
+    "subtype": "ornamental",
+    "spreadMetres": 2.2,
+    "heightMetres": {
+      "mature": 0.8,
+      "tenYear": 0.8
+    },
+    "heightCategory": "low",
+    "evergreen": true,
+    "nativeUK": false,
+    "dotColour": "#0288d1",
+    "seasonalColours": {
+      "spring": "#29b6f6",
+      "summer": "#0288d1",
+      "autumn": "#0288d1",
+      "winter": "#4fc3f7"
+    },
+    "notes": "Site on load-bearing base (full of water: ~1.5 tonnes). Screen with dense planting for privacy. Require power connection and drainage."
   },
   {
     "id": "pergola",
@@ -473,13 +1016,21 @@
     "type": "structure",
     "shape": "rect",
     "subtype": "structure",
-    "spreadMetres": 3.0,
-    "heightMetres": { "mature": 2.4, "tenYear": 2.4 },
+    "spreadMetres": 3,
+    "heightMetres": {
+      "mature": 2.4,
+      "tenYear": 2.4
+    },
     "heightCategory": "medium",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#8d6e63",
-    "seasonalColours": { "spring": "#8d6e63", "summer": "#8d6e63", "autumn": "#8d6e63", "winter": "#8d6e63" },
+    "seasonalColours": {
+      "spring": "#8d6e63",
+      "summer": "#8d6e63",
+      "autumn": "#8d6e63",
+      "winter": "#8d6e63"
+    },
     "notes": "Frame with climbing roses, wisteria, or jasmine. Orient east–west for dappled shade on seating below."
   },
   {
@@ -491,13 +1042,21 @@
     "shape": "rect",
     "subtype": "structure",
     "spreadMetres": 0.3,
-    "lengthMetres": 4.0,
-    "heightMetres": { "mature": 1.8, "tenYear": 1.8 },
+    "lengthMetres": 4,
+    "heightMetres": {
+      "mature": 1.8,
+      "tenYear": 1.8
+    },
     "heightCategory": "medium",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#9e9e9e",
-    "seasonalColours": { "spring": "#9e9e9e", "summer": "#9e9e9e", "autumn": "#9e9e9e", "winter": "#9e9e9e" },
+    "seasonalColours": {
+      "spring": "#9e9e9e",
+      "summer": "#9e9e9e",
+      "autumn": "#9e9e9e",
+      "winter": "#9e9e9e"
+    },
     "notes": "South-facing walls create a microclimate 2–3°C warmer. Train fruit trees or tender climbers against them."
   },
   {
@@ -510,12 +1069,20 @@
     "subtype": "structure",
     "spreadMetres": 0.15,
     "lengthMetres": 3.6,
-    "heightMetres": { "mature": 1.8, "tenYear": 1.8 },
+    "heightMetres": {
+      "mature": 1.8,
+      "tenYear": 1.8
+    },
     "heightCategory": "medium",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#a1887f",
-    "seasonalColours": { "spring": "#a1887f", "summer": "#a1887f", "autumn": "#a1887f", "winter": "#a1887f" },
+    "seasonalColours": {
+      "spring": "#a1887f",
+      "summer": "#a1887f",
+      "autumn": "#a1887f",
+      "winter": "#a1887f"
+    },
     "notes": "Softwood fence posts last ~10yr. Concrete spurs extend life. Trellis top panels allow climbers without blocking light."
   },
   {
@@ -527,13 +1094,21 @@
     "shape": "rect",
     "subtype": "structure",
     "spreadMetres": 1.2,
-    "lengthMetres": 3.0,
-    "heightMetres": { "mature": 0.05, "tenYear": 0.05 },
+    "lengthMetres": 3,
+    "heightMetres": {
+      "mature": 0.05,
+      "tenYear": 0.05
+    },
     "heightCategory": "ground",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#bdbdbd",
-    "seasonalColours": { "spring": "#bdbdbd", "summer": "#bdbdbd", "autumn": "#bdbdbd", "winter": "#bdbdbd" },
+    "seasonalColours": {
+      "spring": "#bdbdbd",
+      "summer": "#bdbdbd",
+      "autumn": "#bdbdbd",
+      "winter": "#bdbdbd"
+    },
     "notes": "Minimum 900mm wide for comfortable passage; 1200mm for wheelchair access. Allow for 1:50 fall for drainage."
   },
   {
@@ -545,12 +1120,20 @@
     "shape": "circle",
     "subtype": "structure",
     "spreadMetres": 1.2,
-    "heightMetres": { "mature": 2.4, "tenYear": 2.4 },
+    "heightMetres": {
+      "mature": 2.4,
+      "tenYear": 2.4
+    },
     "heightCategory": "medium",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#546e7a",
-    "seasonalColours": { "spring": "#546e7a", "summer": "#546e7a", "autumn": "#546e7a", "winter": "#546e7a" },
+    "seasonalColours": {
+      "spring": "#546e7a",
+      "summer": "#546e7a",
+      "autumn": "#546e7a",
+      "winter": "#546e7a"
+    },
     "notes": "Define a threshold or sight line. Minimum 1m internal width. Train climbing roses, clematis, or jasmine. Position on axis with a focal point."
   },
   {
@@ -563,12 +1146,20 @@
     "subtype": "structure",
     "spreadMetres": 1.2,
     "lengthMetres": 2.4,
-    "heightMetres": { "mature": 0.4, "tenYear": 0.4 },
+    "heightMetres": {
+      "mature": 0.4,
+      "tenYear": 0.4
+    },
     "heightCategory": "low",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#5d4037",
-    "seasonalColours": { "spring": "#5d4037", "summer": "#5d4037", "autumn": "#5d4037", "winter": "#5d4037" },
+    "seasonalColours": {
+      "spring": "#5d4037",
+      "summer": "#5d4037",
+      "autumn": "#5d4037",
+      "winter": "#5d4037"
+    },
     "notes": "Standard productive size: 1.2×2.4m for comfortable reach from both sides. 400mm depth minimum for most vegetables. Oak sleepers last 20+ years."
   },
   {
@@ -579,13 +1170,21 @@
     "type": "structure",
     "shape": "rect",
     "subtype": "structure",
-    "spreadMetres": 2.0,
-    "heightMetres": { "mature": 2.2, "tenYear": 2.2 },
+    "spreadMetres": 2,
+    "heightMetres": {
+      "mature": 2.2,
+      "tenYear": 2.2
+    },
     "heightCategory": "medium",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#795548",
-    "seasonalColours": { "spring": "#795548", "summer": "#795548", "autumn": "#795548", "winter": "#795548" },
+    "seasonalColours": {
+      "spring": "#795548",
+      "summer": "#795548",
+      "autumn": "#795548",
+      "winter": "#795548"
+    },
     "notes": "Orient door away from prevailing rain. A living green roof dramatically improves insulation and biodiversity value."
   },
   {
@@ -597,12 +1196,20 @@
     "shape": "rect",
     "subtype": "structure",
     "spreadMetres": 2.5,
-    "heightMetres": { "mature": 2.5, "tenYear": 2.5 },
+    "heightMetres": {
+      "mature": 2.5,
+      "tenYear": 2.5
+    },
     "heightCategory": "medium",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#b2dfdb",
-    "seasonalColours": { "spring": "#b2dfdb", "summer": "#b2dfdb", "autumn": "#b2dfdb", "winter": "#b2dfdb" },
+    "seasonalColours": {
+      "spring": "#b2dfdb",
+      "summer": "#b2dfdb",
+      "autumn": "#b2dfdb",
+      "winter": "#b2dfdb"
+    },
     "notes": "Aluminium frames are virtually maintenance-free. Orient ridge north–south for even light. Ventilate in summer."
   },
   {
@@ -613,14 +1220,22 @@
     "type": "structure",
     "shape": "rect",
     "subtype": "structure",
-    "spreadMetres": 3.0,
+    "spreadMetres": 3,
     "lengthMetres": 3.6,
-    "heightMetres": { "mature": 2.8, "tenYear": 2.8 },
+    "heightMetres": {
+      "mature": 2.8,
+      "tenYear": 2.8
+    },
     "heightCategory": "medium",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#6d4c41",
-    "seasonalColours": { "spring": "#6d4c41", "summer": "#6d4c41", "autumn": "#6d4c41", "winter": "#6d4c41" },
+    "seasonalColours": {
+      "spring": "#6d4c41",
+      "summer": "#6d4c41",
+      "autumn": "#6d4c41",
+      "winter": "#6d4c41"
+    },
     "notes": "Face south or west for maximum light. Allow 1m clearance on all sides for maintenance. Sedum roof adds insulation and biodiversity."
   },
   {
@@ -632,12 +1247,20 @@
     "shape": "circle",
     "subtype": "structure",
     "spreadMetres": 0.8,
-    "heightMetres": { "mature": 0.5, "tenYear": 0.5 },
+    "heightMetres": {
+      "mature": 0.5,
+      "tenYear": 0.5
+    },
     "heightCategory": "low",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#ff7043",
-    "seasonalColours": { "spring": "#ff7043", "summer": "#ff7043", "autumn": "#ff7043", "winter": "#ff7043" },
+    "seasonalColours": {
+      "spring": "#ff7043",
+      "summer": "#ff7043",
+      "autumn": "#ff7043",
+      "winter": "#ff7043"
+    },
     "notes": "Position at least 3m from structures and overhanging branches. Use a spark guard. Only burn dry seasoned hardwood."
   },
   {
@@ -648,13 +1271,21 @@
     "type": "structure",
     "shape": "rect",
     "subtype": "structure",
-    "spreadMetres": 2.0,
-    "heightMetres": { "mature": 0.8, "tenYear": 0.8 },
+    "spreadMetres": 2,
+    "heightMetres": {
+      "mature": 0.8,
+      "tenYear": 0.8
+    },
     "heightCategory": "low",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#78909c",
-    "seasonalColours": { "spring": "#78909c", "summer": "#78909c", "autumn": "#78909c", "winter": "#78909c" },
+    "seasonalColours": {
+      "spring": "#78909c",
+      "summer": "#78909c",
+      "autumn": "#78909c",
+      "winter": "#78909c"
+    },
     "notes": "Allow 4m² minimum per person. South or west-facing aspect for evening use. Consider shelter from prevailing wind."
   },
   {
@@ -666,12 +1297,20 @@
     "shape": "rect",
     "subtype": "structure",
     "spreadMetres": 0.8,
-    "heightMetres": { "mature": 1.0, "tenYear": 1.0 },
+    "heightMetres": {
+      "mature": 1,
+      "tenYear": 1
+    },
     "heightCategory": "medium",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#4e342e",
-    "seasonalColours": { "spring": "#4e342e", "summer": "#4e342e", "autumn": "#4e342e", "winter": "#4e342e" },
+    "seasonalColours": {
+      "spring": "#4e342e",
+      "summer": "#4e342e",
+      "autumn": "#4e342e",
+      "winter": "#4e342e"
+    },
     "notes": "Position on bare soil for worms to access. Aim for equal green and brown material. Screen with trellis + climber."
   },
   {
@@ -683,235 +1322,20 @@
     "shape": "circle",
     "subtype": "structure",
     "spreadMetres": 0.3,
-    "heightMetres": { "mature": 1.0, "tenYear": 1.0 },
+    "heightMetres": {
+      "mature": 1,
+      "tenYear": 1
+    },
     "heightCategory": "medium",
     "evergreen": true,
     "nativeUK": false,
     "dotColour": "#90a4ae",
-    "seasonalColours": { "spring": "#90a4ae", "summer": "#90a4ae", "autumn": "#90a4ae", "winter": "#90a4ae" },
+    "seasonalColours": {
+      "spring": "#90a4ae",
+      "summer": "#90a4ae",
+      "autumn": "#90a4ae",
+      "winter": "#90a4ae"
+    },
     "notes": "Use as a focal point at the end of a sight line. Weathered materials age more gracefully than shiny finishes."
-  },
-  {
-    "id": "amelanchier-lamarckii",
-    "name": "Snowy Mespilus",
-    "latinName": "Amelanchier lamarckii",
-    "category": "trees",
-    "type": "tree",
-    "shape": "circle",
-    "subtype": "deciduous",
-    "spreadMetres": 6,
-    "heightMetres": { "mature": 8, "tenYear": 5 },
-    "heightCategory": "tall",
-    "evergreen": false,
-    "nativeUK": false,
-    "dotColour": "#f8bbd0",
-    "seasonalColours": { "spring": "#f8bbd0", "summer": "#388e3c", "autumn": "#e65100", "winter": "#795548" },
-    "notes": "The finest small tree for most UK gardens. White blossom cloud in April, vivid orange-red autumn colour. Multi-stem form preferred."
-  },
-  {
-    "id": "ilex-aquifolium",
-    "name": "Holly",
-    "latinName": "Ilex aquifolium",
-    "category": "trees",
-    "type": "tree",
-    "shape": "circle",
-    "subtype": "deciduous",
-    "spreadMetres": 5,
-    "heightMetres": { "mature": 10, "tenYear": 3 },
-    "heightCategory": "tall",
-    "evergreen": true,
-    "nativeUK": true,
-    "dotColour": "#1b5e20",
-    "seasonalColours": { "spring": "#2e7d32", "summer": "#1b5e20", "autumn": "#1b5e20", "winter": "#b71c1c" },
-    "notes": "UK native. Glossy evergreen foliage with red berries in winter for birds. Plant one male to five female plants for berries."
-  },
-  {
-    "id": "olea-europaea",
-    "name": "Olive Tree",
-    "latinName": "Olea europaea",
-    "category": "trees",
-    "type": "tree",
-    "shape": "circle",
-    "subtype": "deciduous",
-    "spreadMetres": 4,
-    "heightMetres": { "mature": 6, "tenYear": 3 },
-    "heightCategory": "tall",
-    "evergreen": true,
-    "nativeUK": false,
-    "dotColour": "#9e9d24",
-    "seasonalColours": { "spring": "#aeb42c", "summer": "#9e9d24", "autumn": "#9e9d24", "winter": "#9e9d24" },
-    "notes": "Silver-grey architectural foliage year-round. Needs free-draining soil and full sun. Hardy to -10°C once established."
-  },
-  {
-    "id": "camellia-japonica",
-    "name": "Camellia",
-    "latinName": "Camellia japonica",
-    "category": "shrubs",
-    "type": "shrub",
-    "shape": "circle",
-    "subtype": "formal",
-    "spreadMetres": 2.0,
-    "heightMetres": { "mature": 3.0, "tenYear": 2.0 },
-    "heightCategory": "tall",
-    "evergreen": true,
-    "nativeUK": false,
-    "dotColour": "#c2185b",
-    "seasonalColours": { "spring": "#e91e63", "summer": "#1b5e20", "autumn": "#1b5e20", "winter": "#1b5e20" },
-    "notes": "Spectacular spring blooms on glossy evergreen foliage. Requires acid soil (pH 5.5–6.5) and shelter from morning frost."
-  },
-  {
-    "id": "phyllostachys-aurea",
-    "name": "Bamboo",
-    "latinName": "Phyllostachys aurea",
-    "category": "shrubs",
-    "type": "shrub",
-    "shape": "rect",
-    "subtype": "formal",
-    "spreadMetres": 1.0,
-    "lengthMetres": 2.0,
-    "heightMetres": { "mature": 4.0, "tenYear": 3.0 },
-    "heightCategory": "tall",
-    "evergreen": true,
-    "nativeUK": false,
-    "dotColour": "#558b2f",
-    "seasonalColours": { "spring": "#7cb342", "summer": "#558b2f", "autumn": "#558b2f", "winter": "#558b2f" },
-    "notes": "Clump-forming golden bamboo. Excellent for screening. Use root barrier to prevent spread. Rustling in wind is a design asset."
-  },
-  {
-    "id": "wisteria-sinensis",
-    "name": "Wisteria",
-    "latinName": "Wisteria sinensis",
-    "category": "shrubs",
-    "type": "shrub",
-    "shape": "blob",
-    "subtype": "informal",
-    "spreadMetres": 3.0,
-    "heightMetres": { "mature": 8.0, "tenYear": 5.0 },
-    "heightCategory": "canopy",
-    "evergreen": false,
-    "nativeUK": false,
-    "dotColour": "#9575cd",
-    "seasonalColours": { "spring": "#7e57c2", "summer": "#558b2f", "autumn": "#c5e1a5", "winter": "#795548" },
-    "notes": "Spectacular purple racemes in May. Train against a south or west-facing wall. Prune twice yearly: August and February."
-  },
-  {
-    "id": "hosta-fortunei",
-    "name": "Hosta",
-    "latinName": "Hosta fortunei",
-    "category": "perennials",
-    "type": "perennial",
-    "shape": "blob",
-    "subtype": "perennial",
-    "spreadMetres": 0.6,
-    "heightMetres": { "mature": 0.5, "tenYear": 0.5 },
-    "heightCategory": "low",
-    "evergreen": false,
-    "nativeUK": false,
-    "dotColour": "#81c784",
-    "seasonalColours": { "spring": "#c5e1a5", "summer": "#81c784", "autumn": "#ffd54f", "winter": "#9e9e9e" },
-    "notes": "The definitive shade perennial. Architectural ribbed foliage. Protect from slugs with sharp grit or copper tape. Divide every 3–5 years."
-  },
-  {
-    "id": "geranium-rozanne",
-    "name": "Cranesbill",
-    "latinName": "Geranium 'Rozanne'",
-    "category": "perennials",
-    "type": "perennial",
-    "shape": "blob",
-    "subtype": "perennial",
-    "spreadMetres": 0.6,
-    "heightMetres": { "mature": 0.4, "tenYear": 0.4 },
-    "heightCategory": "low",
-    "evergreen": false,
-    "nativeUK": false,
-    "dotColour": "#5c6bc0",
-    "seasonalColours": { "spring": "#9fa8da", "summer": "#5c6bc0", "autumn": "#9fa8da", "winter": "#9e9e9e" },
-    "notes": "Chelsea Plant of the Centenary. Violet-blue flowers May–October — one of the longest-flowering perennials. Trouble-free. Excellent between paving."
-  },
-  {
-    "id": "iris-germanica",
-    "name": "Bearded Iris",
-    "latinName": "Iris germanica",
-    "category": "perennials",
-    "type": "perennial",
-    "shape": "blob",
-    "subtype": "perennial",
-    "spreadMetres": 0.4,
-    "heightMetres": { "mature": 0.9, "tenYear": 0.9 },
-    "heightCategory": "medium",
-    "evergreen": false,
-    "nativeUK": false,
-    "dotColour": "#7b1fa2",
-    "seasonalColours": { "spring": "#9c27b0", "summer": "#c5e1a5", "autumn": "#a5d6a7", "winter": "#9e9e9e" },
-    "notes": "Architectural strap foliage with dramatic flowers in May–June. Plant rhizomes at soil surface to bake in sun. Divide every 4 years."
-  },
-  {
-    "id": "dryopteris-filix-mas",
-    "name": "Male Fern",
-    "latinName": "Dryopteris filix-mas",
-    "category": "perennials",
-    "type": "perennial",
-    "shape": "blob",
-    "subtype": "perennial",
-    "spreadMetres": 0.9,
-    "heightMetres": { "mature": 1.0, "tenYear": 1.0 },
-    "heightCategory": "medium",
-    "evergreen": false,
-    "nativeUK": true,
-    "dotColour": "#388e3c",
-    "seasonalColours": { "spring": "#aed581", "summer": "#388e3c", "autumn": "#8d6e63", "winter": "#6d4c41" },
-    "notes": "UK native fern for deep shade. Dramatic arching fronds. Pairs with hostas and astilbes. Excellent in north-facing borders."
-  },
-  {
-    "id": "echinacea-purpurea",
-    "name": "Coneflower",
-    "latinName": "Echinacea purpurea",
-    "category": "perennials",
-    "type": "perennial",
-    "shape": "blob",
-    "subtype": "perennial",
-    "spreadMetres": 0.5,
-    "heightMetres": { "mature": 0.9, "tenYear": 0.9 },
-    "heightCategory": "medium",
-    "evergreen": false,
-    "nativeUK": false,
-    "dotColour": "#e91e63",
-    "seasonalColours": { "spring": "#a5d6a7", "summer": "#e91e63", "autumn": "#ff8f00", "winter": "#795548" },
-    "notes": "Prairie garden staple. Pink daisy flowers July–September. Leave seedheads for goldfinches in winter. Drought-tolerant."
-  },
-  {
-    "id": "swimming-pool",
-    "name": "Swimming Pool",
-    "latinName": "Swimming pool / plunge pool",
-    "category": "water",
-    "type": "water",
-    "shape": "ellipse",
-    "subtype": "pond",
-    "spreadMetres": 3.0,
-    "lengthMetres": 8.0,
-    "heightMetres": { "mature": -1.5, "tenYear": -1.5 },
-    "heightCategory": "ground",
-    "evergreen": true,
-    "nativeUK": false,
-    "dotColour": "#0288d1",
-    "seasonalColours": { "spring": "#29b6f6", "summer": "#0288d1", "autumn": "#0277bd", "winter": "#4fc3f7" },
-    "notes": "Allow 1m clear surround. Orient for maximum sun. Plunge pools (4×2m) are increasingly popular. Infinity edge suits sloping sites."
-  },
-  {
-    "id": "hot-tub",
-    "name": "Hot Tub",
-    "latinName": "Hot tub / spa",
-    "category": "water",
-    "type": "water",
-    "shape": "circle",
-    "subtype": "ornamental",
-    "spreadMetres": 2.2,
-    "heightMetres": { "mature": 0.8, "tenYear": 0.8 },
-    "heightCategory": "low",
-    "evergreen": true,
-    "nativeUK": false,
-    "dotColour": "#0288d1",
-    "seasonalColours": { "spring": "#29b6f6", "summer": "#0288d1", "autumn": "#0288d1", "winter": "#4fc3f7" },
-    "notes": "Site on load-bearing base (full of water: ~1.5 tonnes). Screen with dense planting for privacy. Require power connection and drainage."
   }
 ]
