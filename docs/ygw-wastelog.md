@@ -262,3 +262,37 @@ Mobile users saw an unresponsive Tools bar. Landscaper demo on mobile showed bro
 Never use `onclick="functionName()"` for functions defined in `<script type="module">`. Always use `addEventListener` inside the module. The `window.functionName = fn` pattern is fragile — it requires the entire module to execute without error first.
 
 ---
+
+## WL-016 — Canvas defaults to Draw Boundary mode, blocking new users from exploring aspect/scale first
+
+**Status:** Fixed 2026-03-20
+**Raised:** 2026-03-20
+**Type:** UX bug — wrong default mode on load
+
+### What happened
+`state.mode` initialised as `'draw'`. New users landing on the canvas immediately see draw-boundary cursor and hints, but cannot pan/zoom to set scale and explore the canvas area before drawing. Select mode is what most users need on first load.
+
+### Fix applied
+Changed `state.mode` initial value from `'draw'` to `'select'`. Updated toolbar `active` class from `#btn-draw` to `#btn-select`.
+
+### Prevention
+Default mode should be `select` (pan/inspect). Draw mode is an explicit user action, not a default state.
+
+---
+
+## WL-017 — Mobile pinch-to-zoom zooms the whole page instead of the canvas
+
+**Status:** Fixed 2026-03-20
+**Raised:** 2026-03-20
+**Type:** Live bug — missing touch event handling
+
+### What happened
+No `touch-action: none` on `#garden-canvas`. No touch event handlers for two-finger pinch. Browser intercepts the gesture and zooms the entire viewport. The canvas scale/offset are unaffected. The right-side info panel scrolls out of view.
+
+### Fix applied
+Added `touch-action: none` to `#garden-canvas` CSS. Added `touchstart`/`touchmove`/`touchend` handlers that detect two-finger pinch, compute distance ratio, and apply zoom toward the midpoint (mirroring the existing wheel zoom logic).
+
+### Prevention
+Any canvas element that handles its own zoom must set `touch-action: none` and provide explicit pinch handlers. Pointer events alone do not prevent browser-native pinch.
+
+---

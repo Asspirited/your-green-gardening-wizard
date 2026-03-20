@@ -275,7 +275,7 @@
   }
   .canvas-area.mode-place { cursor: cell; }
   .canvas-area.mode-select { cursor: default; }
-  #garden-canvas { display: block; }
+  #garden-canvas { display: block; touch-action: none; }
 
   /* ── Info panel ── */
   .info-panel {
@@ -536,13 +536,13 @@
 </header>
 
 <div class="toolbar">
-  <button class="tool-btn active" id="btn-draw" onclick="setMode('draw')">
+  <button class="tool-btn" id="btn-draw" onclick="setMode('draw')">
     ✏️ Draw boundary
   </button>
   <button class="tool-btn" id="btn-place" onclick="setMode('place')">
     🌱 Place plants
   </button>
-  <button class="tool-btn" id="btn-select" onclick="setMode('select')">
+  <button class="tool-btn active" id="btn-select" onclick="setMode('select')">
     ↖ Select
   </button>
   <div class="toolbar-sep"></div>
@@ -672,7 +672,7 @@ function getSpreadFactor(el) {
 
 // ── State ──
 const state = {
-  mode: 'draw',          // 'draw' | 'place' | 'select'
+  mode: 'select',        // 'draw' | 'place' | 'select'
   view: 'proposal',      // 'plan' | 'proposal'
   season: getCurrentUKSeason().season,
   timelineIdx: 4,        // index into TIMELINE_LABELS — default 10yr (mature)
@@ -1619,6 +1619,43 @@ canvas.addEventListener('wheel', e => {
   state.scale = newScale;
   render();
 }, { passive: false });
+
+// ── Pinch-to-zoom (mobile) ──
+let pinchStart = null;
+
+canvas.addEventListener('touchstart', e => {
+  if (e.touches.length === 2) {
+    e.preventDefault();
+    const t0 = e.touches[0], t1 = e.touches[1];
+    const rect = canvas.getBoundingClientRect();
+    pinchStart = {
+      dist:  Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY),
+      scale: state.scale,
+      midX:  (t0.clientX + t1.clientX) / 2 - rect.left,
+      midY:  (t0.clientY + t1.clientY) / 2 - rect.top,
+      ox:    state.offsetX,
+      oy:    state.offsetY,
+    };
+  } else {
+    pinchStart = null;
+  }
+}, { passive: false });
+
+canvas.addEventListener('touchmove', e => {
+  if (e.touches.length === 2 && pinchStart) {
+    e.preventDefault();
+    const t0 = e.touches[0], t1 = e.touches[1];
+    const dist = Math.hypot(t0.clientX - t1.clientX, t0.clientY - t1.clientY);
+    const newScale = Math.max(10, Math.min(200, pinchStart.scale * (dist / pinchStart.dist)));
+    const ratio = newScale / pinchStart.scale;
+    state.scale   = newScale;
+    state.offsetX = pinchStart.midX - (pinchStart.midX - pinchStart.ox) * ratio;
+    state.offsetY = pinchStart.midY - (pinchStart.midY - pinchStart.oy) * ratio;
+    render();
+  }
+}, { passive: false });
+
+canvas.addEventListener('touchend', () => { pinchStart = null; });
 
 canvas.addEventListener('dblclick', e => {
   if (state.mode !== 'draw') return;
