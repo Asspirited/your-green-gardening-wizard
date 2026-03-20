@@ -1677,6 +1677,26 @@ function restartWizard() {
   document.getElementById('wizard').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
+// ── Enter key submits active step (YGW-048) ──
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  if (e.target.tagName === 'TEXTAREA') return;
+
+  const wizard  = document.getElementById('wizard');
+  const btnNext = document.getElementById('btn-next');
+  if (wizard && wizard.style.display !== 'none' && btnNext && !btnNext.disabled) {
+    e.preventDefault();
+    goNext();
+    return;
+  }
+
+  const btnRefine = document.getElementById('btn-refine');
+  if (btnRefine && !btnRefine.disabled && btnRefine.offsetParent !== null) {
+    e.preventDefault();
+    submitRefinement();
+  }
+});
+
 // ── Expose all onclick-called functions to global scope ──
 // Module scripts are not in global scope — inline onclick handlers need window.xxx
 window.startWizard          = startWizard;
