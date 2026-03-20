@@ -723,7 +723,15 @@
     .season-cards { grid-template-columns: 1fr 1fr; }
     .archetype-grid { grid-template-columns: 1fr 1fr; }
     .callout-inner { flex-direction: column; align-items: flex-start; }
-    .banner-links { display: none; }
+    .banner-nav { flex-wrap: wrap; }
+    .banner-links {
+      width: 100%;
+      justify-content: center;
+      padding: 6px 0 2px;
+      border-top: 1px solid rgba(255,255,255,0.12);
+      gap: 8px;
+    }
+    .banner-links a { font-size: 0.7rem; padding: 5px 12px; }
     .hero-strip { grid-template-columns: 1fr; }
     .hero-strip-col { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
     .hero-strip-col:last-child { border-bottom: none; }

@@ -313,3 +313,20 @@ Button label changed to "Place element". Mode hint updated to match.
 When adding new element categories that aren't plants, check all UI copy that references "plant" for accuracy.
 
 ---
+
+## WL-019 — Gold pill nav buttons hidden on mobile — not visible on index.html
+
+**Status:** Fixed 2026-03-20
+**Raised:** 2026-03-20
+**Type:** Live bug — mobile CSS hides navigation
+
+### What happened
+`.banner-links { display: none; }` at max-width: 767px. The three gold pill buttons (Plot Designer, Landscaper, Plant Advisor) are the primary navigation CTAs and were completely invisible on all mobile devices.
+
+### Fix applied
+`.banner-nav` set to `flex-wrap: wrap` on mobile. `.banner-links` allowed to display at full width as a second row below the logo/season row, centered, with slightly smaller text and padding.
+
+### Prevention
+Primary navigation must never be hidden on mobile. Test banner nav at 375px as part of every UI change to index.html.
+
+---
