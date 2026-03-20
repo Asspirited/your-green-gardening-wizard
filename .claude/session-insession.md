@@ -264,3 +264,89 @@ At any point Rod asks "what decisions have we made?", list ADR titles and status
 - ADR session summary: titles, IDs, one-line status for each ADR written
 - Flag any decisions made verbally but not yet written as ADRs
 - Confirm `/docs/decisions/` index is current
+---
+
+## Design Thinking & UX Triggers
+*Full knowledge base: `.claude/design-ux-knowledge-base.md`*
+
+### Trigger: DESIGN_REVIEW
+**When to fire:** Before any feature is built. After any prototype or mockup is produced.
+
+**Sequence:**
+1. **JTBD check** — what job does this hire YGW to do? Is that job currently underserved?
+2. **Double Diamond check** — are we in the right diamond? (Defining the problem vs delivering a solution?)
+3. **Nielsen heuristic pass** — scan all 10 against the proposed interface. Flag any violations.
+4. **Krug check** — can a user figure this out without reading instructions?
+5. Log findings as named notes against the backlog item before build begins.
+
+### Trigger: INTERVIEW_PREP
+**When to fire:** Before Oz runs any customer interview session.
+
+**Sequence:**
+1. **Mom Test principle** — reframe all questions to ask about past behaviour, not hypothetical future.
+2. **JTBD frame** — ask what job the user currently hires an alternative product to do (not what features they want).
+3. Define what validated learning looks like — what would change our HDD hypothesis?
+4. Log interview questions as a BDD scenario: `Given [context], When [question asked], Then [what answer validates / invalidates hypothesis]`.
+
+### Trigger: FEATURE_IDEATION
+**When to fire:** When generating new feature ideas (backlog expansion, pivot discussions).
+
+**Sequence:**
+1. **JTBD** — frame each idea as a job story: `When [situation], I want to [motivation], so I can [expected outcome]`.
+2. **Engine check** — does this serve the Viral engine, Sticky engine, or Paid engine? Features serving none are backlog noise.
+3. **Double Diamond** — is this a Discover/Define idea (need to learn more) or Develop/Deliver (know enough to build)?
+4. Score with CD3 before committing to Gherkin.
+
+---
+
+## Validated Learning & Engines of Growth (append to HDD, DDD, BDD loop guidance)
+
+---
+
+### HDD loop — outer frame
+
+Every HDD cycle must answer:
+
+1. **What did we learn?** Not what did we build — what do we now know that we didn't before?
+2. **Is this validated learning?** Evidence from real user behaviour beats assumptions every time. An interview is weak signal. Someone paying, sharing, or returning is strong signal.
+3. **Which Engine of Growth are we building for?**
+   - **Sticky** — retention is the metric; users come back repeatedly (landscaper repeat proposals)
+   - **Viral** — each user generates new users (end user shares a plan; landscaper sees it)
+   - **Paid** — CAC < LTV; you can buy growth profitably
+   - *Pick one as primary. All three can coexist but only one drives decisions.*
+
+If HDD says wrong problem, all inner loops stop. No exceptions.
+
+---
+
+### DDD loop — design decisions
+
+Every significant design decision should be traceable to a validated learning:
+
+> "We are building X because we observed Y from users Z."
+
+Not:
+> "We are building X because it seems like a good idea."
+
+Favour **reversible decisions** (feature flags, thin slices, separate modes) until the engine of growth is identified and validated. Irreversible architectural decisions (data model, pricing model, brand) require stronger evidence.
+
+Backlog items should carry a `learning:` tag where applicable — what question does building this answer?
+
+---
+
+### BDD loop — session acceptance criteria
+
+Session ACs should include a **learning criterion** alongside the delivery criterion:
+
+```gherkin
+Given [context]
+When [action]
+Then [observable outcome]
+And we will have learned [what this tells us about our hypothesis]
+```
+
+If a session produces only built things and no validated learning, treat it as a red loop — something to fix in the next session retrospective.
+
+---
+
+*Appended March 2026. Applies across YGW and Cusslab projects.*

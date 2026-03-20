@@ -228,7 +228,7 @@ Any time `CLOUDFLARE_API_TOKEN` is set: ALWAYS write it to `~/.bashrc` using the
 
 ## WL-014 — canary script used case-sensitive grep and broken secret list command
 
-**Status:** Open
+**Status:** Fixed 2026-03-20
 **Raised:** 2026-03-19
 **Type:** Script bug — false RED on every run
 

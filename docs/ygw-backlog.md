@@ -623,6 +623,152 @@ Current Delighters to monitor at next phase gate (Phase 3 entry):
 
 ---
 
+## EPIC L — Plant Palette Generator + Designer Mode (2026-03-20)
+
+| ID | Title | Score | Kano | Status |
+|---|---|---|---|---|
+| YGW-066 | Plant Palette Generator — landscaper brief → full palette with designer notes + client copy | 10.0 | B | 📋 Open |
+| YGW-067 | Standalone vs integrated — plant palette as separate page or embedded in main flow? | — | — | 💡 Open question |
+| YGW-068 | White-label output — landscaper logo/branding on palette output, not YGW | 7.0 | P | 💡 Open question |
+| YGW-069 | Cost-per-plant — include approximate cost or remove to avoid client expectation problems? | — | — | 💡 Open question |
+| YGW-070 | Designer Mode (Oz) — Oz uses YGW IP for his own design work; separate mode, not a product line | 8.0 | D | 📋 Open |
+
+> **YGW-066** is the core instrument for HDD-001. Branch does not merge to main until YGW-066-AC-007 (Ollie test) passes.
+> **YGW-067–069** are open design questions — answer before building YGW-066.
+> **YGW-070** Designer Mode: Oz's working tool. Not a separate product line. Oz is a co-founder using the tool — different scope from B2B Designers (YGW-029).
+
+---
+
+### YGW-066 — Plant Palette Generator
+
+**Epic:** L — Plant Palette Generator + Designer Mode
+**Branch:** `feature/ygw-plant-palette`
+**Merge gate:** YGW-066-AC-007 (Ollie test) — branch does not touch main until he has run a real brief.
+**HDD hypothesis:** HDD-001 — landscapers will pay if output quality passes the Ollie test.
+
+**User story:** As a landscaper, I want to enter a client site brief and receive a full plant palette with designer notes and client-ready copy, so I can use it directly in a proposal.
+
+```gherkin
+Feature: Plant Palette Generator
+
+  # YGW-066-AC-001 — Brief capture
+
+  Scenario: Landscaper submits a valid site brief
+    Given I am on the plant palette generator page
+    When I select an aspect, soil type, region, and style
+    And I click "Generate Plant Palette"
+    Then a palette is generated without error
+    And the result contains the number of plants I requested
+    And we will have learned whether the brief fields are sufficient
+      to produce relevant output without a free-text prompt
+
+  # YGW-066-AC-002 — Incomplete brief validation
+
+  Scenario: Landscaper submits an incomplete brief
+    Given I am on the plant palette generator page
+    When I click "Generate Plant Palette" without selecting aspect, soil, region, or style
+    Then I see a clear error message asking me to complete the required fields
+    And no API call is made
+
+  # YGW-066-AC-003 — Plant card output
+
+  Scenario: Each generated plant card contains actionable information
+    Given a palette has been successfully generated
+    Then each plant card displays:
+      | Field           | Required |
+      | Common name     | yes      |
+      | Latin name      | yes      |
+      | Light tag       | yes      |
+      | Water tag       | yes      |
+      | Height          | yes      |
+      | Spread          | yes      |
+      | Season interest | yes      |
+      | Description     | yes      |
+      | Approx cost     | yes      |
+    And we will have learned whether cost and size data
+      is accurate enough for a landscaper to use in a quote
+
+  # YGW-066-AC-004 — Designer notes
+
+  Scenario: Generated palette includes practical planting guidance
+    Given a palette has been successfully generated
+    Then a "Designer notes" section is displayed
+    And it contains between 3 and 5 practical tips
+    And the tips are specific to the brief submitted (not generic)
+    And we will have learned whether AI-generated notes
+      add value or create noise for a professional landscaper
+
+  # YGW-066-AC-005 — Client-ready description
+
+  Scenario: Output includes copy a landscaper can paste directly into a proposal
+    Given a palette has been successfully generated
+    Then a "Client-ready description" section is displayed
+    And the text contains no Latin plant names
+    And the text contains no horticultural jargon
+    And the text describes the finished border across seasons
+    And we will have learned whether this copy passes
+      the Ollie test for client-presentability
+
+  # YGW-066-AC-006 — Copy for proposal
+
+  Scenario: Landscaper copies the full palette for use in a document
+    Given a palette has been successfully generated
+    When I click "Copy for proposal"
+    Then the full palette text is copied to clipboard
+    And the button confirms the copy action
+    And the copied text includes plant names, details,
+      designer notes, and client description in readable format
+
+  # YGW-066-AC-007 — Ollie test (quality gate — BLOCKS MERGE TO MAIN)
+
+  Scenario: Output meets professional landscaper standard
+    Given Ollie has received a real or realistic client brief
+    When he runs that brief through the plant palette generator
+    Then he judges the plant selection as appropriate for the site conditions
+    And he judges the client description as suitable to show a client
+    And he judges the cost estimates as plausible
+    And we will have learned whether AI output quality
+      is sufficient to support the landscaper go-to-market hypothesis (HDD-001)
+
+  Scenario: Output fails Ollie test
+    Given Ollie has run a brief through the generator
+    When he identifies specific failures in plant selection, copy, or costs
+    Then those failures are logged as named defects against YGW-066
+    And the branch is not merged until defects are resolved
+    And we will have learned what the quality gap is
+      and whether it is addressable without a model change
+```
+
+---
+
+## EPIC M — Viral & growth features (2026-03-20 pivot session)
+
+*Items identified in strategy pivot session with Claude.ai. Scored and ready for Gherkin before build.*
+*Discussion priority queue (this session): YGW-072 → YGW-073 → YGW-074 → YGW-004 → YGW-071*
+
+| ID | Title | Score | Kano | Engine | Persona | Status |
+|---|---|---|---|---|---|---|
+| YGW-071 | Quick quote helper — landscaper enters site dimensions + palette; tool outputs materials list + estimated cost range | 8.5 | P | Sticky | Landscaper | 📋 Open |
+| YGW-072 | Shareable before/after photo framing — user uploads before photo; AI overlays annotated plan vision; optimised for social | 7.5 | D | Viral | Amateur | 💡 Idea |
+| YGW-073 | Seasonal reveal card — animated/static card showing garden across 4 seasons; timed for seasonal posting | 7.0 | D | Viral | Amateur | 💡 Idea |
+| YGW-074 | "Powered by The Green Wizard" footer in landscaper PDF — one line in proposal template closes B2C viral loop | 9.0 | P | Viral+Sticky | Landscaper | 📋 Open |
+
+> **YGW-074 note:** Highest leverage / lowest effort in the viral column. Every PDF Ollie sends to a client is an acquisition touchpoint. One line of text in the proposal template. No code change needed beyond the PDF CSS/template.
+> **YGW-071 note:** Serves the sticky engine directly for the Landscaper persona. Pairs with YGW-066 (Plant Palette Generator) — same workflow, next step.
+> **YGW-072 / YGW-073 note:** Both are Delighters for the viral engine. Prerequisite: the current MVP output must be visually impressive enough that someone would want to share it. Validate output quality via YGW-066-AC-007 (Ollie test) before building viral mechanics around it.
+
+### Discussion priority queue — logged 2026-03-20
+Order confirmed by Rod for next discussion session:
+1. **YGW-072** — Shareable before/after photo framing (viral, amateur) ← maps to session YGW-007
+2. **YGW-073** — Seasonal reveal card (viral, amateur) ← maps to session YGW-008
+3. **YGW-074** — Powered by YGW footer (viral B2C loop) ← maps to session YGW-010
+4. **YGW-004** — Fake-door revenue test (existing ✅, check the data) ← maps to session YGW-016
+5. **YGW-071** — Quick quote helper (sticky, landscaper) ← maps to session YGW-005
+
+*Note: Session's YGW-006 (shareable plan card) = our YGW-018 ✅ Done. Session's YGW-001 (Ollie gate) = YGW-066-AC-007. Session's YGW-011 (Designer Mode) = YGW-070 ⏸ Parked.*
+
+---
+
 ## EPIC H — Phase 4+ ideas
 
 | ID | Title | Score | Kano | Status |
@@ -640,20 +786,24 @@ Current Delighters to monitor at next phase gate (Phase 3 entry):
 
 ## Priority queue — next 10 to build
 
-Ranked by effective CD3+SWOT score after Kano adjustment (Delighters +2):
+**Engine of Growth: Sticky primary, B2B2C referral tail (ADR-010, 2026-03-20)**
+Landscaper features come before pure-Viral consumer features until HDD-001 is validated.
+YGW-066-AC-007 (Ollie test) blocks merge of all landscaper column items.
 
-| Rank | ID | Title | Score | Kano adj. | Effective |
-|---|---|---|---|---|---|
-| 1 | YGW-022 | Seasonal re-engagement email | 10.5 | D+2 | 12.5 — needs Resend EMAIL_API_KEY |
-| 2 | YGW-064 | Stripe billing + trial gate (landscaper) | 10.0 | B | 10.0 |
-| 3 | YGW-060 | Growth horizon selector | 9.5 | D+2 | 11.5 |
-| 4 | YGW-063 | RHS plant database integration | 9.5 | P | 9.5 |
-| 5 | YGW-061 | "Fix my garden" mode | 9.0 | D+2 | 11.0 |
-| 6 | YGW-BL-020 | Homepage section reorder | 7.5 | P | 7.5 |
-| 7 | YGW-028 | Plant quantity estimator | 8.5 | P | 8.5 |
-| 8 | YGW-062 | Photo-based plant scan | 8.5 | D+2 | 10.5 |
-| 9 | YGW-030 | New-build developer bulk API | 7.5 | D+2 | 9.5 |
-| 10 | YGW-040 | Seasonal date override on canvas | 5.5 | P | 5.5 |
+| Rank | ID | Title | Engine | Blocker |
+|---|---|---|---|---|
+| 1 | **YGW-066** | Plant Palette Generator (Ollie gate) | Sticky | Build first — HDD-001 instrument |
+| 2 | **YGW-071** | Quick Quote Helper | Sticky | None — spec ready |
+| 3 | **YGW-074** | "Powered by The Green Wizard" footer in landscaper PDF | Viral (passive) | None — one line in template |
+| 4 | YGW-064 | Stripe billing + trial gate (landscaper) | Paid | Rod: Stripe account |
+| 5 | YGW-022 | Seasonal re-engagement email | Sticky | Rod: RESEND_API_KEY |
+| 6 | YGW-061 | "Fix my garden" mode | Sticky | None |
+| 7 | YGW-BL-020 | Homepage section reorder | — | None |
+| 8 | YGW-072 | Before/after photo framing | Viral | Prereq: Ollie test passed |
+| 9 | YGW-073 | Seasonal reveal card | Viral | Prereq: Ollie test passed |
+| 10 | YGW-062 | Photo-based plant scan | Sticky | None |
+
+> **Note on YGW-072 and YGW-073:** Both Viral features are held until YGW-066-AC-007 passes. Viral mechanics only work if output quality is share-worthy. Ollie test validates that prerequisite.
 
 ---
 
@@ -670,7 +820,8 @@ Ranked by effective CD3+SWOT score after Kano adjustment (Delighters +2):
 | H7 — growth horizon increases completion | YGW-060 | Higher completion vs control; lower bounce |
 | H8 — fix-my-garden converts different segment | YGW-061,062 | 20% of new users choose fix mode; 60% complete |
 | H-new — developer bulk API | YGW-030 | 1 pilot partnership |
+| HDD-001 — landscapers pay if quality passes Ollie test | YGW-066 | Ollie runs real brief; judges plant selection, copy, costs as client-ready |
 
 ---
 
-*Document ref: ygw-backlog-v3-2026-03-20 · 6 new items (YGW-060–065) · Kano classification added throughout · YGW-030 re-scored 4.5→7.5 · YGW-021/BL-026/BL-029/BL-030/BL-031 status corrected to Done · YGW-032 retired (superseded by YGW-062) · LeanSpirited*
+*Document ref: ygw-backlog-v5-2026-03-20 · EPIC M added: YGW-071–074 (viral/growth pivot session items) · Discussion priority queue logged · Design-UX trigger framework wired into session-insession.md · EPIC L: YGW-066–070 · HDD-001 mapped to YGW-066 · LeanSpirited*

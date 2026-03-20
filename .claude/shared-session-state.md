@@ -1,6 +1,24 @@
 # YGW Shared Session State
-# Written by: Claude Code session 2026-03-20 (close — post compaction, second continuation)
+# Written by: Claude Code session 2026-03-20 (strategy + protocol session, continuation)
 # Read by: Claude.ai at next session start
+
+## KEY DECISIONS THIS SESSION (read first)
+
+### ADR-010: Engine of Growth — Sticky primary (2026-03-20)
+**Primary engine: Sticky via B2B2C referral loop.**
+Landscaper uses The Green Wizard → better client proposal → client finds TGW or refers landscaper on.
+Viral is secondary and works *through* Sticky (YGW-074 footer = passive viral).
+Pure Viral features (YGW-072, YGW-073) held until Ollie test (YGW-066-AC-007) passes.
+
+### Product name: "The Green Wizard" (ADR-009)
+All UI surfaces use "The Green Wizard". Repo and backlog prefix (YGW-) unchanged.
+plant-palette.html still has "Your Green Wizard" in header/footer — fix before any user sees it.
+
+### Discussion priority queue (next session):
+1. YGW-071 — Quick Quote Helper (spec ready, Gherkin next)
+2. YGW-074 — Powered by footer in landscaper PDF
+3. YGW-072 — Before/after photo framing (after Ollie test)
+4. YGW-073 — Seasonal reveal card (after Ollie test)
 
 ## Last session summary
 Date: 2026-03-20 (full day — three sessions, final close after second compaction)
