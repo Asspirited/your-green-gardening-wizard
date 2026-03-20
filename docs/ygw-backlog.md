@@ -345,8 +345,63 @@ Feature: Bulk developer API
 | YGW-051 | Canvas plant palette — accordion: expanding one category closes others | 5.0 | ✅ Done |
 | YGW-053 | Canvas element sizing — lengthMetres for wall/fence/path/rill; rect+ellipse renderer uses both axes | 7.0 | ✅ Done |
 | YGW-052 | Layer 1 Archetype Palette — 8 styles, ranked suggestions, avoid list, design sequence guide | 9.0 | ✅ Done |
+### YGW-056 — Save plot
+
+```gherkin
+Feature: Save canvas plot
+
+  Scenario: User saves a new plot
+    Given the canvas has a boundary or placed plants
+    When the user clicks "Save plot"
+    Then they are prompted to name the plot
+    And the plot is saved to localStorage as a named entry
+    And a success toast confirms the save
+    And the toolbar shows the current plot name
+
+  Scenario: User overwrites an existing plot
+    Given a named plot is currently loaded
+    When the user clicks "Update plot"
+    Then the existing plot is overwritten with the current state
+    And a toast confirms the update
+```
+
+### YGW-057 — Load plot
+
+```gherkin
+Feature: Load saved plot
+
+  Scenario: User opens the plots panel
+    Given at least one plot is saved
+    When the user clicks "My plots"
+    Then a panel lists all saved plots with name and date
+    And each has a "Load" button
+
+  Scenario: User loads a saved plot
+    When the user clicks Load on a saved plot
+    Then the canvas state is restored to that plot
+    And the toolbar shows the loaded plot name
+    And the panel closes
+```
+
+### YGW-058 — Overwrite saved plot
+
+```gherkin
+Feature: Overwrite saved plot
+
+  Scenario: User resaves changes to loaded plot
+    Given a plot named "Front garden" is loaded
+    And the user has made changes
+    When they click "Update plot"
+    Then the saved plot is updated with the new state
+    And the updatedAt timestamp is refreshed
+```
+
 | YGW-054 | Canvas season toggle — show placed garden in Spring/Summer/Autumn/Winter | 7.5 | 📋 Open |
 | YGW-055 | Seasonal shade cover — plant foliage spread adjusts per season (bare deciduous in winter) | 6.5 | 📋 Open |
+| YGW-056 | Save plot — name it, save to localStorage | 9.0 | 🔨 Building |
+| YGW-057 | Load plot — "My saved plots" panel, tap to restore | 9.0 | 🔨 Building |
+| YGW-058 | Overwrite plot — resave changes to existing named plot | 8.5 | 🔨 Building |
+| YGW-059 | Delete plot — remove from saved list | 7.0 | 📋 Open |
 
 ---
 

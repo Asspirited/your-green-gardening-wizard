@@ -405,6 +405,105 @@
     .plant-palette { width: 160px; --palette-w: 160px; }
     .info-panel { display: none; }
   }
+
+  /* ── Current plot name in toolbar ── */
+  .plot-name-label {
+    font-size: 0.75rem;
+    color: var(--moss);
+    font-weight: 500;
+    padding: 4px 8px;
+    background: #eaf7ef;
+    border-radius: 4px;
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ── Plots modal ── */
+  .plots-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,58,42,0.55);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+  }
+  .plots-overlay.open { display: flex; }
+  .plots-modal {
+    background: white;
+    border-radius: 12px;
+    width: min(480px, 92vw);
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 40px rgba(26,58,42,0.25);
+    overflow: hidden;
+  }
+  .plots-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--parch);
+  }
+  .plots-modal-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--forest);
+  }
+  .plots-close-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #999;
+    line-height: 1;
+    padding: 4px;
+  }
+  .plots-close-btn:hover { color: var(--forest); }
+  .plots-list {
+    overflow-y: auto;
+    flex: 1;
+    padding: 8px 0;
+  }
+  .plots-empty {
+    padding: 32px 20px;
+    text-align: center;
+    color: #aaa;
+    font-size: 0.85rem;
+  }
+  .plot-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #f5f5f0;
+  }
+  .plot-row:last-child { border-bottom: none; }
+  .plot-row-info { flex: 1; min-width: 0; }
+  .plot-row-name {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--forest);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .plot-row-date { font-size: 0.72rem; color: #aaa; margin-top: 2px; }
+  .plot-row-load {
+    font-size: 0.78rem;
+    padding: 5px 12px;
+    background: var(--forest);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    flex-shrink: 0;
+  }
+  .plot-row-load:hover { background: var(--moss); }
 </style>
 </head>
 <body>
@@ -440,11 +539,31 @@
     🖼 Proposal
   </button>
   <div class="toolbar-right">
+    <span class="plot-name-label" id="plot-name-label" style="display:none"></span>
+    <div class="toolbar-sep"></div>
+    <button class="tool-btn" id="btn-save-plot" onclick="savePlot()">
+      💾 Save plot
+    </button>
+    <button class="tool-btn" id="btn-my-plots" onclick="openPlotsPanel()">
+      📂 My plots
+    </button>
+    <div class="toolbar-sep"></div>
     <span class="season-indicator" id="season-indicator">Spring</span>
     <div class="toolbar-sep"></div>
     <button class="tool-btn" id="btn-export" onclick="exportPDF()">
       🖨 Export PDF
     </button>
+  </div>
+</div>
+
+<!-- Plots modal -->
+<div class="plots-overlay" id="plots-overlay" onclick="closePlotsPanel(event)">
+  <div class="plots-modal">
+    <div class="plots-modal-header">
+      <span class="plots-modal-title">📂 My saved plots</span>
+      <button class="plots-close-btn" onclick="closePlotsPanel()">✕</button>
+    </div>
+    <div class="plots-list" id="plots-list"></div>
   </div>
 </div>
 
@@ -542,7 +661,8 @@ const state = {
   offsetY: 0,
   dragging: false,
   dragStart: null,
-  dragOffset: null
+  dragOffset: null,
+  currentPlotId: null
 };
 
 // ── Canvas setup ──
@@ -1651,6 +1771,139 @@ function exportPDF() {
   w.document.close();
 }
 window.exportPDF = exportPDF;
+
+// ── Plot persistence (YGW-056/057/058) ──
+const PLOTS_KEY = 'ygw-plots';
+
+function getPlots() {
+  try { return JSON.parse(localStorage.getItem(PLOTS_KEY) || '[]'); }
+  catch { return []; }
+}
+
+function setPlots(plots) {
+  localStorage.setItem(PLOTS_KEY, JSON.stringify(plots));
+}
+
+function serializeState() {
+  return {
+    boundary:       state.boundary,
+    boundaryClosed: state.boundaryClosed,
+    plants:         state.plants,
+    archetypeKey:   state.archetypeKey,
+    scale:          state.scale,
+    offsetX:        state.offsetX,
+    offsetY:        state.offsetY,
+    season:         state.season,
+    timelineIdx:    state.timelineIdx
+  };
+}
+
+function restoreState(saved) {
+  state.boundary       = saved.boundary       ?? [];
+  state.boundaryClosed = saved.boundaryClosed ?? false;
+  state.plants         = saved.plants         ?? [];
+  state.archetypeKey   = saved.archetypeKey   ?? null;
+  state.scale          = saved.scale          ?? 60;
+  state.offsetX        = saved.offsetX        ?? canvas.width  / 2;
+  state.offsetY        = saved.offsetY        ?? canvas.height / 2;
+  state.season         = saved.season         ?? 'spring';
+  state.timelineIdx    = saved.timelineIdx    ?? 4;
+  // Reset UI state
+  state.selectedPlantId    = null;
+  state.selectedPlantIndex = null;
+  applySeasonTheme(state.season);
+  document.getElementById('season-indicator').textContent =
+    state.season.charAt(0).toUpperCase() + state.season.slice(1);
+  buildSeasonBtns();
+  buildTimelineBtns();
+  if (state.archetypeKey) setArchetype(state.archetypeKey);
+  render();
+}
+
+function updatePlotNameLabel(name) {
+  const label = document.getElementById('plot-name-label');
+  const saveBtn = document.getElementById('btn-save-plot');
+  if (name) {
+    label.textContent = name;
+    label.style.display = '';
+    saveBtn.textContent = '💾 Update plot';
+  } else {
+    label.style.display = 'none';
+    saveBtn.textContent = '💾 Save plot';
+  }
+}
+
+function savePlot() {
+  const plots = getPlots();
+  const currentId = state.currentPlotId;
+
+  if (currentId) {
+    // Overwrite existing
+    const idx = plots.findIndex(p => p.id === currentId);
+    if (idx !== -1) {
+      plots[idx] = { ...plots[idx], ...serializeState(), updatedAt: Date.now() };
+      setPlots(plots);
+      showToast('Plot updated ✓');
+      return;
+    }
+  }
+
+  // Save new
+  const name = prompt('Name this plot:');
+  if (!name || !name.trim()) return;
+  const plot = {
+    id:        crypto.randomUUID(),
+    name:      name.trim(),
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+    ...serializeState()
+  };
+  plots.push(plot);
+  setPlots(plots);
+  state.currentPlotId = plot.id;
+  updatePlotNameLabel(plot.name);
+  showToast('Plot saved ✓');
+}
+
+function openPlotsPanel() {
+  const plots = getPlots();
+  const list  = document.getElementById('plots-list');
+  if (plots.length === 0) {
+    list.innerHTML = '<div class="plots-empty">No saved plots yet.<br>Design something and hit 💾 Save plot.</div>';
+  } else {
+    list.innerHTML = plots.slice().reverse().map(p => {
+      const date = new Date(p.updatedAt).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
+      return `<div class="plot-row">
+        <div class="plot-row-info">
+          <div class="plot-row-name">${escapeHtml(p.name)}</div>
+          <div class="plot-row-date">Saved ${date}</div>
+        </div>
+        <button class="plot-row-load" onclick="loadPlot('${p.id}')">Load</button>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('plots-overlay').classList.add('open');
+}
+
+function closePlotsPanel(e) {
+  if (e && e.target !== document.getElementById('plots-overlay')) return;
+  document.getElementById('plots-overlay').classList.remove('open');
+}
+
+function loadPlot(id) {
+  const plots = getPlots();
+  const plot  = plots.find(p => p.id === id);
+  if (!plot) return;
+  state.currentPlotId = plot.id;
+  restoreState(plot);
+  updatePlotNameLabel(plot.name);
+  closePlotsPanel();
+  showToast(`Loaded "${plot.name}" ✓`);
+}
+
+function escapeHtml(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
 
 // Initial render
 render();
