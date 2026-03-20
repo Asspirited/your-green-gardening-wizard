@@ -435,6 +435,8 @@ _(continued)_
 | YGW-BL-023 | Canvas default mode should be Select not Draw — users need to pan/zoom before drawing boundary (WL-016) | 6.0 | ✅ Done |
 | YGW-BL-024 | Mobile pinch-to-zoom zooms whole page not canvas — add touch-action:none + pinch handlers (WL-017) | 7.0 | ✅ Done |
 | YGW-BL-025 | Palette category reorganisation — split structures (13) into Hard Landscaping / Buildings / Garden Features; rename Shrubs & Hedges → Shrubs & Climbers | 6.5 | ✅ Done |
+| YGW-BL-027 | "Place Plants" toolbar label wrong after library expansion — renamed to "Place element" (WL-018) | 5.0 | ✅ Done |
+| YGW-BL-028 | Font consistency audit — standardise Playfair Display weights across app.html + landscaper.html; fix faux-bold; fix landscaper brand name (BL-018) | 6.5 | ✅ Done |
 | YGW-BL-026 | Custom plant search — user can type any plant name not in the library, canvas places it as a generic element with user-defined spread/colour; AI or fallback lookup provides basic metadata | 7.5 | 📋 Open |
 
 ---
