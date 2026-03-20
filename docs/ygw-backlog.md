@@ -440,7 +440,7 @@ _(continued)_
 | YGW-BL-026 | Custom plant search — user can type any plant name not in the library, canvas places it as a generic element with user-defined spread/colour; AI or fallback lookup provides basic metadata | 7.5 | ✅ Done |
 | YGW-BL-029 | Quantity guide grouped by category with accordion — mirrors left panel; clicking a category collapses/expands both panels simultaneously | 6.0 | ✅ Done |
 | YGW-BL-030 | Mobile canvas: both side panels as slide-out drawers — canvas full width by default, 🌿/ℹ️ toolbar buttons open each panel (WL-022) | 7.5 | ✅ Done |
-| YGW-BL-031 | Email capture for landscaper.html — save client name + email + plan result; same KV infrastructure as YGW-021 | 7.5 | 📋 Open |
+| YGW-BL-031 | Email capture for landscaper.html — save client name + email + plan result; same KV infrastructure as YGW-021 | 7.5 | ✅ Done |
 
 ---
 

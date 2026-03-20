@@ -62,6 +62,18 @@
   .pricing-note { background: var(--mist); border-radius: 10px; padding: 16px 20px; font-size: 0.875rem; color: var(--forest); margin-top: 20px; }
   .pricing-note strong { display: block; margin-bottom: 4px; }
   @media (max-width: 500px) { .grid-2 { grid-template-columns: 1fr; } .action-row { flex-direction: column; } }
+  .save-plan-panel { background: var(--mist); border: 1px solid rgba(0,0,0,0.07); border-radius: var(--radius); margin-top: 16px; padding: 20px 24px; }
+  .save-plan-title { font-family: var(--font-display); font-size: 1rem; font-weight: 600; color: var(--forest); margin-bottom: 4px; }
+  .save-plan-sub { font-size: 0.82rem; color: #888; margin-bottom: 14px; }
+  .save-plan-row { display: flex; gap: 10px; }
+  .save-plan-input { flex: 1; border: 1px solid rgba(0,0,0,0.15); border-radius: 100px; padding: 10px 16px; font-family: var(--font-ui); font-size: 0.9rem; outline: none; background: white; margin-bottom: 0; }
+  .save-plan-input:focus { border-color: var(--sage); }
+  .btn-save-plan { background: var(--moss); color: white; border: none; border-radius: 100px; padding: 10px 20px; font-family: var(--font-ui); font-weight: 500; font-size: 0.9rem; cursor: pointer; white-space: nowrap; transition: background 0.15s; }
+  .btn-save-plan:hover { background: var(--forest); }
+  .btn-save-plan:disabled { background: #ccc; cursor: not-allowed; }
+  .save-plan-success { display: none; align-items: center; gap: 8px; background: white; border: 1px solid var(--sage); border-radius: 10px; padding: 12px 16px; font-size: 0.875rem; color: var(--forest); margin-top: 12px; flex-wrap: wrap; }
+  .save-plan-success a { color: var(--moss); word-break: break-all; }
+  .save-plan-error { display: none; color: #c0392b; font-size: 0.82rem; margin-top: 8px; }
 </style>
 </head>
 <body>
@@ -167,6 +179,19 @@
         <button class="btn-new" onclick="newPlan()">+ New plan</button>
       </div>
     </div>
+    <div class="save-plan-panel" id="save-plan-panel" style="display:none">
+      <div class="save-plan-title">Save this plan</div>
+      <div class="save-plan-sub">Enter your email and we'll send you a link to return to this plan anytime.</div>
+      <div class="save-plan-row">
+        <input class="save-plan-input" id="save-plan-email" type="email" placeholder="your@email.com" />
+        <button class="btn-save-plan" id="btn-save-plan" onclick="saveLandscaperPlan()">Save</button>
+      </div>
+      <div class="save-plan-error" id="save-plan-error"></div>
+      <div class="save-plan-success" id="save-plan-success">
+        <span>✅ Saved!</span>
+        <a id="save-plan-link" href="#" target="_blank">Open your plan link</a>
+      </div>
+    </div>
     <div class="print-footer" style="display:none">
       Prepared by Your Green Gardening Wizard · <span id="print-date"></span> · leanspirited.com
     </div>
@@ -182,7 +207,7 @@ import { buildGardenProfile, buildLandscaperSystemPrompt, renderMarkdown } from 
 
 const WORKER_URL = 'https://ygw-api-proxy.leanspirited.workers.dev';
 
-const state = { safety: [], style: null };
+const state = { safety: [], style: null, lastResult: null, planData: null, saveUuid: null };
 
 window.togglePill = function(btn) {
   btn.classList.toggle('selected');
@@ -264,6 +289,9 @@ Please generate a professional planting plan for this project.`;
     document.getElementById('result-meta').textContent = `${location} · ${soilLabels[soil]} · ${aspectLabels[aspect]}${area ? ' · ' + area + 'm²' : ''}`;
     document.getElementById('result-body').innerHTML = renderMarkdown(text);
     document.getElementById('print-date').textContent = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+    state.lastResult = text;
+    state.planData = { clientName, location, soil, aspect, area, style: state.style, safety: state.safety };
+    document.getElementById('save-plan-panel').style.display = 'block';
     document.getElementById('result-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
 
   } catch (err) {
@@ -282,11 +310,83 @@ window.newPlan = function() {
   document.getElementById('result-card').style.display = 'none';
   document.getElementById('form-section').style.display = 'block';
   document.getElementById('result-body').innerHTML = '';
-  state.safety = [];
-  state.style = null;
+  document.getElementById('save-plan-panel').style.display = 'none';
+  document.getElementById('save-plan-email').style.display = '';
+  document.getElementById('btn-save-plan').style.display = '';
+  document.getElementById('btn-save-plan').disabled = false;
+  document.getElementById('btn-save-plan').textContent = 'Save';
+  document.getElementById('save-plan-success').style.display = 'none';
+  document.getElementById('save-plan-error').style.display = 'none';
+  state.safety = []; state.style = null; state.lastResult = null; state.planData = null; state.saveUuid = null;
   document.querySelectorAll('.opt-pill.selected').forEach(b => b.classList.remove('selected'));
   window.scrollTo(0, 0);
 };
+
+window.saveLandscaperPlan = async function() {
+  const emailEl  = document.getElementById('save-plan-email');
+  const errorEl  = document.getElementById('save-plan-error');
+  const btn      = document.getElementById('btn-save-plan');
+  const successEl = document.getElementById('save-plan-success');
+  const email = emailEl.value.trim();
+  errorEl.style.display = 'none';
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    errorEl.textContent = 'Please enter a valid email address.';
+    errorEl.style.display = 'block';
+    return;
+  }
+  btn.disabled = true;
+  btn.textContent = 'Saving…';
+  if (!state.saveUuid) state.saveUuid = crypto.randomUUID();
+  try {
+    const res = await fetch(`${WORKER_URL}/save-profile`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, profile: state.planData, uuid: state.saveUuid, result: state.lastResult }),
+    });
+    if (!res.ok) throw new Error('Save failed');
+    const link = `${location.origin}${location.pathname}?plan=${state.saveUuid}`;
+    document.getElementById('save-plan-link').href = link;
+    document.getElementById('save-plan-link').textContent = link;
+    successEl.style.display = 'flex';
+    emailEl.style.display = 'none';
+    btn.style.display = 'none';
+  } catch (e) {
+    errorEl.textContent = 'Something went wrong — please try again.';
+    errorEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = 'Save';
+  }
+};
+
+async function tryLoadLandscaperPlan() {
+  const id = new URLSearchParams(location.search).get('plan');
+  if (!id) return;
+  try {
+    const res = await fetch(`${WORKER_URL}/load-profile?id=${encodeURIComponent(id)}`);
+    if (!res.ok) return;
+    const data = await res.json();
+    if (!data.result) return;
+    const p = data.profile || {};
+    const soilLabels = { clay:'Clay', sandy:'Sandy', loam:'Loam', chalky:'Chalky', peaty:'Peaty', unknown:'Unknown' };
+    const aspectLabels = { south:'South', north:'North', east:'East', west:'West', mixed:'Mixed' };
+    document.getElementById('result-title').textContent = p.clientName ? `${p.clientName} — Planting Plan` : 'Client Planting Plan';
+    document.getElementById('result-meta').textContent = [p.location, soilLabels[p.soil], aspectLabels[p.aspect], p.area ? p.area + 'm²' : ''].filter(Boolean).join(' · ');
+    document.getElementById('result-body').innerHTML = (await import('./domain.js')).renderMarkdown(data.result);
+    document.getElementById('result-card').style.display = 'block';
+    document.getElementById('form-section').style.display = 'none';
+    state.lastResult = data.result; state.planData = p; state.saveUuid = data.uuid;
+    const panel = document.getElementById('save-plan-panel');
+    panel.style.display = 'block';
+    const link = `${location.origin}${location.pathname}?plan=${id}`;
+    document.getElementById('save-plan-link').href = link;
+    document.getElementById('save-plan-link').textContent = link;
+    document.getElementById('save-plan-success').style.display = 'flex';
+    document.getElementById('save-plan-email').style.display = 'none';
+    document.getElementById('btn-save-plan').style.display = 'none';
+  } catch (e) { /* silently fail */ }
+}
+
+tryLoadLandscaperPlan();
 </script>
 
 <style media="print">
