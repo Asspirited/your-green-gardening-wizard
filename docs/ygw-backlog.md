@@ -432,6 +432,10 @@ _(continued)_
 | YGW-BL-020 | Review index.html section ordering — reorder sections so most useful/compelling content appears highest on the page; reduce scroll-to-value | 7.5 | 📋 Open |
 | YGW-BL-021 | Expand plot design element range — add more plant/structure types across all shape/category/subtype combinations; increase canvas design vocabulary | 8.0 | ✅ Done |
 | YGW-BL-022 | Banner nav links (Plot Designer, Landscaper, Plant Advisor) are plain text — make them gold-and-green pill buttons to match Green Wizard logo; make them prominent and clickable | 8.0 | ✅ Done |
+| YGW-BL-023 | Canvas default mode should be Select not Draw — users need to pan/zoom before drawing boundary (WL-016) | 6.0 | ✅ Done |
+| YGW-BL-024 | Mobile pinch-to-zoom zooms whole page not canvas — add touch-action:none + pinch handlers (WL-017) | 7.0 | ✅ Done |
+| YGW-BL-025 | Palette category reorganisation — split structures (13) into Hard Landscaping / Buildings / Garden Features; rename Shrubs & Hedges → Shrubs & Climbers | 6.5 | ✅ Done |
+| YGW-BL-026 | Custom plant search — user can type any plant name not in the library, canvas places it as a generic element with user-defined spread/colour; AI or fallback lookup provides basic metadata | 7.5 | 📋 Open |
 
 ---
 
