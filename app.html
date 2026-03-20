@@ -540,7 +540,7 @@
     ✏️ Draw boundary
   </button>
   <button class="tool-btn" id="btn-place" onclick="setMode('place')">
-    🌱 Place plants
+    🌱 Place element
   </button>
   <button class="tool-btn active" id="btn-select" onclick="setMode('select')">
     ↖ Select
@@ -1494,7 +1494,7 @@ function updateInfoPanel() {
 // ── Mode ──
 const MODE_HINTS = {
   draw:   'Click on the canvas to add boundary corners. Double-click or click the first point to close the shape.',
-  place:  'Select a plant from the palette, then click inside your boundary to place it.',
+  place:  'Select an element from the palette, then click inside your boundary to place it.',
   select: 'Click a plant to select it. Delete key removes it.'
 };
 

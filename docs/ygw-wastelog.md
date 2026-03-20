@@ -296,3 +296,20 @@ Added `touch-action: none` to `#garden-canvas` CSS. Added `touchstart`/`touchmov
 Any canvas element that handles its own zoom must set `touch-action: none` and provide explicit pinch handlers. Pointer events alone do not prevent browser-native pinch.
 
 ---
+
+## WL-018 — "Place Plants" button label wrong after library expansion to 53 elements
+
+**Status:** Fixed 2026-03-20
+**Raised:** 2026-03-20
+**Type:** UX labelling bug — misleading button copy
+
+### What happened
+Toolbar button labelled "Place Plants" after expanding the library to include structures, buildings, water features, and garden features. A user placing a shed or a swimming pool is not "placing plants".
+
+### Fix applied
+Button label changed to "Place element". Mode hint updated to match.
+
+### Prevention
+When adding new element categories that aren't plants, check all UI copy that references "plant" for accuracy.
+
+---
