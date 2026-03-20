@@ -512,6 +512,19 @@
     flex-shrink: 0;
   }
   .plot-row-load:hover { background: var(--moss); }
+  .plot-row-delete {
+    font-size: 0.78rem;
+    padding: 5px 8px;
+    background: none;
+    color: #bbb;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: var(--font-ui);
+    flex-shrink: 0;
+    line-height: 1;
+  }
+  .plot-row-delete:hover { color: #c0392b; border-color: #c0392b; background: #fff5f5; }
 </style>
 </head>
 <body>
@@ -1983,12 +1996,13 @@ function openPlotsPanel() {
   } else {
     list.innerHTML = plots.slice().reverse().map(p => {
       const date = new Date(p.updatedAt).toLocaleDateString('en-GB', { day:'numeric', month:'short', year:'numeric' });
-      return `<div class="plot-row">
+      return `<div class="plot-row" data-id="${p.id}">
         <div class="plot-row-info">
           <div class="plot-row-name">${escapeHtml(p.name)}</div>
           <div class="plot-row-date">Saved ${date}</div>
         </div>
         <button class="plot-row-load" onclick="loadPlot('${p.id}')">Load</button>
+        <button class="plot-row-delete" onclick="deletePlotById('${p.id}')" title="Delete plot">✕</button>
       </div>`;
     }).join('');
   }
@@ -2009,6 +2023,21 @@ function loadPlot(id) {
   updatePlotNameLabel(plot.name);
   closePlotsPanel();
   showToast(`Loaded "${plot.name}" ✓`);
+}
+
+function deletePlotById(id) {
+  const plots = getPlots();
+  const plot  = plots.find(p => p.id === id);
+  if (!plot) return;
+  if (!confirm(`Delete "${plot.name}"?`)) return;
+  setPlots(plots.filter(p => p.id !== id));
+  if (state.currentPlotId === id) {
+    state.currentPlotId = null;
+    updatePlotNameLabel(null);
+  }
+  // Refresh the open panel
+  openPlotsPanel();
+  showToast('Plot deleted');
 }
 
 function escapeHtml(s) {
