@@ -871,6 +871,7 @@ CD3 v8 re-scored 2026-03-20 after YGW-061, YGW-062, YGW-046, YGW-075, YGW-BL-020
 | YGW-077 | Drawing UX controls — Escape/Cancel button to abandon in-progress boundary draw; undo last vertex; clear all; keyboard + mobile-visible | 8.5 | B | Sticky | Landscaper | 📋 Open |
 | YGW-078 | Straight-line drawing aids — Shift-constrain (0°/90°/45°), rectangle quick-draw, grid snap toggle | 7.5 | P | Sticky | Landscaper | 📋 Open |
 | YGW-079 | Zone auto-fill on confirm — when zone is named and saved, auto-apply selected zone object; stay in Draw mode for immediate next-zone flow | 8.0 | B | Sticky | Landscaper | ✅ Done |
+| YGW-080 | Mobile view switcher — Plan/Proposal/Zones inaccessible on mobile (toolbar overflow); add bottom tab bar or FAB pattern per WL-023 prevention rule | 9.0 | B | Sticky | Landscaper | 📋 Open |
 
 > **YGW-076:** Zones view integrated into app.html as third view mode (ADR-014, supersedes ADR-011). British Racing Green standalone still at `/features/subplot-designer/`. Touch support included.
 
@@ -880,6 +881,42 @@ CD3 v8 re-scored 2026-03-20 after YGW-061, YGW-062, YGW-046, YGW-075, YGW-BL-020
 
 > **YGW-079:** If a zone object is selected before drawing, confirming the zone name auto-applies the fill immediately and stays in Draw mode — user can draw the next zone without any mode-switching. If no object is selected, zone is added unfilled (status quo). Toast confirms fill applied. Rod identified during sub-plot workflow review 2026-03-24.
 
+> **YGW-080:** On mobile (≤700px), the toolbar contains boundary-tools (~12 buttons, ~800px wide) before Plan/Proposal/Zones — all view-switch buttons are off-screen and unreachable. App opens in Proposal view; user cannot switch to Plan or Zones. Same pattern as WL-023 (toolbar overflow hiding mob-open-btn, fixed with FABs). Fix: fixed bottom tab bar (ADR-015). Score 9.0 — Zones is entirely dead on mobile without this.
+
+### YGW-080 — Mobile view switcher: acceptance criteria
+
+```gherkin
+Feature: Mobile view switcher — bottom tab bar
+
+  Background:
+    Given the user is on app.html on a viewport ≤700px wide
+
+  Scenario: Bottom tab bar is visible on mobile
+    Then a fixed bottom tab bar shows three tabs: Plan, Proposal, Zones
+    And the currently active view tab is visually highlighted
+
+  Scenario: Tapping Plan tab switches to Plan view
+    Given the current view is Proposal
+    When the user taps the Plan tab
+    Then the view switches to Plan (boundary drawing mode)
+    And the Plan tab is highlighted as active
+
+  Scenario: Tapping Zones tab switches to Zones view
+    Given the current view is Proposal or Plan
+    When the user taps the Zones tab
+    Then the view switches to Zones (zone drawing mode)
+    And the Zones tab is highlighted as active
+
+  Scenario: Active tab reflects current view on load
+    Given the app loads in the default Proposal view
+    Then the Proposal tab is highlighted as active
+
+  Scenario: Bottom tab bar is absent on desktop
+    Given the viewport is wider than 700px
+    Then no bottom tab bar is visible
+    And the toolbar view buttons (Plan/Proposal/Zones) remain the primary navigation
+```
+
 ---
 
-*Document ref: ygw-backlog-v8-2026-03-24 · YGW-077/078 added · 3yr timeline default · Zones view (YGW-076) integrated into app.html (ADR-014) · EPIC O added: YGW-076 Sub-Plot Designer · ADR-011/ADR-012/ADR-013 written · Mobile FAB fix on main · feature/tgw-landscaper-tools merged to main (ADR-013) · YGW-066 Plant Palette + YGW-071 Quick Quote now on main · CD3 v8: YGW-061, YGW-062, YGW-046, YGW-075 (built/held) · EPIC N: YGW-075 Combo Explorer (hold HDD-001) · EPIC M: YGW-071–074 · EPIC L: YGW-066–070 · LeanSpirited*
+*Document ref: ygw-backlog-v9-2026-03-24 · YGW-077/078/079/080 added · 3yr timeline default · Zones view (YGW-076) integrated into app.html (ADR-014) · EPIC O added: YGW-076 Sub-Plot Designer · ADR-011/ADR-012/ADR-013 written · Mobile FAB fix on main · feature/tgw-landscaper-tools merged to main (ADR-013) · YGW-066 Plant Palette + YGW-071 Quick Quote now on main · CD3 v8: YGW-061, YGW-062, YGW-046, YGW-075 (built/held) · EPIC N: YGW-075 Combo Explorer (hold HDD-001) · EPIC M: YGW-071–074 · EPIC L: YGW-066–070 · LeanSpirited*

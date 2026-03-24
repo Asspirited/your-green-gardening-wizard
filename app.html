@@ -459,6 +459,23 @@
   .mob-fab-left  { left: 16px; }
   .mob-fab-right { right: 16px; }
 
+  /* ── Mobile bottom view tab bar (Plan / Proposal / Zones) ── */
+  .mob-view-tabs {
+    display: none;
+    position: fixed; bottom: 0; left: 0; right: 0; height: 56px; z-index: 200;
+    background: white; border-top: 1px solid rgba(0,0,0,0.12);
+    justify-content: space-around; align-items: stretch;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.08);
+  }
+  .mob-view-tab {
+    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 2px; background: none; border: none; border-top: 2px solid transparent;
+    cursor: pointer; font-family: var(--font-ui); font-size: 0.65rem; font-weight: 500;
+    color: #999; transition: color 0.12s, border-color 0.12s;
+  }
+  .mob-view-tab .tab-icon { font-size: 1.2rem; line-height: 1; }
+  .mob-view-tab.active { color: var(--forest); border-top-color: var(--forest); }
+
   @media (max-width: 700px) {
     html, body { overscroll-behavior-x: contain; }
     .plant-palette {
@@ -477,7 +494,8 @@
     .drawer-close-btn { display: flex; }
     .mob-open-btn { display: none !important; }
     .toolbar-sep.mob-hide { display: none; }
-    .mob-fab { display: flex; }
+    .mob-fab { display: flex; bottom: 76px; } /* lifted above 56px tab bar + 20px gap */
+    .mob-view-tabs { display: flex; }
   }
 
   /* ── Current plot name in toolbar ── */
@@ -747,6 +765,22 @@
 
 <!-- Mobile drawer backdrop -->
 <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeDrawer()"></div>
+
+<!-- Mobile bottom view tab bar (Plan / Proposal / Zones) — hidden on desktop -->
+<div class="mob-view-tabs" id="mob-view-tabs">
+  <button class="mob-view-tab" id="mob-tab-plan" onclick="setView('plan')">
+    <span class="tab-icon">📐</span>
+    <span>Plan</span>
+  </button>
+  <button class="mob-view-tab active" id="mob-tab-proposal" onclick="setView('proposal')">
+    <span class="tab-icon">🖼</span>
+    <span>Proposal</span>
+  </button>
+  <button class="mob-view-tab" id="mob-tab-zones" onclick="setView('zones')">
+    <span class="tab-icon">🗺</span>
+    <span>Zones</span>
+  </button>
+</div>
 
 <!-- Plots modal -->
 <div class="plots-overlay" id="plots-overlay" onclick="closePlotsPanel(event)">
@@ -1993,13 +2027,19 @@ function setView(view) {
   if (view === 'zones') setZoneMode('select');
   else setMode('select');
 
-  // Toolbar view buttons
+  // Toolbar view buttons (desktop)
   ['plan', 'proposal', 'zones'].forEach(v => {
     const btn = document.getElementById('btn-' + v);
     if (btn) {
       btn.classList.toggle('view-active', v === view);
       btn.classList.remove('active');
     }
+  });
+
+  // Mobile bottom tab bar
+  ['plan', 'proposal', 'zones'].forEach(v => {
+    const tab = document.getElementById('mob-tab-' + v);
+    if (tab) tab.classList.toggle('active', v === view);
   });
 
   // Tool group
