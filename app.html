@@ -695,10 +695,10 @@
     <button class="tool-btn btn-danger" id="btn-cancel-draw" style="display:none" onclick="cancelDraw()" title="Cancel current drawing (Esc)">✕ Cancel</button>
   </div>
   <div id="zone-tools">
-    <button class="tool-btn active" id="btn-zone-draw" onclick="setZoneMode('draw')">
+    <button class="tool-btn" id="btn-zone-draw" onclick="setZoneMode('draw')">
       ✏️ Draw zone
     </button>
-    <button class="tool-btn" id="btn-zone-select" onclick="setZoneMode('select')">
+    <button class="tool-btn active" id="btn-zone-select" onclick="setZoneMode('select')">
       ↖ Select
     </button>
     <div class="toolbar-sep"></div>
@@ -923,7 +923,7 @@ const state = {
   zonePendingVerts:   null,  // canvas pixels — awaiting name modal
   selectedZone:       null,
   selectedZoneObject: null,
-  zoneMode:           'draw', // 'draw' | 'select'
+  zoneMode:           'select', // 'draw' | 'select'
   // ── Drawing aids (YGW-077/078) ──
   snapGrid:        false,
   shiftHeld:       false,   // live Shift key state (45°/90° constrain)
@@ -1979,6 +1979,8 @@ function setView(view) {
   // Abort any in-progress zone drawing on view switch
   state.zoneDrawVerts = [];
   state.zoneHoverPt = null;
+  // Default zones to select mode — don't surprise user with accidental draws
+  if (view === 'zones') setZoneMode('select');
 
   // Toolbar view buttons
   ['plan', 'proposal', 'zones'].forEach(v => {
