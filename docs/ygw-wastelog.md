@@ -2,6 +2,7 @@
 **Product:** Your Green Gardening Wizard
 **Prefix:** WL-
 **Purpose:** Record waste — unnecessary steps, repeated failures, broken advice, time sinks — so we stop repeating them.
+**Severity scale:** 1–10 (10 = whole session lost / commercial damage / trust broken)
 
 ---
 
@@ -9,6 +10,7 @@
 
 **Status:** Open
 **Raised:** 2026-03-19
+**Severity:** 6
 **Type:** Process waste — unnecessary work given
 
 ### What happened
@@ -26,6 +28,7 @@ Check `https://ygw-api-proxy.leanspirited.workers.dev` first. If 404 → not dep
 
 **Status:** Open
 **Raised:** 2026-03-19
+**Severity:** 7
 **Type:** Unnecessary step — existing credential ignored
 
 ### What happened
@@ -43,6 +46,7 @@ Before any Cloudflare auth step: ask "Do you have the token you used for Cusslab
 
 **Status:** Open
 **Raised:** 2026-03-19
+**Severity:** 5
 **Type:** Tool failure — wrong order of operations
 
 ### What happened
@@ -60,6 +64,7 @@ Before running ANY wrangler command: confirm `CLOUDFLARE_API_TOKEN` is set in th
 
 **Status:** Open
 **Raised:** 2026-03-19
+**Severity:** 7
 **Type:** Process waste — lost progress
 
 ### What happened
@@ -77,6 +82,7 @@ session-closedown.md must always be run before ending. Even interrupted sessions
 
 **Status:** Open
 **Raised:** 2026-03-19
+**Severity:** 8
 **Type:** Wrong diagnosis — jumped to complex solution
 
 ### What happened
@@ -94,6 +100,7 @@ Deployment first, secrets second. Always in that order.
 
 **Status:** Open
 **Raised:** 2026-03-19
+**Severity:** 8
 **Type:** Wrong diagnosis — incomplete verification
 
 ### What happened
@@ -111,6 +118,7 @@ When confirming a site is live: (1) check new URL works, (2) check old URL is de
 
 **Status:** Open
 **Raised:** 2026-03-19
+**Severity:** 9
 **Type:** Repeated waste — protocol ignored
 
 ### What happened
@@ -124,10 +132,29 @@ Before ANY mention of Cloudflare tokens: read the WL. Check `~/.wrangler/config/
 
 ---
 
+## WL-008 — Session burned Rod's time, goodwill, and patience through repeated known failures
+
+**Status:** Open
+**Raised:** 2026-03-19
+**Severity:** 10
+**Type:** Accumulated waste — trust damage
+
+### What happened
+This session repeated WL-001 through WL-005 patterns despite them being documented. Site was declared working when it wasn't. Auth was asked for twice when it shouldn't have been asked for at all. Protocols (startup, WL check, URL verification) were either skipped or partially followed. Rod lost significant time, money, and goodwill.
+
+### What it cost
+The whole session. Rod's patience. Confidence in Claude Code for this project.
+
+### Prevention
+At session start: read the WL in full. Every item. Not skimming. If a WL item describes what you're about to do — stop and do something different. The WL exists precisely so these failures don't repeat. Ignoring it is the failure.
+
+---
+
 ## WL-009 — Declared fix deployed without verifying Rod's actual URL
 
 **Status:** Open
 **Raised:** 2026-03-19
+**Severity:** 8
 **Type:** Wrong verification — incomplete confirmation
 
 ### What happened
@@ -145,6 +172,7 @@ Before "it's fixed": (1) ask or confirm which URL Rod is testing, (2) verify tha
 
 **Status:** Open
 **Raised:** 2026-03-19
+**Severity:** 7
 **Type:** False equivalence — test suite ≠ working product
 
 ### What happened
@@ -162,6 +190,7 @@ Test suite green is a necessary condition, not a sufficient one. After any fix, 
 
 **Status:** Open
 **Raised:** 2026-03-19
+**Severity:** 8
 **Type:** Wrong priority — fixed the wrong thing first
 
 ### What happened
@@ -179,6 +208,7 @@ Read shared-session-state.md. If it names a blocker — fix the blocker first. E
 
 **Status:** Open
 **Raised:** 2026-03-19
+**Severity:** 9
 **Type:** Repeated failure — same root cause, same session
 
 ### What happened
@@ -192,27 +222,11 @@ The WL is not a record — it's a checklist. At session start: read every open i
 
 ---
 
-## WL-008 — Session burned Rod's time, goodwill, and patience through repeated known failures
-
-**Status:** Open
-**Raised:** 2026-03-19
-**Type:** Accumulated waste — trust damage
-
-### What happened
-This session repeated WL-001 through WL-005 patterns despite them being documented. Site was declared working when it wasn't. Auth was asked for twice when it shouldn't have been asked for at all. Protocols (startup, WL check, URL verification) were either skipped or partially followed. Rod lost significant time, money, and goodwill.
-
-### What it cost
-The whole session. Rod's patience. Confidence in Claude Code for this project.
-
-### Prevention
-At session start: read the WL in full. Every item. Not skimming. If a WL item describes what you're about to do — stop and do something different. The WL exists precisely so these failures don't repeat. Ignoring it is the failure.
-
----
-
 ## WL-013 — Token persisted to terminal session only, not ~/.bashrc — declared "permanently fixed"
 
 **Status:** Open
 **Raised:** 2026-03-19
+**Severity:** 10
 **Type:** Broken promise — incomplete fix declared complete
 
 ### What happened
@@ -230,6 +244,7 @@ Any time `CLOUDFLARE_API_TOKEN` is set: ALWAYS write it to `~/.bashrc` using the
 
 **Status:** Fixed 2026-03-20
 **Raised:** 2026-03-19
+**Severity:** 5
 **Type:** Script bug — false RED on every run
 
 ### What happened
@@ -247,6 +262,7 @@ Use `-i` flag on all email greps. Do not use `wrangler secret list` with cfat_ t
 
 **Status:** Fixed 2026-03-20
 **Raised:** 2026-03-20
+**Severity:** 7
 **Type:** Live bug — onclick attribute + module script timing
 
 ### What happened
@@ -267,6 +283,7 @@ Never use `onclick="functionName()"` for functions defined in `<script type="mod
 
 **Status:** Fixed 2026-03-20
 **Raised:** 2026-03-20
+**Severity:** 4
 **Type:** UX bug — wrong default mode on load
 
 ### What happened
@@ -284,6 +301,7 @@ Default mode should be `select` (pan/inspect). Draw mode is an explicit user act
 
 **Status:** Fixed 2026-03-20
 **Raised:** 2026-03-20
+**Severity:** 7
 **Type:** Live bug — missing touch event handling
 
 ### What happened
@@ -291,6 +309,9 @@ No `touch-action: none` on `#garden-canvas`. No touch event handlers for two-fin
 
 ### Fix applied
 Added `touch-action: none` to `#garden-canvas` CSS. Added `touchstart`/`touchmove`/`touchend` handlers that detect two-finger pinch, compute distance ratio, and apply zoom toward the midpoint (mirroring the existing wheel zoom logic).
+
+### What it cost
+Two-finger pinch on mobile zoomed the whole browser page, not the canvas. Canvas was unusable on tablet and phone. Landscaper demo on mobile/tablet broken — critical path for the B2B pitch.
 
 ### Prevention
 Any canvas element that handles its own zoom must set `touch-action: none` and provide explicit pinch handlers. Pointer events alone do not prevent browser-native pinch.
@@ -301,6 +322,7 @@ Any canvas element that handles its own zoom must set `touch-action: none` and p
 
 **Status:** Fixed 2026-03-20
 **Raised:** 2026-03-20
+**Severity:** 3
 **Type:** UX labelling bug — misleading button copy
 
 ### What happened
@@ -318,6 +340,7 @@ When adding new element categories that aren't plants, check all UI copy that re
 
 **Status:** Fixed 2026-03-20
 **Raised:** 2026-03-20
+**Severity:** 7
 **Type:** Live bug — mobile CSS hides navigation
 
 ### What happened
@@ -335,6 +358,7 @@ Primary navigation must never be hidden on mobile. Test banner nav at 375px as p
 
 **Status:** Fixed 2026-03-20
 **Raised:** 2026-03-20
+**Severity:** 8
 **Type:** Live bug — module scope, onclick attributes not wired to window
 
 ### What happened
@@ -352,6 +376,7 @@ Any function referenced in an `onclick=""` attribute that lives in a `<script ty
 
 **Status:** Fixed 2026-03-20
 **Raised:** 2026-03-20
+**Severity:** 4
 **Type:** CSS bug — overflow clipped the entire panel
 
 ### What happened
@@ -369,6 +394,7 @@ Any flex column panel that contains variable-length content must use `overflow-y
 
 **Status:** Fixed 2026-03-20
 **Raised:** 2026-03-20
+**Severity:** 8
 **Type:** Live bug — mobile layout unusable
 
 ### What happened
@@ -386,6 +412,7 @@ Any three-column flex layout on mobile must account for viewport width. Either c
 
 **Status:** Fixed 2026-03-20
 **Raised:** 2026-03-20
+**Severity:** 7
 **Type:** Live bug — mobile drawers completely inaccessible
 
 ### What happened

@@ -48,7 +48,26 @@ State the top 3 items for next session, in priority order.
 State the session goal in one sentence.  
 Note any blockers that need resolving before next session.
 
-### Step 7: Write shared sync file for Claude.ai
+### Step 7: Generate stakeholder reports
+
+Run the report generator to produce dated Backlog and Waste Log reports for Ollie and Jerry:
+
+```bash
+node scripts/generate-reports.cjs
+```
+
+This writes two files to `/mnt/c/Users/roden/Downloads/`:
+- `ygw-backlog-report-YYYY-MM-DD.md` — Open (CD3 priority), Completed, Deferred
+- `ygw-waste-report-YYYY-MM-DD.md` — Open (severity), Resolved
+
+Confirm both files exist before closing. These are the artefacts to send Ollie/Jerry as a session update.
+
+**If new backlog items were raised this session:** update `docs/ygw-backlog.md` first, then re-run the script.
+**If new waste items were raised this session:** add them to `docs/ygw-wastelog.md` with Status, Severity, and all four sections, then re-run.
+
+---
+
+### Step 8: Write shared sync file for Claude.ai
 
 **MANDATORY — do this before step 8.**
 
@@ -61,7 +80,7 @@ This file is how Claude.ai knows what happened in this session.
 Without it, Claude.ai has no shared state and falls back to GitHub (blocked) or memory (stale).
 Confirm the file exists in Downloads before closing.
 
-### Step 8: Commit reminder
+### Step 9: Commit reminder
 List files that need committing to `Asspirited/your-green-gardening-wizard`:
 - New/changed source files
 - Updated backlog
