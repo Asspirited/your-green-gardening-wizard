@@ -2703,7 +2703,7 @@ function getZonePattern(obj) {
 }
 
 // ── Zone rendering ──
-function drawZoneFill(zone) {
+function drawZonePolygonFill(zone) {
   if (!zone.fill) return;
   const obj = ZONE_OBJECTS.find(o => o.id === zone.fill);
   if (!obj) return;
@@ -2752,7 +2752,7 @@ function drawZones() {
   // Draw committed zones
   state.zones.forEach((zone, i) => {
     const cverts = zone.verts.map(v => toCanvas(v.x, v.y));
-    drawZoneFill(zone);
+    drawZonePolygonFill(zone);
 
     ctx.beginPath();
     ctx.moveTo(cverts[0].x, cverts[0].y);
