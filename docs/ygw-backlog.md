@@ -824,4 +824,16 @@ YGW-066-AC-007 (Ollie test) blocks merge of all landscaper column items.
 
 ---
 
-*Document ref: ygw-backlog-v5-2026-03-20 · EPIC M added: YGW-071–074 (viral/growth pivot session items) · Discussion priority queue logged · Design-UX trigger framework wired into session-insession.md · EPIC L: YGW-066–070 · HDD-001 mapped to YGW-066 · LeanSpirited*
+## EPIC O — Spatial Planning Tools (2026-03-24)
+
+*Polygon-zone canvas tools for garden layout. Separate from plant placement (app.html). B2B2C referral potential — landscapers demo tool to clients.*
+
+| ID | Title | Score | Kano | Engine | Persona | Status |
+|---|---|---|---|---|---|---|
+| YGW-076 | Sub-Plot Designer — draw polygon zones, assign garden objects (lawn/patio/gravel/etc.), fill with texture patterns | 8.0 | D | Sticky+Viral | Landscaper | ✅ Done |
+
+> **YGW-076:** Live at `/features/subplot-designer/`. British Racing Green dark palette (ADR-012). Standalone route (ADR-011). Touch support included. Does not yet feed into proposal output — that integration is Phase 2.
+
+---
+
+*Document ref: ygw-backlog-v6-2026-03-24 · EPIC O added: YGW-076 Sub-Plot Designer · ADR-011/ADR-012 written · Mobile FAB fix applied to main · LeanSpirited*
