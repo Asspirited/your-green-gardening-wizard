@@ -866,7 +866,7 @@ const GROWTH_CURVES = {
   structure: [1.00, 1.00, 1.00, 1.00, 1.00],
 };
 const TIMELINE_LABELS = ['Now', '1 yr', '3 yr', '5 yr', '10 yr'];
-// Default: index 4 = 10yr (mature) — identical to previous behaviour
+// Default: index 2 = 3yr
 
 function getSpreadFactor(el) {
   const curve = GROWTH_CURVES[el.type] || GROWTH_CURVES.shrub;
@@ -883,7 +883,7 @@ const state = {
   mode: 'select',        // 'draw' | 'place' | 'select'
   view: 'proposal',      // 'plan' | 'proposal'
   season: getCurrentUKSeason().season,
-  timelineIdx: 4,        // index into TIMELINE_LABELS — default 10yr (mature)
+  timelineIdx: 2,        // index into TIMELINE_LABELS — default 3yr
   boundary: [],          // [{x,y}] in metres
   boundaryClosed: false,
   plants: [],            // [{plantId, x, y}] in metres
@@ -2432,7 +2432,7 @@ function restoreState(saved) {
   state.offsetX        = saved.offsetX        ?? canvas.width  / 2;
   state.offsetY        = saved.offsetY        ?? canvas.height / 2;
   state.season         = saved.season         ?? 'spring';
-  state.timelineIdx    = saved.timelineIdx    ?? 4;
+  state.timelineIdx    = saved.timelineIdx    ?? 2;
   // Reset UI state
   state.selectedPlantId    = null;
   state.selectedPlantIndex = null;
