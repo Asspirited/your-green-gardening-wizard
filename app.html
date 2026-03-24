@@ -436,6 +436,29 @@
   .season-btn:hover { border-color: var(--sage); color: var(--forest); }
   .season-btn.active { background: var(--season-cta, var(--forest)); color: white; border-color: transparent; }
 
+  .drawer-backdrop {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.45); z-index: 299;
+  }
+  .drawer-backdrop.open { display: block; }
+  .drawer-close-btn {
+    display: none; margin-left: auto; background: none; border: none;
+    font-size: 1.1rem; color: #888; cursor: pointer; padding: 4px 8px; line-height: 1;
+  }
+  .drawer-close-btn:hover { color: var(--ink); }
+  .mob-open-btn { display: none !important; }
+  .mob-fab {
+    display: none;
+    position: fixed; bottom: 20px; z-index: 310;
+    width: 52px; height: 52px; border-radius: 50%;
+    background: var(--forest); color: white; border: none;
+    font-size: 1.4rem; cursor: pointer;
+    align-items: center; justify-content: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.28);
+  }
+  .mob-fab-left  { left: 16px; }
+  .mob-fab-right { right: 16px; }
+
   @media (max-width: 700px) {
     html, body { overscroll-behavior-x: contain; }
     .plant-palette {
@@ -454,30 +477,8 @@
     .drawer-close-btn { display: flex; }
     .mob-open-btn { display: none !important; }
     .toolbar-sep.mob-hide { display: none; }
-    .mob-fab { display: flex !important; }
+    .mob-fab { display: flex; }
   }
-  .drawer-backdrop {
-    display: none; position: fixed; inset: 0;
-    background: rgba(0,0,0,0.45); z-index: 299;
-  }
-  .drawer-backdrop.open { display: block; }
-  .drawer-close-btn {
-    display: none; margin-left: auto; background: none; border: none;
-    font-size: 1.1rem; color: #888; cursor: pointer; padding: 4px 8px; line-height: 1;
-  }
-  .drawer-close-btn:hover { color: var(--ink); }
-  .mob-open-btn { display: none !important; }
-  .mob-fab {
-    display: none !important;
-    position: fixed; bottom: 20px; z-index: 310;
-    width: 52px; height: 52px; border-radius: 50%;
-    background: var(--forest); color: white; border: none;
-    font-size: 1.4rem; cursor: pointer;
-    align-items: center; justify-content: center;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.28);
-  }
-  .mob-fab-left  { left: 16px; }
-  .mob-fab-right { right: 16px; }
 
   /* ── Current plot name in toolbar ── */
   .plot-name-label {

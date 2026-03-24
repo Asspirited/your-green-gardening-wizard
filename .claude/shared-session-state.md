@@ -1,5 +1,5 @@
 # YGW Shared Session State
-# Written by: Claude Code session 2026-03-20 (closedown)
+# Written by: Claude Code session 2026-03-20 (mid-session update)
 # Read by: Claude.ai at next session start
 
 ## KEY DECISIONS THIS SESSION (read first)
@@ -13,13 +13,14 @@ Pure Viral features (YGW-072, YGW-073) held until Ollie test (YGW-066-AC-007) pa
 ### ADR-009: Product name — "The Green Wizard"
 All UI: "The Green Wizard". Repo and backlog prefix (YGW-) unchanged.
 
-### Feature branch live for A/B review
-Branch: feature/tgw-landscaper-tools
-Status: Deployed, green, shared with Oz and Jerry tonight.
+### Branch strategy (updated 2026-03-20 session 2)
+Single long-running feature branch: feature/tgw-landscaper-tools
+All new landscaper work goes on this branch. Merge to main still gated by Ollie test (YGW-066-AC-007).
+Ollie gate is NOT dropped — it gates merge to main, not the branch itself.
 URLs:
   https://feature-tgw-landscaper-tools.your-green-gardening-wizard.leanspirited.workers.dev/features/plant-palette/
   https://feature-tgw-landscaper-tools.your-green-gardening-wizard.leanspirited.workers.dev/features/quick-quote/
-DO NOT merge to main until Rod explicitly says so. Oz/Jerry review is in progress.
+DO NOT merge to main until Ollie test passes.
 
 ## Pipeline state
 161 tests passing, 0 failures. Feature branch green. Committed: 8419bf5 (main), 634b04f (feature branch).
