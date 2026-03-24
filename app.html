@@ -936,15 +936,22 @@ const state = {
 // ── Canvas setup ──
 const canvas = document.getElementById('garden-canvas');
 const ctx = canvas.getContext('2d');
+let canvasCSSW = 0, canvasCSSH = 0; // CSS pixel dimensions (physical = × devicePixelRatio)
 const area = document.getElementById('canvas-area');
 
 function resizeCanvas() {
-  canvas.width  = area.clientWidth;
-  canvas.height = area.clientHeight;
-  // Centre origin on first resize
+  const dpr    = window.devicePixelRatio || 1;
+  canvasCSSW   = area.clientWidth;
+  canvasCSSH   = area.clientHeight;
+  // Lock CSS display size, then set physical pixel buffer
+  canvas.style.width  = canvasCSSW + 'px';
+  canvas.style.height = canvasCSSH + 'px';
+  canvas.width  = Math.round(canvasCSSW * dpr);
+  canvas.height = Math.round(canvasCSSH * dpr);
+  // Centre origin on first resize (CSS pixel coords)
   if (state.offsetX === 0 && state.offsetY === 0) {
-    state.offsetX = canvas.width  / 2;
-    state.offsetY = canvas.height / 2;
+    state.offsetX = canvasCSSW / 2;
+    state.offsetY = canvasCSSH / 2;
   }
   render();
 }
@@ -1468,7 +1475,7 @@ function toMetres(cx, cy) {
 function drawGrid() {
   const theme = SEASON_THEMES[state.season];
   const g = theme.grid;
-  const W = canvas.width, H = canvas.height;
+  const W = canvasCSSW, H = canvasCSSH;
 
   // Ground fill
   ctx.fillStyle = g.ground;
@@ -1843,7 +1850,10 @@ function drawElements() {
 
 // ── Main render ──
 function render() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const dpr = window.devicePixelRatio || 1;
+  ctx.setTransform(1, 0, 0, 1, 0, 0);          // reset any prior transform
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // clear physical pixels
+  ctx.scale(dpr, dpr);                           // all drawing in CSS pixel space
   drawGrid();
   drawBoundary();
   drawZones();
@@ -2626,8 +2636,8 @@ function restoreState(saved) {
   state.zoneColorIdx   = state.zones.length;
   state.archetypeKey   = saved.archetypeKey   ?? null;
   state.scale          = saved.scale          ?? 60;
-  state.offsetX        = saved.offsetX        ?? canvas.width  / 2;
-  state.offsetY        = saved.offsetY        ?? canvas.height / 2;
+  state.offsetX        = saved.offsetX        ?? canvasCSSW / 2;
+  state.offsetY        = saved.offsetY        ?? canvasCSSH / 2;
   state.season         = saved.season         ?? 'spring';
   state.timelineIdx    = saved.timelineIdx    ?? 2;
   // Reset UI state
@@ -3333,7 +3343,7 @@ window.startRectDraw = startRectDraw;
 
 // Stamp a preset shape centred on current view
 function stampShape(type) {
-  const cx = canvas.width / 2, cy = canvas.height / 2;
+  const cx = canvasCSSW / 2, cy = canvasCSSH / 2;
   const c = toMetres(cx, cy);
   let verts;
   if (type === 'rect') {
