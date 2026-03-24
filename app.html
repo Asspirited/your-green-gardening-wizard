@@ -1989,8 +1989,9 @@ function setView(view) {
   // Abort any in-progress zone drawing on view switch
   state.zoneDrawVerts = [];
   state.zoneHoverPt = null;
-  // Default zones to select mode — don't surprise user with accidental draws
+  // Default to select on every view switch — safest neutral state
   if (view === 'zones') setZoneMode('select');
+  else setMode('select');
 
   // Toolbar view buttons
   ['plan', 'proposal', 'zones'].forEach(v => {
