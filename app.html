@@ -591,6 +591,67 @@
     line-height: 1;
   }
   .plot-row-delete:hover { color: #c0392b; border-color: #c0392b; background: #fff5f5; }
+
+  /* ── Zones view ── */
+  #boundary-tools { display: flex; gap: 4px; align-items: center; }
+  #zone-tools { display: none; gap: 4px; align-items: center; }
+
+  .zone-object-item {
+    display: flex; align-items: center; gap: 8px;
+    padding: 7px 10px; border-radius: 6px; cursor: pointer;
+    border: 1.5px solid transparent; transition: all 0.12s; margin-bottom: 2px;
+  }
+  .zone-object-item:hover { background: #f5f5f0; border-color: #ddd; }
+  .zone-object-item.selected { background: #eaf7ef; border-color: var(--sage); }
+  .zone-object-label { font-size: 0.75rem; font-weight: 500; color: var(--forest); }
+  .zone-panel-title {
+    padding: 8px 10px;
+    font-size: 0.62rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--moss); border-bottom: 1px solid var(--parch); flex-shrink: 0;
+  }
+  .zone-object-scroll { flex: 1; overflow-y: auto; padding: 6px 8px; }
+
+  .zone-list-item {
+    display: flex; align-items: center; gap: 7px;
+    padding: 7px 10px; border: 1.5px solid transparent; border-radius: 8px;
+    cursor: pointer; margin-bottom: 3px; transition: all 0.12s;
+  }
+  .zone-list-item:hover { background: #f5f5f0; border-color: #ddd; }
+  .zone-list-item.selected { background: #eaf7ef; border-color: var(--sage); }
+  .zone-color-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+  .zone-list-info { flex: 1; min-width: 0; }
+  .zone-list-name { font-size: 0.76rem; font-weight: 500; color: var(--forest); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .zone-list-fill { font-size: 0.66rem; color: #888; margin-top: 1px; }
+  .zone-list-actions { display: flex; gap: 2px; flex-shrink: 0; }
+  .zone-icon-btn { padding: 2px 5px; font-size: 0.68rem; background: none; border: 1px solid #e0e0e0; border-radius: 4px; cursor: pointer; color: #999; line-height: 1.4; transition: all 0.1s; }
+  .zone-icon-btn:hover { color: var(--forest); border-color: var(--moss); }
+  .zone-icon-btn.del:hover { color: #c0392b; border-color: #c0392b; background: #fff5f5; }
+  .zone-empty { font-size: 0.75rem; color: #aaa; padding: 16px 10px; text-align: center; }
+
+  .zone-fill-controls { padding: 10px 12px; border-top: 1px solid var(--parch); background: #f9fdf9; flex-shrink: 0; }
+  .zone-fill-label { font-size: 0.68rem; color: var(--moss); font-weight: 500; display: flex; justify-content: space-between; margin-bottom: 2px; }
+  .zone-fill-label span { color: #888; font-weight: 400; }
+  .zone-fill-controls input[type=range] { width: 100%; margin: 2px 0 8px; }
+  .btn-zone-fill { width: 100%; background: var(--moss); color: white; border: none; border-radius: 8px; padding: 7px 10px; font-size: 0.74rem; font-weight: 500; font-family: var(--font-ui); cursor: pointer; transition: background 0.12s; }
+  .btn-zone-fill:hover { background: var(--forest); }
+  .btn-zone-fill:disabled { background: #ccc; cursor: default; }
+
+  /* Zone naming modal */
+  .zone-modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(26,58,42,0.55); z-index: 200;
+    align-items: center; justify-content: center;
+  }
+  .zone-modal-overlay.open { display: flex; }
+  .zone-modal { background: white; border-radius: 12px; padding: 24px; width: min(340px, 92vw); box-shadow: 0 8px 40px rgba(26,58,42,0.25); }
+  .zone-modal h3 { font-size: 1rem; font-weight: 600; color: var(--forest); margin-bottom: 14px; }
+  .zone-modal input { width: 100%; border: 1.5px solid #ddd; border-radius: 8px; padding: 8px 12px; font-size: 0.88rem; font-family: var(--font-ui); outline: none; margin-bottom: 14px; }
+  .zone-modal input:focus { border-color: var(--sage); }
+  .zone-modal-row { display: flex; gap: 8px; justify-content: flex-end; }
+  .btn-zone-modal { padding: 7px 18px; border-radius: 8px; font-size: 0.82rem; font-family: var(--font-ui); font-weight: 500; cursor: pointer; border: 1.5px solid #ddd; background: none; color: #666; transition: all 0.12s; }
+  .btn-zone-modal:hover { border-color: var(--moss); color: var(--moss); }
+  .btn-zone-modal.primary { background: var(--moss); border-color: var(--moss); color: white; }
+  .btn-zone-modal.primary:hover { background: var(--forest); border-color: var(--forest); }
 </style>
 </head>
 <body>
@@ -602,28 +663,45 @@
 </header>
 
 <div class="toolbar">
-  <button class="tool-btn" id="btn-draw" onclick="setMode('draw')">
-    ✏️ Draw boundary
-  </button>
-  <button class="tool-btn" id="btn-place" onclick="setMode('place')">
-    🌱 Place element
-  </button>
-  <button class="tool-btn active" id="btn-select" onclick="setMode('select')">
-    ↖ Select
-  </button>
-  <div class="toolbar-sep"></div>
-  <button class="tool-btn" id="btn-clear-boundary" onclick="clearBoundary()">
-    🗑 Clear boundary
-  </button>
-  <button class="tool-btn" id="btn-undo" onclick="undoLast()">
-    ↩ Undo
-  </button>
+  <div id="boundary-tools">
+    <button class="tool-btn" id="btn-draw" onclick="setMode('draw')">
+      ✏️ Draw boundary
+    </button>
+    <button class="tool-btn" id="btn-place" onclick="setMode('place')">
+      🌱 Place element
+    </button>
+    <button class="tool-btn active" id="btn-select" onclick="setMode('select')">
+      ↖ Select
+    </button>
+    <div class="toolbar-sep"></div>
+    <button class="tool-btn" id="btn-clear-boundary" onclick="clearBoundary()">
+      🗑 Clear boundary
+    </button>
+    <button class="tool-btn" id="btn-undo" onclick="undoLast()">
+      ↩ Undo
+    </button>
+  </div>
+  <div id="zone-tools">
+    <button class="tool-btn active" id="btn-zone-draw" onclick="setZoneMode('draw')">
+      ✏️ Draw zone
+    </button>
+    <button class="tool-btn" id="btn-zone-select" onclick="setZoneMode('select')">
+      ↖ Select
+    </button>
+    <div class="toolbar-sep"></div>
+    <button class="tool-btn" id="btn-clear-zones" onclick="clearZones()">
+      🗑 Clear zones
+    </button>
+  </div>
   <div class="toolbar-sep"></div>
   <button class="tool-btn" id="btn-plan" onclick="setView('plan')">
     📐 Plan
   </button>
   <button class="tool-btn view-active" id="btn-proposal" onclick="setView('proposal')">
     🖼 Proposal
+  </button>
+  <button class="tool-btn" id="btn-zones" onclick="setView('zones')">
+    🗺 Zones
   </button>
   <button class="tool-btn mob-open-btn" onclick="openDrawer('left')" title="Plant palette">🌿</button>
   <button class="tool-btn mob-open-btn" onclick="openDrawer('right')" title="Info panel">ℹ️</button>
@@ -668,28 +746,35 @@
 
   <!-- Plant palette -->
   <aside class="plant-palette">
-    <div class="palette-header" style="display:flex;align-items:center">Plants<button class="drawer-close-btn" onclick="closeDrawer()">✕</button></div>
-    <div id="archetype-picker" class="archetype-picker"></div>
-    <div class="palette-search-wrap">
-      <input type="text" id="palette-search" placeholder="Search or add plant…" autocomplete="off" />
-    </div>
-    <div class="custom-panel" id="custom-panel" style="display:none">
-      <div class="custom-panel-prompt" id="custom-panel-prompt"></div>
-      <button class="btn-add-custom" id="btn-add-custom" onclick="showCustomForm()">+ Add as custom element</button>
-      <div class="custom-form" id="custom-form" style="display:none">
-        <div class="custom-form-row">
-          <span class="custom-form-label">Spread</span>
-          <input type="number" id="custom-spread" value="1.0" min="0.1" max="30" step="0.5" class="custom-form-input" />
-          <span class="custom-form-unit">m</span>
-        </div>
-        <div class="custom-form-row">
-          <span class="custom-form-label">Colour</span>
-          <div class="custom-swatches" id="custom-swatches"></div>
-        </div>
-        <button class="btn-add-custom-confirm" onclick="addCustomPlant()">Add to palette →</button>
+    <div class="palette-header" style="display:flex;align-items:center"><span id="palette-header-title">Plants</span><button class="drawer-close-btn" onclick="closeDrawer()">✕</button></div>
+    <div id="plant-panel-content" style="display:contents">
+      <div id="archetype-picker" class="archetype-picker"></div>
+      <div class="palette-search-wrap">
+        <input type="text" id="palette-search" placeholder="Search or add plant…" autocomplete="off" />
       </div>
+      <div class="custom-panel" id="custom-panel" style="display:none">
+        <div class="custom-panel-prompt" id="custom-panel-prompt"></div>
+        <button class="btn-add-custom" id="btn-add-custom" onclick="showCustomForm()">+ Add as custom element</button>
+        <div class="custom-form" id="custom-form" style="display:none">
+          <div class="custom-form-row">
+            <span class="custom-form-label">Spread</span>
+            <input type="number" id="custom-spread" value="1.0" min="0.1" max="30" step="0.5" class="custom-form-input" />
+            <span class="custom-form-unit">m</span>
+          </div>
+          <div class="custom-form-row">
+            <span class="custom-form-label">Colour</span>
+            <div class="custom-swatches" id="custom-swatches"></div>
+          </div>
+          <button class="btn-add-custom-confirm" onclick="addCustomPlant()">Add to palette →</button>
+        </div>
+      </div>
+      <div class="palette-scroll" id="palette-list"></div>
     </div>
-    <div class="palette-scroll" id="palette-list"></div>
+    <!-- Zone object library (shown in Zones view only) -->
+    <div id="zone-object-panel" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+      <div class="zone-panel-title">Garden Objects</div>
+      <div class="zone-object-scroll" id="zone-object-list"></div>
+    </div>
   </aside>
 
   <!-- Canvas -->
@@ -701,7 +786,7 @@
   <!-- Info panel -->
   <aside class="info-panel">
     <div class="info-section" style="display:flex;align-items:center;padding:8px 12px">
-      <span style="font-size:0.68rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--moss)">Info</span>
+      <span style="font-size:0.68rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--moss)" id="info-header-title">Info</span>
       <button class="drawer-close-btn" onclick="closeDrawer()">✕</button>
     </div>
     <div class="info-section">
@@ -733,8 +818,32 @@
       <div class="info-label">How to use</div>
       <div class="info-hint" id="mode-hint">Click <strong>Draw boundary</strong> then click on the canvas to mark your garden corners. Double-click or click the first point to close.</div>
     </div>
+    <!-- Zone list panel (shown in Zones view only) -->
+    <div id="zone-list-panel" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+      <div class="zone-panel-title">Zones</div>
+      <div style="flex:1;overflow-y:auto;padding:6px 8px" id="zone-list-items"></div>
+      <div class="zone-fill-controls">
+        <label class="zone-fill-label">Tile size <span id="zone-tile-val">48px</span></label>
+        <input type="range" id="zone-tile-size" min="24" max="96" value="48" oninput="updateZoneTileVal()">
+        <label class="zone-fill-label">Randomness <span id="zone-rand-val">40%</span></label>
+        <input type="range" id="zone-rand-amount" min="0" max="100" value="40" oninput="updateZoneRandVal()">
+        <button class="btn-zone-fill" id="btn-zone-fill" onclick="fillSelectedZone()" disabled>Fill with Selected Object</button>
+      </div>
+    </div>
   </aside>
 
+</div>
+
+<!-- Zone naming modal -->
+<div class="zone-modal-overlay" id="zone-modal-overlay">
+  <div class="zone-modal">
+    <h3>Name this zone</h3>
+    <input type="text" id="zone-name-input" placeholder="e.g. Patio, Flower Bed, Lawn…" maxlength="30">
+    <div class="zone-modal-row">
+      <button class="btn-zone-modal" onclick="cancelZone()">Cancel</button>
+      <button class="btn-zone-modal primary" onclick="confirmZone()">Add Zone</button>
+    </div>
+  </div>
 </div>
 
 <script type="module">
@@ -788,7 +897,16 @@ const state = {
   dragging: false,
   dragStart: null,
   dragOffset: null,
-  currentPlotId: null
+  currentPlotId: null,
+  // ── Zone state ──
+  zones:              [],    // [{name, verts:[{x,y}] metres, color, fill}]
+  zoneColorIdx:       0,
+  zoneDrawVerts:      [],    // canvas pixels — only during active drawing
+  zoneHoverPt:        null,
+  zonePendingVerts:   null,  // canvas pixels — awaiting name modal
+  selectedZone:       null,
+  selectedZoneObject: null,
+  zoneMode:           'draw' // 'draw' | 'select'
 };
 
 // ── Canvas setup ──
@@ -1658,7 +1776,8 @@ function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawGrid();
   drawBoundary();
-  drawElements();
+  drawZones();
+  if (state.view !== 'zones') drawElements();
   // Overlay badges (top-left: season | top-right: year if not mature)
   ctx.font = 'bold 13px DM Sans, system-ui, sans-serif';
   ctx.textAlign = 'left';
@@ -1779,10 +1898,37 @@ window.setMode = setMode;
 
 function setView(view) {
   state.view = view;
-  document.getElementById('btn-plan').classList.toggle('view-active', view === 'plan');
-  document.getElementById('btn-plan').classList.toggle('active', false);
-  document.getElementById('btn-proposal').classList.toggle('view-active', view === 'proposal');
-  document.getElementById('btn-proposal').classList.toggle('active', false);
+  // Abort any in-progress zone drawing on view switch
+  state.zoneDrawVerts = [];
+  state.zoneHoverPt = null;
+
+  // Toolbar view buttons
+  ['plan', 'proposal', 'zones'].forEach(v => {
+    const btn = document.getElementById('btn-' + v);
+    if (btn) {
+      btn.classList.toggle('view-active', v === view);
+      btn.classList.remove('active');
+    }
+  });
+
+  // Tool group
+  const isZones = view === 'zones';
+  document.getElementById('boundary-tools').style.display = isZones ? 'none' : '';
+  document.getElementById('zone-tools').style.display    = isZones ? 'flex' : 'none';
+
+  // Left panel — plant vs zone objects
+  document.getElementById('plant-panel-content').style.display = isZones ? 'none' : 'contents';
+  const zop = document.getElementById('zone-object-panel');
+  zop.style.display = isZones ? 'flex' : 'none';
+  document.getElementById('palette-header-title').textContent = isZones ? 'Garden Objects' : 'Plants';
+  if (isZones) renderZoneObjectPanel();
+
+  // Right panel — info vs zone list
+  const infoSections = document.querySelectorAll('.info-panel .info-section');
+  infoSections.forEach(el => { el.style.display = isZones ? 'none' : ''; });
+  document.getElementById('zone-list-panel').style.display = isZones ? 'flex' : 'none';
+  if (isZones) renderZoneList();
+
   render();
 }
 window.setView = setView;
@@ -1850,6 +1996,11 @@ canvas.addEventListener('pointerdown', e => {
     return;
   }
 
+  if (state.view === 'zones') {
+    handleZoneClick(cx, cy);
+    return;
+  }
+
   if (state.mode === 'draw') {
     handleDrawClick(cx, cy);
   } else if (state.mode === 'place') {
@@ -1862,10 +2013,17 @@ canvas.addEventListener('pointerdown', e => {
 });
 
 canvas.addEventListener('pointermove', e => {
-  if (!pointerDown || !panStart) return;
   const rect = canvas.getBoundingClientRect();
   const cx = e.clientX - rect.left;
   const cy = e.clientY - rect.top;
+
+  if (state.view === 'zones' && state.zoneMode === 'draw' && state.zoneDrawVerts.length > 0) {
+    state.zoneHoverPt = { x: cx, y: cy };
+    render();
+    return;
+  }
+
+  if (!pointerDown || !panStart) return;
   state.offsetX = panStart.ox + (cx - panStart.cx);
   state.offsetY = panStart.oy + (cy - panStart.cy);
   render();
@@ -1895,6 +2053,7 @@ canvas.addEventListener('wheel', e => {
 // ── Pinch-to-zoom (mobile) ──
 let pinchStart = null;
 
+let zoneTapLast = 0;
 canvas.addEventListener('touchstart', e => {
   if (e.touches.length === 2) {
     e.preventDefault();
@@ -1910,6 +2069,20 @@ canvas.addEventListener('touchstart', e => {
     };
   } else {
     pinchStart = null;
+    if (state.view === 'zones' && state.zoneMode === 'draw') {
+      e.preventDefault();
+      const rect = canvas.getBoundingClientRect();
+      const t = e.touches[0];
+      const cx = t.clientX - rect.left, cy = t.clientY - rect.top;
+      const now = Date.now();
+      if (now - zoneTapLast < 300 && state.zoneDrawVerts.length >= 3) {
+        state.zoneDrawVerts.pop();
+        closeZonePoly();
+      } else {
+        handleZoneClick(cx, cy);
+      }
+      zoneTapLast = now;
+    }
   }
 }, { passive: false });
 
@@ -1930,6 +2103,13 @@ canvas.addEventListener('touchmove', e => {
 canvas.addEventListener('touchend', () => { pinchStart = null; });
 
 canvas.addEventListener('dblclick', e => {
+  if (state.view === 'zones') {
+    if (state.zoneMode === 'draw' && state.zoneDrawVerts.length >= 3) {
+      state.zoneDrawVerts.pop(); // remove the extra vertex added by the second click
+      closeZonePoly();
+    }
+    return;
+  }
   if (state.mode !== 'draw') return;
   closeBoundary();
 });
@@ -2231,6 +2411,7 @@ function serializeState() {
     boundary:       state.boundary,
     boundaryClosed: state.boundaryClosed,
     plants:         state.plants,
+    zones:          state.zones,
     archetypeKey:   state.archetypeKey,
     scale:          state.scale,
     offsetX:        state.offsetX,
@@ -2244,6 +2425,8 @@ function restoreState(saved) {
   state.boundary       = saved.boundary       ?? [];
   state.boundaryClosed = saved.boundaryClosed ?? false;
   state.plants         = saved.plants         ?? [];
+  state.zones          = saved.zones          ?? [];
+  state.zoneColorIdx   = state.zones.length;
   state.archetypeKey   = saved.archetypeKey   ?? null;
   state.scale          = saved.scale          ?? 60;
   state.offsetX        = saved.offsetX        ?? canvas.width  / 2;
@@ -2375,6 +2558,465 @@ function closeDrawer() {
   document.querySelector('.info-panel').classList.remove('drawer-open');
   document.getElementById('drawer-backdrop').classList.remove('open');
 }
+
+// ═══════════════════════════════════════════════════════════════
+// ── ZONES VIEW ──────────────────────────────────────────────────
+// ═══════════════════════════════════════════════════════════════
+
+const ZONE_OBJECTS = [
+  { id: 'lawn',     label: 'Lawn',          color: '#5a9e38', pattern: 'grass'  },
+  { id: 'patio',    label: 'Patio',         color: '#9e8e78', pattern: 'stone'  },
+  { id: 'gravel',   label: 'Gravel',        color: '#b8aa94', pattern: 'gravel' },
+  { id: 'bark',     label: 'Bark Chips',    color: '#7a5230', pattern: 'bark'   },
+  { id: 'decking',  label: 'Decking',       color: '#c8904a', pattern: 'deck'   },
+  { id: 'slate',    label: 'Slate',         color: '#606878', pattern: 'slate'  },
+  { id: 'rose',     label: 'Roses',         color: '#d45080', pattern: 'flower' },
+  { id: 'lavender', label: 'Lavender',      color: '#8060c0', pattern: 'flower2'},
+  { id: 'veg',      label: 'Veg Bed',       color: '#4a7a30', pattern: 'veg'    },
+  { id: 'water',    label: 'Water Feature', color: '#4080c0', pattern: 'water'  },
+];
+
+const ZONE_COLORS = [
+  '#7ab648','#c8a95a','#d48090','#6090b8','#b090c8',
+  '#90c8b8','#c8b090','#9090c8','#c89090','#90b890'
+];
+
+// ── Pattern generators ──
+function makeZonePattern(type, color) {
+  const sz = 24;
+  const pc = document.createElement('canvas');
+  pc.width = sz; pc.height = sz;
+  const px = pc.getContext('2d');
+  switch (type) {
+    case 'grass': {
+      px.fillStyle = color; px.fillRect(0,0,sz,sz);
+      px.strokeStyle = 'rgba(0,0,0,0.18)'; px.lineWidth = 1;
+      for (let i = 0; i < 4; i++) {
+        const x = 3 + i*6;
+        px.beginPath(); px.moveTo(x, sz);
+        px.quadraticCurveTo(x-2, sz*0.5, x, 0); px.stroke();
+      }
+      break;
+    }
+    case 'stone': {
+      px.fillStyle = color; px.fillRect(0,0,sz,sz);
+      px.strokeStyle = 'rgba(0,0,0,0.25)'; px.lineWidth = 1;
+      px.strokeRect(1,1,sz*0.6-1,sz*0.5-1);
+      px.strokeRect(sz*0.6+1,1,sz*0.4-2,sz*0.5-1);
+      px.strokeRect(1,sz*0.5+1,sz*0.3-1,sz*0.5-2);
+      px.strokeRect(sz*0.3+1,sz*0.5+1,sz*0.7-2,sz*0.5-2);
+      break;
+    }
+    case 'gravel': {
+      px.fillStyle = color; px.fillRect(0,0,sz,sz);
+      for (let i = 0; i < 18; i++) {
+        const rx = Math.random()*sz, ry = Math.random()*sz, rr = 1+Math.random()*2;
+        px.beginPath();
+        px.ellipse(rx, ry, rr, rr*0.7, Math.random()*Math.PI, 0, Math.PI*2);
+        px.fillStyle = `rgba(0,0,0,${0.1+Math.random()*0.15})`; px.fill();
+      }
+      break;
+    }
+    case 'bark': {
+      px.fillStyle = color; px.fillRect(0,0,sz,sz);
+      px.strokeStyle = 'rgba(0,0,0,0.2)'; px.lineWidth = 1.5;
+      for (let i = 0; i < 5; i++) {
+        px.beginPath(); px.moveTo(0, i*5+2);
+        px.bezierCurveTo(sz*0.3, i*5-2, sz*0.7, i*5+4, sz, i*5+1); px.stroke();
+      }
+      break;
+    }
+    case 'flower': {
+      px.fillStyle = '#3a6030'; px.fillRect(0,0,sz,sz);
+      const fcx = sz/2, fcy = sz/2;
+      for (let p = 0; p < 5; p++) {
+        const a = p*(Math.PI*2/5);
+        px.beginPath();
+        px.ellipse(fcx+Math.cos(a)*5, fcy+Math.sin(a)*5, 4, 2.5, a, 0, Math.PI*2);
+        px.fillStyle = color; px.fill();
+      }
+      px.beginPath(); px.arc(fcx, fcy, 2.5, 0, Math.PI*2);
+      px.fillStyle = '#f8e050'; px.fill();
+      break;
+    }
+    case 'flower2': {
+      px.fillStyle = '#3a5050'; px.fillRect(0,0,sz,sz);
+      for (let i = 0; i < 4; i++) {
+        const x = 4 + i*6;
+        px.fillStyle = color;
+        for (let j = 0; j < 4; j++) {
+          px.beginPath(); px.ellipse(x, 18-j*4, 2, 1.5, 0, 0, Math.PI*2); px.fill();
+        }
+        px.strokeStyle = '#2a4040'; px.lineWidth = 0.8;
+        px.beginPath(); px.moveTo(x, sz); px.lineTo(x, 14); px.stroke();
+      }
+      break;
+    }
+    case 'veg': {
+      px.fillStyle = '#3a5a20'; px.fillRect(0,0,sz,sz);
+      px.strokeStyle = 'rgba(0,0,0,0.3)'; px.lineWidth = 1;
+      for (let r = 0; r < 4; r++) {
+        px.beginPath(); px.moveTo(0, 4+r*6); px.lineTo(sz, 4+r*6); px.stroke();
+      }
+      px.fillStyle = '#50a030';
+      for (let r = 0; r < 3; r++)
+        for (let c = 0; c < 3; c++) {
+          px.beginPath(); px.arc(4+c*8, 7+r*6, 2.5, 0, Math.PI*2); px.fill();
+        }
+      break;
+    }
+    case 'water': {
+      px.fillStyle = color; px.fillRect(0,0,sz,sz);
+      px.strokeStyle = 'rgba(255,255,255,0.3)'; px.lineWidth = 1;
+      for (let i = 0; i < 4; i++) {
+        px.beginPath(); px.moveTo(0, 4+i*6);
+        px.quadraticCurveTo(sz*0.5, 4+i*6-3, sz, 4+i*6); px.stroke();
+      }
+      break;
+    }
+    case 'deck': {
+      px.fillStyle = color; px.fillRect(0,0,sz,sz);
+      px.strokeStyle = 'rgba(0,0,0,0.22)'; px.lineWidth = 1.5;
+      for (let i = 0; i < 4; i++) {
+        px.beginPath(); px.moveTo(0, i*7); px.lineTo(sz, i*7); px.stroke();
+      }
+      break;
+    }
+    case 'slate': {
+      px.fillStyle = color; px.fillRect(0,0,sz,sz);
+      px.strokeStyle = 'rgba(255,255,255,0.12)'; px.lineWidth = 0.8;
+      for (let i = 0; i < 6; i++) {
+        const x = Math.random()*sz, y = Math.random()*sz;
+        px.beginPath(); px.moveTo(x, y);
+        px.lineTo(x+8-Math.random()*6, y+5-Math.random()*4); px.stroke();
+      }
+      break;
+    }
+  }
+  return ctx.createPattern(pc, 'repeat');
+}
+
+const zonePatternCache = {};
+function getZonePattern(obj) {
+  if (!zonePatternCache[obj.id]) zonePatternCache[obj.id] = makeZonePattern(obj.pattern, obj.color);
+  return zonePatternCache[obj.id];
+}
+
+// ── Zone rendering ──
+function drawZoneFill(zone) {
+  if (!zone.fill) return;
+  const obj = ZONE_OBJECTS.find(o => o.id === zone.fill);
+  if (!obj) return;
+  const cverts = zone.verts.map(v => toCanvas(v.x, v.y));
+  const tileSize = parseInt(document.getElementById('zone-tile-size')?.value || 48);
+  const rand = parseInt(document.getElementById('zone-rand-amount')?.value || 40) / 100;
+  const xs = cverts.map(v => v.x), ys = cverts.map(v => v.y);
+  const minX = Math.min(...xs) - tileSize, maxX = Math.max(...xs) + tileSize;
+  const minY = Math.min(...ys) - tileSize, maxY = Math.max(...ys) + tileSize;
+
+  ctx.save();
+  ctx.beginPath();
+  ctx.moveTo(cverts[0].x, cverts[0].y);
+  for (let i = 1; i < cverts.length; i++) ctx.lineTo(cverts[i].x, cverts[i].y);
+  ctx.closePath();
+  ctx.clip();
+
+  let rngState = zone.name.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+  function seededRand() {
+    rngState = (rngState * 1664525 + 1013904223) & 0xffffffff;
+    return (rngState >>> 0) / 0xffffffff;
+  }
+
+  for (let x = minX; x < maxX; x += tileSize) {
+    for (let y = minY; y < maxY; y += tileSize) {
+      const jx = (seededRand() - 0.5) * tileSize * rand * 0.4;
+      const jy = (seededRand() - 0.5) * tileSize * rand * 0.4;
+      const rot = (seededRand() - 0.5) * rand * 0.5;
+      const sc = 1 + (seededRand() - 0.5) * rand * 0.3;
+      const cx2 = x + tileSize/2 + jx, cy2 = y + tileSize/2 + jy;
+      ctx.save();
+      ctx.translate(cx2, cy2); ctx.rotate(rot); ctx.scale(sc, sc);
+      const tmpC = document.createElement('canvas');
+      tmpC.width = tileSize; tmpC.height = tileSize;
+      const tc = tmpC.getContext('2d');
+      tc.fillStyle = makeZonePattern(obj.pattern, obj.color);
+      tc.fillRect(0, 0, tileSize, tileSize);
+      ctx.drawImage(tmpC, -tileSize/2, -tileSize/2, tileSize, tileSize);
+      ctx.restore();
+    }
+  }
+  ctx.restore();
+}
+
+function drawZones() {
+  // Draw committed zones
+  state.zones.forEach((zone, i) => {
+    const cverts = zone.verts.map(v => toCanvas(v.x, v.y));
+    drawZoneFill(zone);
+
+    ctx.beginPath();
+    ctx.moveTo(cverts[0].x, cverts[0].y);
+    for (let k = 1; k < cverts.length; k++) ctx.lineTo(cverts[k].x, cverts[k].y);
+    ctx.closePath();
+    ctx.fillStyle = zone.fill ? 'rgba(0,0,0,0.08)' : zone.color + '40';
+    ctx.fill();
+    ctx.strokeStyle = i === state.selectedZone ? '#1a3a2a' : zone.color;
+    ctx.lineWidth   = i === state.selectedZone ? 2.5 : 1.5;
+    ctx.stroke();
+
+    // Label
+    const lcx = cverts.reduce((s,v) => s+v.x, 0) / cverts.length;
+    const lcy = cverts.reduce((s,v) => s+v.y, 0) / cverts.length;
+    ctx.save();
+    ctx.font = '500 11px DM Sans, system-ui, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = 'rgba(26,58,42,0.85)';
+    ctx.fillText(zone.name, lcx, lcy);
+    ctx.restore();
+  });
+
+  // In-progress polygon (during drawing)
+  if (state.view !== 'zones' || state.zoneMode !== 'draw') return;
+  const dv = state.zoneDrawVerts;
+  if (dv.length === 0) return;
+
+  const activeColor = ZONE_COLORS[state.zoneColorIdx % ZONE_COLORS.length];
+  ctx.save();
+  ctx.strokeStyle = activeColor; ctx.lineWidth = 2; ctx.setLineDash([6,3]);
+  ctx.beginPath(); ctx.moveTo(dv[0].x, dv[0].y);
+  dv.forEach(v => ctx.lineTo(v.x, v.y));
+  if (state.zoneHoverPt) ctx.lineTo(state.zoneHoverPt.x, state.zoneHoverPt.y);
+  ctx.stroke(); ctx.setLineDash([]);
+
+  dv.forEach((v, i) => {
+    ctx.beginPath();
+    ctx.arc(v.x, v.y, i === 0 ? 7 : 4, 0, Math.PI*2);
+    ctx.fillStyle = i === 0 ? '#ffffff' : activeColor; ctx.fill();
+    if (i === 0 && state.zoneHoverPt && dv.length >= 3) {
+      const d = Math.hypot(state.zoneHoverPt.x - v.x, state.zoneHoverPt.y - v.y);
+      if (d < 16) {
+        ctx.beginPath(); ctx.arc(v.x, v.y, 13, 0, Math.PI*2);
+        ctx.strokeStyle = 'rgba(26,58,42,0.5)'; ctx.lineWidth = 2; ctx.stroke();
+      }
+    }
+  });
+  ctx.restore();
+}
+
+// ── Zone interaction ──
+function handleZoneClick(cx, cy) {
+  if (state.zoneMode === 'draw') {
+    const dv = state.zoneDrawVerts;
+    if (dv.length >= 3) {
+      const d = Math.hypot(cx - dv[0].x, cy - dv[0].y);
+      if (d < 16) { closeZonePoly(); return; }
+    }
+    dv.push({ x: cx, y: cy });
+    render();
+  } else {
+    // select mode — hit test in canvas coords
+    let hit = null;
+    for (let i = state.zones.length - 1; i >= 0; i--) {
+      const cverts = state.zones[i].verts.map(v => toCanvas(v.x, v.y));
+      if (ptInPoly({ x: cx, y: cy }, cverts)) { hit = i; break; }
+    }
+    state.selectedZone = hit;
+    renderZoneList();
+    updateZoneFillBtn();
+    render();
+  }
+}
+
+function ptInPoly(pt, verts) {
+  let inside = false;
+  for (let i = 0, j = verts.length - 1; i < verts.length; j = i++) {
+    const xi = verts[i].x, yi = verts[i].y, xj = verts[j].x, yj = verts[j].y;
+    if (((yi > pt.y) !== (yj > pt.y)) && (pt.x < (xj-xi)*(pt.y-yi)/(yj-yi)+xi)) inside = !inside;
+  }
+  return inside;
+}
+
+function closeZonePoly() {
+  if (state.zoneDrawVerts.length < 3) { showToast('Need at least 3 points'); return; }
+  state.zonePendingVerts = [...state.zoneDrawVerts];
+  state.zoneDrawVerts = [];
+  state.zoneHoverPt = null;
+  showZoneModal();
+}
+
+function setZoneMode(m) {
+  state.zoneMode = m;
+  document.getElementById('btn-zone-draw').classList.toggle('active', m === 'draw');
+  document.getElementById('btn-zone-select').classList.toggle('active', m === 'select');
+  render();
+}
+window.setZoneMode = setZoneMode;
+
+function clearZones() {
+  if (!state.zones.length) return;
+  if (!confirm('Clear all zones?')) return;
+  state.zones = [];
+  state.zoneDrawVerts = [];
+  state.zoneHoverPt = null;
+  state.selectedZone = null;
+  state.zoneColorIdx = 0;
+  renderZoneList();
+  render();
+}
+window.clearZones = clearZones;
+
+// ── Zone naming modal ──
+function showZoneModal() {
+  const inp = document.getElementById('zone-name-input');
+  inp.value = '';
+  document.getElementById('zone-modal-overlay').classList.add('open');
+  setTimeout(() => inp.focus(), 60);
+}
+
+function confirmZone() {
+  const name = document.getElementById('zone-name-input').value.trim() || 'Zone';
+  const color = ZONE_COLORS[state.zoneColorIdx % ZONE_COLORS.length];
+  state.zoneColorIdx++;
+  // Convert canvas pixel verts to world metres
+  const verts = state.zonePendingVerts.map(v => {
+    const w = toMetres(v.x, v.y);
+    return { x: parseFloat(w.x.toFixed(3)), y: parseFloat(w.y.toFixed(3)) };
+  });
+  state.zones.push({ name, verts, color, fill: null });
+  state.zonePendingVerts = null;
+  document.getElementById('zone-modal-overlay').classList.remove('open');
+  renderZoneList();
+  render();
+}
+window.confirmZone = confirmZone;
+
+function cancelZone() {
+  state.zonePendingVerts = null;
+  document.getElementById('zone-modal-overlay').classList.remove('open');
+  render();
+}
+window.cancelZone = cancelZone;
+
+document.getElementById('zone-name-input')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter') confirmZone();
+  if (e.key === 'Escape') cancelZone();
+});
+
+// ── Zone object panel ──
+function renderZoneObjectPanel() {
+  const el = document.getElementById('zone-object-list');
+  el.innerHTML = '';
+  ZONE_OBJECTS.forEach(obj => {
+    const div = document.createElement('div');
+    div.className = 'zone-object-item' + (state.selectedZoneObject === obj.id ? ' selected' : '');
+    div.onclick = () => selectZoneObject(obj.id);
+
+    const sw = document.createElement('canvas');
+    sw.width = 28; sw.height = 28;
+    sw.style.cssText = 'border-radius:4px;flex-shrink:0;width:28px;height:28px';
+    const sc = sw.getContext('2d');
+    const pat = makeZonePattern(obj.pattern, obj.color);
+    if (pat) { sc.fillStyle = pat; sc.fillRect(0,0,28,28); }
+    else { sc.fillStyle = obj.color; sc.fillRect(0,0,28,28); }
+
+    div.appendChild(sw);
+    const lbl = document.createElement('span');
+    lbl.className = 'zone-object-label';
+    lbl.textContent = obj.label;
+    div.appendChild(lbl);
+    el.appendChild(div);
+  });
+}
+
+function selectZoneObject(id) {
+  state.selectedZoneObject = id;
+  renderZoneObjectPanel();
+  updateZoneFillBtn();
+}
+window.selectZoneObject = selectZoneObject;
+
+// ── Zone list ──
+function renderZoneList() {
+  const el = document.getElementById('zone-list-items');
+  if (!el) return;
+  if (state.zones.length === 0) {
+    el.innerHTML = '<div class="zone-empty">Draw a zone on the canvas to get started.</div>';
+    updateZoneFillBtn();
+    return;
+  }
+  el.innerHTML = '';
+  [...state.zones].reverse().forEach((zone, ri) => {
+    const i = state.zones.length - 1 - ri;
+    const div = document.createElement('div');
+    div.className = 'zone-list-item' + (state.selectedZone === i ? ' selected' : '');
+    div.onclick = e => { if (!e.target.closest('.zone-list-actions')) { state.selectedZone = i; renderZoneList(); updateZoneFillBtn(); render(); } };
+
+    const dot = document.createElement('div');
+    dot.className = 'zone-color-dot'; dot.style.background = zone.color;
+
+    const info = document.createElement('div');
+    info.className = 'zone-list-info';
+    const nm = document.createElement('div'); nm.className = 'zone-list-name'; nm.textContent = zone.name;
+    const fillObj = ZONE_OBJECTS.find(o => o.id === zone.fill);
+    const meta = document.createElement('div'); meta.className = 'zone-list-fill';
+    meta.textContent = fillObj ? 'Filled: ' + fillObj.label : 'No fill';
+    info.appendChild(nm); info.appendChild(meta);
+
+    const acts = document.createElement('div'); acts.className = 'zone-list-actions';
+    const upBtn = document.createElement('button'); upBtn.className = 'zone-icon-btn'; upBtn.title = 'Up'; upBtn.textContent = '↑';
+    upBtn.onclick = e => { e.stopPropagation(); moveZone(i, 1); };
+    const dnBtn = document.createElement('button'); dnBtn.className = 'zone-icon-btn'; dnBtn.title = 'Down'; dnBtn.textContent = '↓';
+    dnBtn.onclick = e => { e.stopPropagation(); moveZone(i, -1); };
+    const delBtn = document.createElement('button'); delBtn.className = 'zone-icon-btn del'; delBtn.title = 'Delete'; delBtn.textContent = '✕';
+    delBtn.onclick = e => { e.stopPropagation(); deleteZone(i); };
+    acts.appendChild(upBtn); acts.appendChild(dnBtn); acts.appendChild(delBtn);
+
+    div.appendChild(dot); div.appendChild(info); div.appendChild(acts);
+    el.appendChild(div);
+  });
+  updateZoneFillBtn();
+}
+
+function moveZone(i, dir) {
+  const ni = i + dir;
+  if (ni < 0 || ni >= state.zones.length) return;
+  [state.zones[i], state.zones[ni]] = [state.zones[ni], state.zones[i]];
+  if (state.selectedZone === i) state.selectedZone = ni;
+  renderZoneList(); render();
+}
+
+function deleteZone(i) {
+  state.zones.splice(i, 1);
+  if (state.selectedZone === i) state.selectedZone = null;
+  else if (state.selectedZone > i) state.selectedZone--;
+  renderZoneList(); updateZoneFillBtn(); render();
+}
+
+function fillSelectedZone() {
+  if (state.selectedZone === null || state.selectedZoneObject === null) return;
+  state.zones[state.selectedZone].fill = state.selectedZoneObject;
+  renderZoneList(); render();
+}
+window.fillSelectedZone = fillSelectedZone;
+
+function updateZoneFillBtn() {
+  const btn = document.getElementById('btn-zone-fill');
+  if (btn) btn.disabled = !(state.selectedZone !== null && state.selectedZoneObject !== null);
+}
+
+function updateZoneTileVal() {
+  const el = document.getElementById('zone-tile-val');
+  if (el) el.textContent = document.getElementById('zone-tile-size').value + 'px';
+  render();
+}
+window.updateZoneTileVal = updateZoneTileVal;
+
+function updateZoneRandVal() {
+  const el = document.getElementById('zone-rand-val');
+  if (el) el.textContent = document.getElementById('zone-rand-amount').value + '%';
+  render();
+}
+window.updateZoneRandVal = updateZoneRandVal;
 
 // Initial render
 render();
