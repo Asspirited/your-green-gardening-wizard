@@ -3108,9 +3108,15 @@ function confirmZone() {
     const w = toMetres(v.x, v.y);
     return { x: parseFloat(w.x.toFixed(3)), y: parseFloat(w.y.toFixed(3)) };
   });
-  state.zones.push({ name, verts, color, fill: null });
+  // Auto-apply the currently selected zone object (YGW-079)
+  const autoFill = state.selectedZoneObject || null;
+  state.zones.push({ name, verts, color, fill: autoFill });
   state.zonePendingVerts = null;
   document.getElementById('zone-modal-overlay').classList.remove('open');
+  if (autoFill) {
+    const filled = ZONE_OBJECTS.find(o => o.id === autoFill);
+    showToast((filled ? filled.label : autoFill) + ' fill applied — draw next zone');
+  }
   renderZoneList();
   render();
 }

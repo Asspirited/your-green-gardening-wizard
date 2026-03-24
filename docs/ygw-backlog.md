@@ -870,12 +870,15 @@ CD3 v8 re-scored 2026-03-20 after YGW-061, YGW-062, YGW-046, YGW-075, YGW-BL-020
 | YGW-076 | Sub-Plot Designer — draw polygon zones, assign garden objects (lawn/patio/gravel/etc.), fill with texture patterns | 8.0 | D | Sticky+Viral | Landscaper | ✅ Done |
 | YGW-077 | Drawing UX controls — Escape/Cancel button to abandon in-progress boundary draw; undo last vertex; clear all; keyboard + mobile-visible | 8.5 | B | Sticky | Landscaper | 📋 Open |
 | YGW-078 | Straight-line drawing aids — Shift-constrain (0°/90°/45°), rectangle quick-draw, grid snap toggle | 7.5 | P | Sticky | Landscaper | 📋 Open |
+| YGW-079 | Zone auto-fill on confirm — when zone is named and saved, auto-apply selected zone object; stay in Draw mode for immediate next-zone flow | 8.0 | B | Sticky | Landscaper | ✅ Done |
 
 > **YGW-076:** Zones view integrated into app.html as third view mode (ADR-014, supersedes ADR-011). British Racing Green standalone still at `/features/subplot-designer/`. Touch support included.
 
 > **YGW-077:** Gaps identified during Rod's personal testing (2026-03-24). Escape key not wired. No "cancel mid-draw" distinct from "clear everything". Undo-last-vertex exists (↩ button) but not keyboard-accessible and invisible on mobile during draw. Needs: Escape key handler; visible Cancel button during draw mode; Undo vertex button contextually labelled; clear-all confirmation. All must work on mobile/tablet without keyboard.
 
 > **YGW-078:** Shift-constrain is highest-payoff lowest-effort — hold Shift during draw, rubber-band snaps to nearest 0°/45°/90° from previous vertex. Rectangle quick-draw (drag to define 4 corners) covers ~70% of UK residential plot shapes. Grid snap toggle. Identified alongside YGW-077 in same testing session.
+
+> **YGW-079:** If a zone object is selected before drawing, confirming the zone name auto-applies the fill immediately and stays in Draw mode — user can draw the next zone without any mode-switching. If no object is selected, zone is added unfilled (status quo). Toast confirms fill applied. Rod identified during sub-plot workflow review 2026-03-24.
 
 ---
 
