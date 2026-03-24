@@ -14,22 +14,22 @@
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    /* Brand system */
-    --green-deep:  #1a5c2a;
-    --green-mid:   #2d8a42;
-    --green-light: #85d4a0;
-    --cream:       #faf7f0;
-    --parchment:   #f0ead8;
+    /* Brand system — aligned with app.html */
+    --green-deep:  #1a3a2a;
+    --green-mid:   #2d6a4f;
+    --green-light: #52b788;
+    --cream:       #faf6f0;
+    --parchment:   #f0e8d8;
     --ink:         #1c2218;
-    --mist:        #eef4ec;
+    --mist:        #eaf4ee;
     --font-display:'Playfair Display', Georgia, serif;
     --font-ui:     'DM Sans', system-ui, sans-serif;
-    /* Legacy aliases — existing wizard components use these */
-    --forest: #1a5c2a;
-    --moss:   #2d8a42;
-    --sage:   #85d4a0;
+    /* Canonical aliases */
+    --forest: #1a3a2a;
+    --moss:   #2d6a4f;
+    --sage:   #52b788;
     --mint:   #b7e4c7;
-    --parch:  #f0ead8;
+    --parch:  #f0e8d8;
     --soil:   #6b4226;
     --bark:   #3d2b1f;
     --radius: 16px;
@@ -57,14 +57,18 @@
     z-index: 0;
   }
 
-  /* Nav row — single flex container, no absolute positioning */
+  /* ── Top nav bar — cream, matching app.html design language ── */
   .banner-nav {
-    position: relative;
-    z-index: 10;
     display: flex;
     align-items: center;
-    padding: 12px 24px;
+    padding: 0 20px;
+    height: 52px;
     gap: 12px;
+    background: var(--cream);
+    border-bottom: 1px solid var(--parch);
+    flex-shrink: 0;
+    position: relative;
+    z-index: 20;
   }
   .banner-logo {
     display: flex;
@@ -74,7 +78,7 @@
     flex-shrink: 0;
   }
   .banner-logo img {
-    height: 34px;
+    height: 36px;
     width: auto;
     flex-shrink: 0;
   }
@@ -82,67 +86,65 @@
     font-family: var(--font-display);
     font-size: 1rem;
     font-weight: 500;
-    color: #fff;
+    color: var(--forest);
     white-space: nowrap;
     line-height: 1.1;
   }
-  .banner-logo-text em { font-style: italic; font-weight: 400; }
+  .banner-logo-text em { font-style: italic; font-weight: 400; color: var(--moss); }
   .banner-links {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
   }
   .banner-links a {
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--green-deep);
-    background: #e8c96a;
+    font-size: 0.76rem;
+    font-weight: 500;
+    color: var(--forest);
+    background: none;
     text-decoration: none;
-    padding: 7px 16px;
+    padding: 5px 14px;
     border-radius: 20px;
-    border: 1.5px solid rgba(212,172,56,0.6);
-    transition: background 0.15s, transform 0.1s, box-shadow 0.15s;
+    border: 1.5px solid var(--parch);
+    transition: background 0.12s, border-color 0.12s;
     white-space: nowrap;
-    box-shadow: 0 1px 4px rgba(0,0,0,0.18);
     letter-spacing: 0.01em;
   }
   .banner-links a:hover {
-    background: #f0d878;
-    transform: translateY(-1px);
-    box-shadow: 0 3px 10px rgba(0,0,0,0.22);
+    background: var(--parch);
+    border-color: var(--sage);
   }
   .banner-season {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
     flex-shrink: 0;
   }
   .season-mode-badge {
-    font-size: 0.58rem;
-    font-weight: 500;
+    font-size: 0.55rem;
+    font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: rgba(255,255,255,0.55);
-    padding: 3px 7px;
-    border: 1px solid rgba(255,255,255,0.25);
-    border-radius: 14px;
+    color: var(--moss);
+    padding: 2px 6px;
+    border: 1px solid var(--sage);
+    border-radius: 10px;
   }
   .season-override-btn {
     font-size: 0.62rem;
     font-weight: 500;
     font-family: var(--font-ui);
-    color: rgba(255,255,255,0.65);
-    background: rgba(255,255,255,0.16);
-    border: 1px solid rgba(255,255,255,0.45);
-    border-radius: 14px;
+    color: var(--moss);
+    background: none;
+    border: 1px solid var(--parch);
+    border-radius: 12px;
     padding: 3px 8px;
     cursor: pointer;
-    transition: all 0.15s;
+    transition: all 0.12s;
   }
-  .season-override-btn:hover { color: #fff; background: rgba(255,255,255,0.28); }
-  .season-override-btn.active { background: rgba(255,255,255,0.55); color: #333; border-color: rgba(255,255,255,0.7); }
+  .season-override-btn:hover { background: var(--parch); border-color: var(--sage); }
+  .season-override-btn.active { background: var(--moss); color: white; border-color: var(--moss); }
 
   /* Hero content */
   .hero-content {
@@ -736,15 +738,16 @@
     .season-cards { grid-template-columns: 1fr 1fr; }
     .archetype-grid { grid-template-columns: 1fr 1fr; }
     .callout-inner { flex-direction: column; align-items: flex-start; }
-    .banner-nav { flex-wrap: wrap; }
+    .banner-nav { flex-wrap: wrap; height: auto; padding: 8px 16px; }
     .banner-links {
       width: 100%;
       justify-content: center;
-      padding: 6px 0 2px;
-      border-top: 1px solid rgba(255,255,255,0.12);
-      gap: 8px;
+      padding: 4px 0;
+      border-top: 1px solid var(--parch);
+      gap: 6px;
     }
-    .banner-links a { font-size: 0.7rem; padding: 5px 12px; }
+    .banner-links a { font-size: 0.7rem; padding: 4px 10px; }
+    .banner-season { display: none; }
     .hero-strip { grid-template-columns: 1fr; }
     .hero-strip-col { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
     .hero-strip-col:last-child { border-bottom: none; }
@@ -762,15 +765,12 @@
 </head>
 <body>
 
-<!-- ══ SECTION 1: BANNER ══ -->
-<div class="hero" id="hero">
-  <canvas id="particle-canvas"></canvas>
-
-  <nav class="banner-nav">
-    <a href="/" class="banner-logo">
-      <img src="assets/wizard-logo-white.svg" alt="The Green Wizard">
-      <span class="banner-logo-text">The Green <em>Wizard</em></span>
-    </a>
+<!-- ══ TOP NAV — cream bar, green wizard, matches app.html ══ -->
+<nav class="banner-nav">
+  <a href="/" class="banner-logo">
+    <img src="assets/wizard-logo.svg" alt="The Green Wizard">
+    <span class="banner-logo-text">The Green <em>Wizard</em></span>
+  </a>
     <div class="banner-links">
       <a href="app.html">Plot Designer</a>
       <a href="landscaper.html">Landscaper</a>
@@ -783,7 +783,11 @@
       <button class="season-override-btn" data-season="autumn" onclick="overrideSeason('autumn')">Aut</button>
       <button class="season-override-btn" data-season="winter" onclick="overrideSeason('winter')">Win</button>
     </div>
-  </nav>
+</nav>
+
+<!-- ══ SECTION 1: HERO ══ -->
+<div class="hero" id="hero">
+  <canvas id="particle-canvas"></canvas>
 
   <div class="hero-content">
     <div class="hero-season-badge" id="hero-season-badge">Spring</div>
