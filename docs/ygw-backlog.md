@@ -868,9 +868,15 @@ CD3 v8 re-scored 2026-03-20 after YGW-061, YGW-062, YGW-046, YGW-075, YGW-BL-020
 | ID | Title | Score | Kano | Engine | Persona | Status |
 |---|---|---|---|---|---|---|
 | YGW-076 | Sub-Plot Designer — draw polygon zones, assign garden objects (lawn/patio/gravel/etc.), fill with texture patterns | 8.0 | D | Sticky+Viral | Landscaper | ✅ Done |
+| YGW-077 | Drawing UX controls — Escape/Cancel button to abandon in-progress boundary draw; undo last vertex; clear all; keyboard + mobile-visible | 8.5 | B | Sticky | Landscaper | 📋 Open |
+| YGW-078 | Straight-line drawing aids — Shift-constrain (0°/90°/45°), rectangle quick-draw, grid snap toggle | 7.5 | P | Sticky | Landscaper | 📋 Open |
 
-> **YGW-076:** Live at `/features/subplot-designer/`. British Racing Green dark palette (ADR-012). Standalone route (ADR-011). Touch support included. Does not yet feed into proposal output — that integration is Phase 2.
+> **YGW-076:** Zones view integrated into app.html as third view mode (ADR-014, supersedes ADR-011). British Racing Green standalone still at `/features/subplot-designer/`. Touch support included.
+
+> **YGW-077:** Gaps identified during Rod's personal testing (2026-03-24). Escape key not wired. No "cancel mid-draw" distinct from "clear everything". Undo-last-vertex exists (↩ button) but not keyboard-accessible and invisible on mobile during draw. Needs: Escape key handler; visible Cancel button during draw mode; Undo vertex button contextually labelled; clear-all confirmation. All must work on mobile/tablet without keyboard.
+
+> **YGW-078:** Shift-constrain is highest-payoff lowest-effort — hold Shift during draw, rubber-band snaps to nearest 0°/45°/90° from previous vertex. Rectangle quick-draw (drag to define 4 corners) covers ~70% of UK residential plot shapes. Grid snap toggle. Identified alongside YGW-077 in same testing session.
 
 ---
 
-*Document ref: ygw-backlog-v7-2026-03-24 · EPIC O added: YGW-076 Sub-Plot Designer · ADR-011/ADR-012/ADR-013 written · Mobile FAB fix on main · feature/tgw-landscaper-tools merged to main (ADR-013) · YGW-066 Plant Palette + YGW-071 Quick Quote now on main · CD3 v8: YGW-061, YGW-062, YGW-046, YGW-075 (built/held) · EPIC N: YGW-075 Combo Explorer (hold HDD-001) · EPIC M: YGW-071–074 · EPIC L: YGW-066–070 · LeanSpirited*
+*Document ref: ygw-backlog-v8-2026-03-24 · YGW-077/078 added · 3yr timeline default · Zones view (YGW-076) integrated into app.html (ADR-014) · EPIC O added: YGW-076 Sub-Plot Designer · ADR-011/ADR-012/ADR-013 written · Mobile FAB fix on main · feature/tgw-landscaper-tools merged to main (ADR-013) · YGW-066 Plant Palette + YGW-071 Quick Quote now on main · CD3 v8: YGW-061, YGW-062, YGW-046, YGW-075 (built/held) · EPIC N: YGW-075 Combo Explorer (hold HDD-001) · EPIC M: YGW-071–074 · EPIC L: YGW-066–070 · LeanSpirited*
