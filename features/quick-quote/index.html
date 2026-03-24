@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quick Quote — The Green Wizard</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a0e;
+    --ink-mid: #4a4a36;
+    --ink-light: #8a8a72;
+    --page: #f5f2eb;
+    --page-mid: #ede9df;
+    --page-dark: #e0dbd0;
+    --green-deep: #2d4a1e;
+    --green-mid: #4a7a32;
+    --green-light: #c8dab8;
+    --amber: #b8860b;
+    --amber-light: #f5e8c0;
+    --red-soft: #8b2a2a;
+    --red-light: #f5d8d8;
+    --rule: rgba(45,74,30,0.15);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--page);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    min-height: 100vh;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='4' height='4' fill='%23f5f2eb'/%3E%3Ccircle cx='1' cy='1' r='0.4' fill='%23d8d4c8' opacity='0.4'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+  .wrap { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  header { margin-bottom: 36px; padding-bottom: 20px; border-bottom: 1px solid var(--rule); }
+  .header-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .wordmark { font-family: 'Libre Baskerville', serif; font-size: 1.1rem; color: var(--green-deep); letter-spacing: 0.02em; }
+  .wordmark span { font-style: italic; color: var(--green-mid); }
+  .tool-name { font-size: 0.65rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-light); margin-top: 4px; }
+  .beta { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; background: var(--amber-light); color: var(--amber); padding: 3px 8px; border: 1px solid var(--amber); }
+
+  .disclaimer {
+    background: var(--amber-light);
+    border: 1px solid var(--amber);
+    padding: 10px 16px;
+    font-size: 0.72rem;
+    color: var(--amber);
+    letter-spacing: 0.02em;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+  .disclaimer strong { font-weight: 400; text-transform: uppercase; letter-spacing: 0.1em; }
+
+  .form-block { background: white; border: 1px solid var(--rule); padding: 28px; margin-bottom: 24px; }
+  .form-block h2 { font-family: 'Libre Baskerville', serif; font-size: 0.95rem; font-weight: 400; color: var(--green-deep); margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid var(--rule); letter-spacing: 0.02em; }
+
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .field-grid.three { grid-template-columns: 1fr 1fr 1fr; }
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field.full { grid-column: 1 / -1; }
+
+  label { font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-light); }
+  select, input, textarea {
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    font-size: 0.85rem;
+    color: var(--ink);
+    background: var(--page);
+    border: 1px solid var(--page-dark);
+    padding: 9px 10px;
+    outline: none;
+    transition: border-color 0.15s;
+    width: 100%;
+    border-radius: 0;
+    -webkit-appearance: none;
+  }
+  select:focus, input:focus, textarea:focus { border-color: var(--green-mid); }
+  textarea { resize: vertical; min-height: 72px; line-height: 1.5; }
+
+  .generate-btn {
+    width: 100%;
+    padding: 13px;
+    background: var(--green-deep);
+    color: var(--green-light);
+    border: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 6px;
+  }
+  .generate-btn:hover:not(:disabled) { background: var(--green-mid); }
+  .generate-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .loading { display: none; text-align: center; padding: 40px; }
+  .loading.on { display: block; }
+  .loading-mark { font-size: 28px; animation: pulse 1.4s ease-in-out infinite; display: inline-block; }
+  @keyframes pulse { 0%,100% { opacity: 0.3; transform: scale(0.95); } 50% { opacity: 1; transform: scale(1.05); } }
+  .loading p { font-size: 0.75rem; color: var(--ink-light); margin-top: 12px; letter-spacing: 0.08em; font-style: italic; }
+
+  .error { display: none; padding: 12px 16px; background: var(--red-light); border: 1px solid var(--red-soft); color: var(--red-soft); font-size: 0.8rem; margin-bottom: 20px; }
+  .error.on { display: block; }
+
+  .results { display: none; animation: rise 0.35s ease; }
+  .results.on { display: block; }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* Quote band */
+  .quote-band {
+    background: var(--green-deep);
+    color: var(--green-light);
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+  }
+  .quote-label { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.7; margin-bottom: 6px; }
+  .quote-range { font-family: 'Libre Baskerville', serif; font-size: 2.4rem; font-weight: 700; line-height: 1; color: white; }
+  .quote-caveat { font-size: 0.68rem; opacity: 0.6; margin-top: 6px; letter-spacing: 0.04em; max-width: 200px; line-height: 1.5; }
+  .confidence-pill {
+    font-size: 0.65rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border: 1px solid;
+    align-self: flex-start;
+  }
+  .conf-high { border-color: var(--green-light); color: var(--green-light); }
+  .conf-med { border-color: #f5c842; color: #f5c842; }
+  .conf-low { border-color: #e88; color: #e88; }
+
+  /* Breakdown table */
+  .breakdown { background: white; border: 1px solid var(--rule); margin-bottom: 20px; }
+  .breakdown-head { padding: 14px 20px; border-bottom: 1px solid var(--rule); font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-light); display: grid; grid-template-columns: 1fr auto auto; gap: 16px; }
+  .breakdown-row { padding: 12px 20px; border-bottom: 0.5px solid var(--rule); display: grid; grid-template-columns: 1fr auto auto; gap: 16px; align-items: baseline; }
+  .breakdown-row:last-child { border-bottom: none; }
+  .breakdown-row.total { background: var(--page-mid); font-weight: 400; border-top: 1px solid var(--rule); }
+  .item-name { font-size: 0.82rem; color: var(--ink); }
+  .item-low { font-size: 0.82rem; color: var(--ink-mid); text-align: right; min-width: 70px; }
+  .item-high { font-size: 0.82rem; color: var(--ink); text-align: right; min-width: 70px; font-weight: 400; }
+
+  /* Notes */
+  .notes-block { background: var(--page-mid); border-left: 3px solid var(--green-mid); padding: 16px 20px; margin-bottom: 20px; }
+  .notes-block h3 { font-size: 0.65rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--green-deep); margin-bottom: 10px; }
+  .notes-block ul { padding-left: 16px; }
+  .notes-block li { font-size: 0.8rem; line-height: 1.6; color: var(--ink-mid); margin-bottom: 3px; }
+
+  /* Meeting copy */
+  .meeting-copy { background: white; border: 1px solid var(--rule); padding: 20px; margin-bottom: 20px; }
+  .mc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+  .mc-header h3 { font-family: 'Libre Baskerville', serif; font-size: 0.9rem; font-weight: 400; color: var(--green-deep); }
+  .mc-label { font-size: 0.6rem; letter-spacing: 0.12em; text-transform: uppercase; background: var(--green-light); color: var(--green-deep); padding: 3px 8px; }
+  .mc-text { font-size: 0.83rem; line-height: 1.65; color: var(--ink-mid); font-style: italic; }
+
+  .actions { display: flex; gap: 10px; flex-wrap: wrap; }
+  .action-btn {
+    flex: 1;
+    min-width: 140px;
+    padding: 10px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s;
+    border-radius: 0;
+  }
+  .btn-copy { background: var(--green-deep); color: var(--green-light); border: 1px solid var(--green-deep); }
+  .btn-copy:hover { background: var(--green-mid); border-color: var(--green-mid); }
+  .btn-reset { background: none; color: var(--ink-mid); border: 1px solid var(--page-dark); }
+  .btn-reset:hover { border-color: var(--ink-light); color: var(--ink); }
+
+  footer { margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 0.62rem; color: var(--ink-light); letter-spacing: 0.08em; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+
+  @media (max-width: 560px) {
+    .field-grid, .field-grid.three { grid-template-columns: 1fr; }
+    .quote-band { flex-direction: column; align-items: flex-start; }
+    .quote-range { font-size: 1.8rem; }
+    .breakdown-head, .breakdown-row { grid-template-columns: 1fr auto; }
+    .breakdown-head span:first-child, .item-low { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="header-top">
+      <div>
+        <div class="wordmark">The <span>Green</span> Wizard</div>
+        <div class="tool-name">Quick Quote Helper</div>
+      </div>
+      <div class="beta">Beta</div>
+    </div>
+  </header>
+
+  <div class="disclaimer">
+    <strong>Indicative only.</strong> These figures are a starting point for conversation — not a formal quote. Always confirm with your own measurements, supplier prices, and site assessment before committing to a client.
+  </div>
+
+  <div class="form-block" id="formBlock">
+    <h2>Project scope</h2>
+
+    <div class="field-grid">
+      <div class="field">
+        <label>Garden size (approx)</label>
+        <select id="size">
+          <option value="">Select size...</option>
+          <option value="small (under 30 sq m)">Small — under 30 sq m</option>
+          <option value="medium (30–80 sq m)">Medium — 30–80 sq m</option>
+          <option value="large (80–200 sq m)">Large — 80–200 sq m</option>
+          <option value="very large (200 sq m+)">Very large — 200 sq m+</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Project type</label>
+        <select id="type">
+          <option value="">Select type...</option>
+          <option value="full garden redesign (clear and start again)">Full redesign</option>
+          <option value="partial redesign (specific area or border)">Partial redesign</option>
+          <option value="planting scheme only (no hard landscaping)">Planting only</option>
+          <option value="hard landscaping only (paving, paths, structures)">Hard landscaping only</option>
+          <option value="maintenance and refresh (tidy and replant)">Maintenance / refresh</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-grid three">
+      <div class="field">
+        <label>Region</label>
+        <select id="region">
+          <option value="">Select...</option>
+          <option value="London">London</option>
+          <option value="South East England">South East</option>
+          <option value="South West England">South West</option>
+          <option value="Midlands">Midlands</option>
+          <option value="North England">North England</option>
+          <option value="Scotland">Scotland</option>
+          <option value="Wales">Wales</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Access difficulty</label>
+        <select id="access">
+          <option value="easy access (open rear garden, drive nearby)">Easy</option>
+          <option value="moderate access (side gate, some carrying)">Moderate</option>
+          <option value="difficult access (narrow passage, stairs, no drive)">Difficult</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Existing condition</label>
+        <select id="condition">
+          <option value="clear (empty or recently cleared)">Clear / empty</option>
+          <option value="overgrown (significant clearance needed)">Overgrown</option>
+          <option value="established (existing plants to work around)">Established</option>
+          <option value="neglected lawn only">Neglected lawn</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-grid">
+      <div class="field">
+        <label>Hard landscaping elements</label>
+        <select id="hard" multiple style="min-height:96px">
+          <option value="patio or terrace">Patio / terrace</option>
+          <option value="paths or stepping stones">Paths / stepping stones</option>
+          <option value="raised beds (timber or stone)">Raised beds</option>
+          <option value="garden walls or fencing">Walls / fencing</option>
+          <option value="decking">Decking</option>
+          <option value="pergola or structure">Pergola / structure</option>
+          <option value="water feature">Water feature</option>
+          <option value="none">None</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Planting budget feel</label>
+        <select id="planting">
+          <option value="budget planting (bedding, small perennials, minimal shrubs)">Budget</option>
+          <option value="mid-range planting (good mix of perennials and shrubs)">Mid-range</option>
+          <option value="premium planting (specimen shrubs, mature plants, statement pieces)">Premium</option>
+          <option value="no new planting">No new planting</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field-grid">
+      <div class="field full">
+        <label>Additional notes (optional)</label>
+        <textarea id="notes" placeholder="e.g. existing oak to retain, client wants low maintenance, hot tub base needed, new fence on north boundary..."></textarea>
+      </div>
+    </div>
+
+    <button class="generate-btn" id="genBtn" onclick="generateQuote()">
+      Generate indicative quote
+    </button>
+  </div>
+
+  <div class="loading" id="loading">
+    <div class="loading-mark">🌿</div>
+    <p>Calculating scope...</p>
+  </div>
+
+  <div class="error" id="error"></div>
+
+  <div class="results" id="results">
+
+    <div class="quote-band" id="quoteBand">
+      <div>
+        <div class="quote-label">Indicative project range</div>
+        <div class="quote-range" id="quoteRange">—</div>
+        <div class="quote-caveat">Materials + labour. Excludes VAT and design fees.</div>
+      </div>
+      <div class="confidence-pill conf-med" id="confPill">Medium confidence</div>
+    </div>
+
+    <div class="breakdown" id="breakdownBlock">
+      <div class="breakdown-head">
+        <span>Item</span>
+        <span>Low</span>
+        <span>High</span>
+      </div>
+      <div id="breakdownRows"></div>
+    </div>
+
+    <div class="notes-block" id="notesBlock">
+      <h3>Scope notes</h3>
+      <ul id="notesList"></ul>
+    </div>
+
+    <div class="meeting-copy" id="meetingBlock">
+      <div class="mc-header">
+        <h3>Say this to the client</h3>
+        <span class="mc-label">Meeting script</span>
+      </div>
+      <p class="mc-text" id="meetingText"></p>
+    </div>
+
+    <div class="actions">
+      <button class="action-btn btn-copy" onclick="copyQuote()">Copy for notes</button>
+      <button class="action-btn btn-reset" onclick="reset()">New quote</button>
+    </div>
+  </div>
+
+  <footer>
+    <span>The Green Wizard — Quick Quote Helper (feature branch)</span>
+    <span>Powered by <a href="https://your-green-gardening-wizard.leanspirited.workers.dev" target="_blank" style="color:inherit">The Green Wizard</a> · LeanSpirited 2026</span>
+  </footer>
+</div>
+
+<script>
+let copyText = '';
+
+function getSelected(id) {
+  const el = document.getElementById(id);
+  if (el.multiple) {
+    return Array.from(el.selectedOptions).map(o => o.value).join(', ') || 'none selected';
+  }
+  return el.value;
+}
+
+async function generateQuote() {
+  const size = getSelected('size');
+  const type = getSelected('type');
+  const region = getSelected('region');
+  const access = getSelected('access');
+  const condition = getSelected('condition');
+  const hard = getSelected('hard');
+  const planting = getSelected('planting');
+  const notes = document.getElementById('notes').value;
+
+  if (!size || !type || !region) {
+    showError('Please select garden size, project type, and region.');
+    return;
+  }
+
+  hideError();
+  document.getElementById('loading').classList.add('on');
+  document.getElementById('results').classList.remove('on');
+  document.getElementById('genBtn').disabled = true;
+
+  const prompt = `You are an experienced UK landscaping estimator with 15 years of trade knowledge. Produce an indicative cost range for the following project scope.
+
+PROJECT SCOPE:
+- Garden size: ${size}
+- Project type: ${type}
+- Region: ${region}
+- Access: ${access}
+- Existing condition: ${condition}
+- Hard landscaping elements: ${hard}
+- Planting level: ${planting}
+- Additional notes: ${notes || 'none'}
+
+IMPORTANT RULES:
+- All figures in GBP (£). UK market rates only.
+- Include materials AND labour combined.
+- Exclude VAT. Exclude design fees. Exclude planning permission.
+- Ranges should reflect realistic trade variation — not worst-case.
+- Regional variation: London/SE typically 20-35% higher than national average.
+- Be honest about confidence level. If scope is vague, say so.
+
+Respond ONLY with valid JSON. No preamble. No markdown. Exact structure:
+
+{
+  "total_low": 3500,
+  "total_high": 6500,
+  "confidence": "high|medium|low",
+  "confidence_reason": "one sentence explaining confidence level",
+  "breakdown": [
+    { "item": "Clearance and preparation", "low": 400, "high": 700 },
+    { "item": "Patio (20 sq m natural stone)", "low": 1800, "high": 2800 }
+  ],
+  "scope_notes": [
+    "one practical note per item, 3-5 total, written for a landscaper not a client"
+  ],
+  "meeting_script": "2-3 sentences a landscaper can say out loud to a client right now to present this range confidently without overcommitting. Warm, professional tone. No jargon. Start with 'Based on what you've described...'"
+}`;
+
+  try {
+    const res = await fetch('https://ygw-api-proxy.leanspirited.workers.dev/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1500,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const data = await res.json();
+    const raw = data.content.map(b => b.text || '').join('');
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const quote = JSON.parse(clean);
+    renderQuote(quote, size, type, region);
+
+  } catch (e) {
+    showError('Could not generate quote. Please try again. (' + e.message + ')');
+  } finally {
+    document.getElementById('loading').classList.remove('on');
+    document.getElementById('genBtn').disabled = false;
+  }
+}
+
+function fmt(n) {
+  return '£' + Number(n).toLocaleString('en-GB');
+}
+
+function renderQuote(q, size, type, region) {
+  document.getElementById('quoteRange').textContent = fmt(q.total_low) + ' – ' + fmt(q.total_high);
+
+  const pill = document.getElementById('confPill');
+  pill.textContent = q.confidence.charAt(0).toUpperCase() + q.confidence.slice(1) + ' confidence';
+  pill.className = 'confidence-pill conf-' + (q.confidence === 'high' ? 'high' : q.confidence === 'low' ? 'low' : 'med');
+
+  const rows = document.getElementById('breakdownRows');
+  rows.innerHTML = (q.breakdown || []).map(r => `
+    <div class="breakdown-row">
+      <span class="item-name">${r.item}</span>
+      <span class="item-low">${fmt(r.low)}</span>
+      <span class="item-high">${fmt(r.high)}</span>
+    </div>
+  `).join('') + `
+    <div class="breakdown-row total">
+      <span class="item-name">Total indicative range</span>
+      <span class="item-low">${fmt(q.total_low)}</span>
+      <span class="item-high">${fmt(q.total_high)}</span>
+    </div>`;
+
+  const list = document.getElementById('notesList');
+  list.innerHTML = (q.scope_notes || []).map(n => `<li>${n}</li>`).join('');
+
+  document.getElementById('meetingText').textContent = q.meeting_script || '';
+
+  copyText = `THE GREEN WIZARD — QUICK QUOTE\n`;
+  copyText += `${type} | ${size} | ${region}\n`;
+  copyText += `Indicative range: ${fmt(q.total_low)} – ${fmt(q.total_high)}\n`;
+  copyText += `Confidence: ${q.confidence} — ${q.confidence_reason}\n\n`;
+  copyText += `BREAKDOWN:\n`;
+  (q.breakdown || []).forEach(r => {
+    copyText += `  ${r.item}: ${fmt(r.low)} – ${fmt(r.high)}\n`;
+  });
+  copyText += `\nSCOPE NOTES:\n`;
+  (q.scope_notes || []).forEach(n => { copyText += `• ${n}\n`; });
+  copyText += `\nSAY TO CLIENT:\n${q.meeting_script}\n`;
+  copyText += `\n[Indicative only. Excludes VAT and design fees.]\nPowered by The Green Wizard — https://your-green-gardening-wizard.leanspirited.workers.dev`;
+
+  document.getElementById('results').classList.add('on');
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function copyQuote() {
+  if (!copyText) return;
+  navigator.clipboard.writeText(copyText).then(() => {
+    const btn = document.querySelector('.btn-copy');
+    btn.textContent = '✓ Copied';
+    setTimeout(() => btn.textContent = 'Copy for notes', 2000);
+  });
+}
+
+function reset() {
+  document.getElementById('results').classList.remove('on');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showError(msg) {
+  const el = document.getElementById('error');
+  el.textContent = msg;
+  el.classList.add('on');
+}
+
+function hideError() {
+  document.getElementById('error').classList.remove('on');
+}
+</script>
+</body>
+</html>

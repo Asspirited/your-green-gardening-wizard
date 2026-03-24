@@ -176,6 +176,7 @@
     margin-bottom: 10px;
   }
   .hero h1 em { font-style: italic; font-weight: 400; }
+  #hero-headline { transition: opacity 0.4s ease; }
   .hero-sub {
     font-size: 0.8rem;
     color: rgba(255,255,255,0.78);
@@ -240,37 +241,61 @@
 
   /* ══ SECTION 2: ABOUT ══ */
 
-  .about-strip {
+  /* ══ SECTION 2: MODE CARDS ══ */
+
+  .modes-section {
     background: var(--parchment);
     border-top: 1px solid #ddd5c0;
     border-bottom: 1px solid #ddd5c0;
-    padding: 22px 28px;
+    padding: 32px 28px;
   }
-  .about-inner {
-    max-width: 680px;
+  .modes-grid {
+    max-width: 760px;
     margin: 0 auto;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
+    gap: 14px;
   }
-  .about-col {
-    padding: 0 18px;
-    border-right: 1px solid #ddd5c0;
+  .mode-card {
+    background: white;
+    border: 1.5px solid #ddd5c0;
+    border-radius: 10px;
+    padding: 20px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    transition: border-color 0.15s, box-shadow 0.15s;
   }
-  .about-col:first-child { padding-left: 0; }
-  .about-col:last-child { border-right: none; padding-right: 0; }
-  .about-col h3 {
+  .mode-card:hover { border-color: var(--green-mid); box-shadow: 0 3px 12px rgba(45,138,66,0.1); }
+  .mode-card-icon { font-size: 1.6rem; line-height: 1; }
+  .mode-card-title {
     font-family: var(--font-display);
-    font-style: italic;
-    font-size: 0.8rem;
-    font-weight: 400;
+    font-size: 1rem;
+    font-weight: 500;
     color: var(--green-deep);
-    margin-bottom: 5px;
+    line-height: 1.2;
   }
-  .about-col p { font-size: 0.68rem; color: #5a5040; line-height: 1.6; }
+  .mode-card-desc { font-size: 0.75rem; color: #5a5040; line-height: 1.6; flex: 1; }
+  .mode-card-cta {
+    display: inline-block;
+    padding: 8px 14px;
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: white;
+    background: var(--green-deep);
+    border-radius: 6px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
+    font-family: inherit;
+    transition: background 0.15s;
+    align-self: flex-start;
+  }
+  .mode-card-cta:hover { background: var(--green-mid); }
 
-  /* ══ SECTION 3: HOW IT WORKS ══ */
+  /* ══ SECTION 3: SECTION HEAD (shared) ══ */
 
-  .how-section { background: var(--cream); padding: 36px 28px; }
   .section-head { text-align: center; margin-bottom: 22px; }
   .section-head h2 {
     font-family: var(--font-display);
@@ -280,55 +305,6 @@
     margin-bottom: 5px;
   }
   .section-head p { font-size: 0.73rem; color: #7a7060; }
-  .steps-grid {
-    max-width: 680px;
-    margin: 0 auto;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 14px;
-  }
-  .step-card {
-    background: #fff;
-    border: 0.5px solid #ddd5c0;
-    border-radius: 10px;
-    padding: 18px 14px;
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-  }
-  .step-num {
-    width: 40px; height: 40px;
-    border-radius: 50%;
-    background: var(--mist);
-    border: 1.5px solid var(--green-mid);
-    color: var(--green-deep);
-    font-family: var(--font-display);
-    font-size: 0.95rem;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-  .step-card h3 {
-    font-family: var(--font-display);
-    font-style: italic;
-    font-size: 0.8rem;
-    font-weight: 400;
-    color: var(--ink);
-  }
-  .step-card p { font-size: 0.68rem; color: #5a5040; line-height: 1.6; flex: 1; }
-  .step-tag {
-    display: inline-block;
-    background: var(--mist);
-    color: var(--green-deep);
-    border: 0.5px solid #b8d4b8;
-    border-radius: 10px;
-    font-size: 0.6rem;
-    font-weight: 500;
-    padding: 3px 9px;
-    align-self: flex-start;
-  }
 
   /* ══ SECTION 4: SEASONAL PREVIEW ══ */
 
@@ -489,7 +465,25 @@
     margin-bottom: 8px;
     line-height: 1.2;
   }
-  .advisor-divider p { font-size: 0.8rem; color: #7a7060; margin-bottom: 24px; max-width: 360px; margin-left: auto; margin-right: auto; }
+  .advisor-divider p { font-size: 0.8rem; color: #7a7060; margin-bottom: 20px; max-width: 360px; margin-left: auto; margin-right: auto; }
+  .mode-toggle { display: flex; gap: 8px; justify-content: center; padding-bottom: 28px; flex-wrap: wrap; }
+  .mode-btn {
+    padding: 9px 20px; font-size: 0.8rem; font-weight: 500; cursor: pointer;
+    border: 1.5px solid var(--green-mid); background: white; color: var(--green-mid);
+    border-radius: 24px; transition: all 0.15s; font-family: inherit;
+  }
+  .mode-btn.active { background: var(--green-deep); border-color: var(--green-deep); color: white; }
+  .mode-btn:hover:not(.active) { background: var(--mist); }
+  /* Photo upload (YGW-062) */
+  .photo-upload-area {
+    border: 2px dashed rgba(45,138,66,0.3); padding: 20px; text-align: center;
+    background: var(--mist); cursor: pointer; margin-bottom: 14px; transition: border-color 0.15s;
+  }
+  .photo-upload-area:hover { border-color: var(--green-mid); }
+  .photo-upload-area p { font-size: 0.82rem; color: var(--ink-light); margin: 0; }
+  .photo-upload-area strong { font-size: 0.9rem; color: var(--green-deep); display: block; margin-bottom: 4px; }
+  #photo-preview { max-width: 100%; max-height: 160px; display: none; margin: 10px auto 0; border-radius: 2px; }
+  .photo-scan-status { font-size: 0.78rem; color: var(--ink-light); margin-top: 8px; font-style: italic; min-height: 20px; }
 
   /* ══ EXISTING WIZARD STYLES (preserved) ══ */
 
@@ -738,10 +732,7 @@
 
   /* ══ RESPONSIVE ══ */
   @media (max-width: 767px) {
-    .about-inner { grid-template-columns: 1fr; }
-    .about-col { border-right: none; border-bottom: 1px solid #ddd5c0; padding: 12px 0; }
-    .about-col:last-child { border-bottom: none; }
-    .steps-grid { grid-template-columns: 1fr; }
+    .modes-grid { grid-template-columns: 1fr; }
     .season-cards { grid-template-columns: 1fr 1fr; }
     .archetype-grid { grid-template-columns: 1fr 1fr; }
     .callout-inner { flex-direction: column; align-items: flex-start; }
@@ -806,62 +797,40 @@
 
   <div class="hero-strip">
     <div class="hero-strip-col">
-      <h3>30 plant elements</h3>
-      <p>Trees, shrubs, perennials, surfaces and structures. Every plant at correct mature spread.</p>
+      <h3>🌱 New garden</h3>
+      <p>Location, soil, aspect — get exact plant recommendations in minutes.</p>
     </div>
     <div class="hero-strip-col">
-      <h3>Seasonal preview</h3>
-      <p>Show clients what their garden looks like in February, not just June.</p>
+      <h3>🔧 Fix my garden</h3>
+      <p>Keep, remove, add, and timing advice for gardens that need rescuing.</p>
     </div>
     <div class="hero-strip-col">
-      <h3>Client-ready PDF</h3>
-      <p>AI writes the seasonal proposal narrative. You edit and send.</p>
+      <h3>📐 Landscaper tools</h3>
+      <p>Plant palettes, cost estimates, and client-ready proposals. Built for pros.</p>
     </div>
   </div>
 </div>
 
-<!-- ══ SECTION 2: ABOUT ══ -->
-<section class="about-strip">
-  <div class="about-inner">
-    <div class="about-col">
-      <h3>What it is</h3>
-      <p>A professional garden design tool that helps landscapers draw accurate planting plans and generate client proposals — seasonal, visual, and exportable.</p>
+<!-- ══ SECTION 2: MODES ══ -->
+<section class="modes-section">
+  <div class="modes-grid">
+    <div class="mode-card">
+      <div class="mode-card-icon">🌱</div>
+      <div class="mode-card-title">Plan a new garden</div>
+      <div class="mode-card-desc">Tell us your location, soil, and aspect. Get exact plant recommendations for your conditions, right now.</div>
+      <button class="mode-card-cta" onclick="startWizard(); setWizardMode('new')">Start free →</button>
     </div>
-    <div class="about-col">
-      <h3>Who it's for</h3>
-      <p>Garden designers and landscapers who want to spend less time on paperwork and more time creating gardens clients love.</p>
+    <div class="mode-card">
+      <div class="mode-card-icon">🔧</div>
+      <div class="mode-card-title">Fix my existing garden</div>
+      <div class="mode-card-desc">Describe what's already there and what's going wrong. Get keep, remove, add, and timing advice.</div>
+      <button class="mode-card-cta" onclick="startWizard(); setWizardMode('fix')">Start free →</button>
     </div>
-    <div class="about-col">
-      <h3>How it works</h3>
-      <p>Draw your plot, place your planting, switch through the seasons. The AI writes the proposal narrative. You edit and send.</p>
-    </div>
-  </div>
-</section>
-
-<!-- ══ SECTION 3: HOW IT WORKS ══ -->
-<section class="how-section">
-  <div class="section-head">
-    <h2>Three steps to a client proposal</h2>
-    <p>From blank canvas to professional PDF</p>
-  </div>
-  <div class="steps-grid">
-    <div class="step-card">
-      <div class="step-num">1</div>
-      <h3>✏ Draw the plot</h3>
-      <p>Click points to trace any boundary shape. Every edge measured in metres, area calculated automatically.</p>
-      <span class="step-tag">Any shape plot</span>
-    </div>
-    <div class="step-card">
-      <div class="step-num">2</div>
-      <h3>🌿 Place your planting</h3>
-      <p>30 elements across trees, shrubs, surfaces and structures. Every plant at its correct mature spread.</p>
-      <span class="step-tag">30 elements</span>
-    </div>
-    <div class="step-card">
-      <div class="step-num">3</div>
-      <h3>📄 Export the proposal</h3>
-      <p>AI writes the seasonal narrative. You edit, then send. Professional PDF — not a hand-drawn sketch.</p>
-      <span class="step-tag">Client-ready PDF</span>
+    <div class="mode-card">
+      <div class="mode-card-icon">📐</div>
+      <div class="mode-card-title">Landscaper tools</div>
+      <div class="mode-card-desc">Plant palette generator, cost estimator, and client-ready proposal copy. Built for professional landscapers.</div>
+      <a class="mode-card-cta" href="features/plant-palette/">Open tools →</a>
     </div>
   </div>
 </section>
@@ -936,6 +905,10 @@
     <div class="advisor-divider-badge">Free · No account needed</div>
     <h2>Your free plant advisor</h2>
     <p>Tell us about your plot — we'll recommend exactly what to grow.</p>
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="mode-btn-new" onclick="setWizardMode('new')">🌱 Plan a new garden</button>
+      <button class="mode-btn" id="mode-btn-fix" onclick="setWizardMode('fix')">🔧 Fix my existing garden</button>
+    </div>
   </div>
 
   <div class="app-shell">
@@ -1014,6 +987,28 @@
               <button class="horizon-btn" data-horizon="2yr"  onclick="selectHorizon(this)">⚡ Quick<br><small>Results in 2 years</small></button>
               <button class="horizon-btn" data-horizon="5yr"  onclick="selectHorizon(this)">🌿 Balanced<br><small>Builds over 5 years</small></button>
               <button class="horizon-btn" data-horizon="10yr" onclick="selectHorizon(this)">🌳 Legacy<br><small>Plants for 10+ years</small></button>
+            </div>
+          </div>
+          <!-- Step 5: Fix my garden (only shown in fix mode) -->
+          <div class="step" data-step="5" id="fix-step" style="display:none">
+            <div class="step-label" id="fix-step-label">Step 5 of 5</div>
+            <div class="step-question">Tell me about your existing garden</div>
+            <div class="step-hint">What's already there, and what's going wrong? The more you tell us, the better the advice.</div>
+            <!-- Photo upload (YGW-062) -->
+            <div class="photo-upload-area" id="photo-drop" onclick="document.getElementById('photo-input').click()">
+              <strong>📷 Scan your plants with a photo</strong>
+              <p>Upload a photo and we'll identify what's there — or skip and type below.</p>
+              <img id="photo-preview" alt="Garden photo preview">
+            </div>
+            <input type="file" id="photo-input" accept="image/*" style="display:none" onchange="handlePhotoUpload(event)">
+            <div class="photo-scan-status" id="photo-scan-status"></div>
+            <div class="field" style="margin-bottom:14px">
+              <label style="font-size:0.72rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-light);display:block;margin-bottom:6px">What's already in your garden?</label>
+              <textarea id="existing-plants-input" placeholder="e.g. overgrown privet hedge, a large photinia, some tatty lavender, self-seeded foxgloves..." style="width:100%;min-height:72px;padding:10px;border:1px solid #ccc;font-family:inherit;font-size:0.85rem;resize:vertical" oninput="state.existingPlants=this.value;checkNextEnabled()"></textarea>
+            </div>
+            <div class="field">
+              <label style="font-size:0.72rem;font-weight:500;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-light);display:block;margin-bottom:6px">What's the problem? (optional)</label>
+              <textarea id="problems-input" placeholder="e.g. nothing flowers, it's too dark, the lawn is moss, it floods after rain, I don't know where to start..." style="width:100%;min-height:60px;padding:10px;border:1px solid #ccc;font-family:inherit;font-size:0.85rem;resize:vertical" oninput="state.problems=this.value"></textarea>
             </div>
           </div>
         </div>
@@ -1191,9 +1186,23 @@ async function loadKnowledge(path) {
 const state = {
   step: 1, totalSteps: 4,
   location: '', soil: '', aspect: '', goals: [], horizon: null,
+  wizardMode: 'new', existingPlants: '', problems: '',
   result: '',
   refinements: { style: null, colours: [], plantTypes: [], safety: [], extras: [] }
 };
+
+function setWizardMode(mode) {
+  state.wizardMode = mode;
+  state.totalSteps = mode === 'fix' ? 5 : 4;
+  document.getElementById('mode-btn-new').classList.toggle('active', mode === 'new');
+  document.getElementById('mode-btn-fix').classList.toggle('active', mode === 'fix');
+  const fixStep = document.getElementById('fix-step');
+  fixStep.style.display = mode === 'fix' ? 'block' : 'none';
+  // Update step 4 label
+  document.querySelector('[data-step="4"] .step-label').textContent = mode === 'fix' ? 'Step 4 of 5' : 'Step 4 of 4';
+  updateNav();
+}
+window.setWizardMode = setWizardMode;
 
 const WORKER_URL = 'https://ygw-api-proxy.leanspirited.workers.dev';
 
@@ -1224,6 +1233,7 @@ function checkNextEnabled() {
   if (state.step === 2) enabled = !!state.soil;
   if (state.step === 3) enabled = !!state.aspect;
   if (state.step === 4) enabled = state.goals.length > 0;
+  if (state.step === 5) enabled = (state.existingPlants || '').trim().length > 2;
   next.disabled = !enabled;
 }
 
@@ -1257,6 +1267,79 @@ function selectHorizon(btn) {
   }
 }
 
+// ── YGW-062: Photo plant scan ──
+async function handlePhotoUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const preview = document.getElementById('photo-preview');
+  const status = document.getElementById('photo-scan-status');
+  const reader = new FileReader();
+
+  reader.onload = async (e) => {
+    const dataUrl = e.target.result;
+    preview.src = dataUrl;
+    preview.style.display = 'block';
+
+    const base64 = dataUrl.split(',')[1];
+    const mediaType = file.type || 'image/jpeg';
+
+    status.textContent = 'Scanning plants…';
+
+    try {
+      const res = await fetch(`${WORKER_URL}/messages`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'claude-sonnet-4-20250514',
+          max_tokens: 800,
+          messages: [{
+            role: 'user',
+            content: [
+              {
+                type: 'image',
+                source: { type: 'base64', media_type: mediaType, data: base64 }
+              },
+              {
+                type: 'text',
+                text: 'You are a professional UK horticulturalist. Look at this garden photo and identify every plant you can see. For each identified plant, give: common name, latin name, and confidence (high/medium/low). Return ONLY a JSON array. Example: [{"common":"Lavender","latin":"Lavandula angustifolia","confidence":"high"}]. If no plants are identifiable, return [].'
+              }
+            ]
+          }]
+        })
+      });
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+      const raw = data.content.map(b => b.text || '').join('');
+      const clean = raw.replace(/```json|```/g, '').trim();
+      const plants = JSON.parse(clean);
+
+      if (!Array.isArray(plants) || plants.length === 0) {
+        status.textContent = 'No plants identified — please describe them below.';
+        return;
+      }
+
+      const highConf = plants.filter(p => p.confidence !== 'low');
+      const plantText = highConf.length > 0
+        ? highConf.map(p => `${p.common} (${p.latin})`).join(', ')
+        : plants.map(p => `${p.common}?`).join(', ');
+
+      const input = document.getElementById('existing-plants-input');
+      input.value = plantText;
+      state.existingPlants = plantText;
+      checkNextEnabled();
+      status.textContent = `Found ${plants.length} plant${plants.length > 1 ? 's' : ''} — edit below if needed.`;
+
+    } catch (err) {
+      status.textContent = 'Scan failed — please describe your plants below.';
+    }
+  };
+
+  reader.readAsDataURL(file);
+}
+window.handlePhotoUpload = handlePhotoUpload;
+
 function goNext() {
   if (state.step === 1) state.location = document.getElementById('location-input').value.trim();
   if (state.step < state.totalSteps) { showStep(state.step + 1); }
@@ -1275,22 +1358,73 @@ function showStep(n) {
 
 // ── Seasonal copy ──
 const SEASONAL_COPY = {
-  spring: { headline: 'What to grow <em>this spring</em><br>in your garden', sub: 'Spring is the best time to start. Tell us about your plot — we\'ll tell you exactly what to sow and plant right now.', cta: 'Get your spring garden plan →', tag: 'Your Spring Garden Plan', loading: 'Checking what\'s emerging right now...' },
-  summer: { headline: 'A summer garden <em>built for you,</em><br>right now', sub: 'Summer\'s in full swing. Tell us about your plot and we\'ll tell you exactly what to grow in the heat.', cta: 'Get your summer garden plan →', tag: 'Your Summer Garden Plan', loading: 'Finding what loves the heat...' },
-  autumn: { headline: 'Plant now for <em>a stunning spring.</em><br>Your autumn guide.', sub: 'Autumn is the best planting season. Tell us about your plot — we\'ll tell you what to get in the ground before the frosts.', cta: 'Get your autumn garden plan →', tag: 'Your Autumn Garden Plan', loading: 'Checking what needs doing before frost...' },
-  winter: { headline: 'Plan ahead — your <em>spring garden</em><br>starts now', sub: 'Use the quiet months wisely. Tell us about your plot and we\'ll design your perfect spring garden.', cta: 'Plan your spring garden now →', tag: 'Your Spring Garden Plan', loading: 'Thinking ahead to spring...' }
+  spring: {
+    headlines: [
+      'What to grow <em>this spring</em><br>in your garden',
+      'Spring is here — <em>what should<br>you plant right now?</em>',
+      'The best gardens start <em>in spring.</em><br>Yours starts here.'
+    ],
+    sub: 'Spring is the best time to start. Tell us about your plot — we\'ll tell you exactly what to sow and plant right now.',
+    cta: 'Get your spring garden plan →', tag: 'Your Spring Garden Plan', loading: 'Checking what\'s emerging right now...'
+  },
+  summer: {
+    headlines: [
+      'A summer garden <em>built for you,</em><br>right now',
+      'Still time to grow. <em>What should<br>go in this week?</em>',
+      'Make the most of <em>the long days.</em><br>Your summer plan.'
+    ],
+    sub: 'Summer\'s in full swing. Tell us about your plot and we\'ll tell you exactly what to grow in the heat.',
+    cta: 'Get your summer garden plan →', tag: 'Your Summer Garden Plan', loading: 'Finding what loves the heat...'
+  },
+  autumn: {
+    headlines: [
+      'Plant now for <em>a stunning spring.</em><br>Your autumn guide.',
+      'Autumn is the <em>best planting season.</em><br>Don\'t miss it.',
+      'Get it in the ground <em>before the frosts.</em><br>Your autumn plan.'
+    ],
+    sub: 'Autumn is the best planting season. Tell us about your plot — we\'ll tell you what to get in the ground before the frosts.',
+    cta: 'Get your autumn garden plan →', tag: 'Your Autumn Garden Plan', loading: 'Checking what needs doing before frost...'
+  },
+  winter: {
+    headlines: [
+      'Plan ahead — your <em>spring garden</em><br>starts now',
+      'The quiet months are <em>the planning months.</em><br>Start here.',
+      'Dream it now. <em>Plant it in spring.</em><br>Your winter plan.'
+    ],
+    sub: 'Use the quiet months wisely. Tell us about your plot and we\'ll design your perfect spring garden.',
+    cta: 'Plan your spring garden now →', tag: 'Your Spring Garden Plan', loading: 'Thinking ahead to spring...'
+  }
 };
 
 const loadingMessages = ['Reading your garden...', 'Checking your soil and climate...', 'Finding plants that will thrive...', 'Putting your plan together...'];
 
+let _headlineCycleIdx = 0;
+let _headlineCycleTimer = null;
+
 function applySeasonalUI() {
   const { season } = getCurrentUKSeason();
   const copy = SEASONAL_COPY[season];
-  document.getElementById('hero-headline').innerHTML = copy.headline;
+  _headlineCycleIdx = 0;
+  document.getElementById('hero-headline').innerHTML = copy.headlines[0];
   document.getElementById('hero-sub').textContent   = copy.sub;
   document.getElementById('result-tag').textContent = copy.tag;
   document.getElementById('hero-season-badge').textContent = season.charAt(0).toUpperCase() + season.slice(1);
   loadingMessages[0] = copy.loading;
+  startHeadlineCycle(season);
+}
+
+function startHeadlineCycle(season) {
+  if (_headlineCycleTimer) clearInterval(_headlineCycleTimer);
+  const headlines = SEASONAL_COPY[season].headlines;
+  const el = document.getElementById('hero-headline');
+  _headlineCycleTimer = setInterval(() => {
+    el.style.opacity = '0';
+    setTimeout(() => {
+      _headlineCycleIdx = (_headlineCycleIdx + 1) % headlines.length;
+      el.innerHTML = headlines[_headlineCycleIdx];
+      el.style.opacity = '1';
+    }, 400);
+  }, 5000);
 }
 
 // ── Seasonal hero ──

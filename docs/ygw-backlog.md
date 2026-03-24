@@ -64,7 +64,7 @@
 | ID | Title | Score | Kano | Status | Notes |
 |---|---|---|---|---|---|
 | YGW-018 | **Shareable visual plan card (SVG/canvas)** | **8.5** | D | ✅ Done | Unlocks Instagram/Pinterest. Decay window ~1yr. Full spec below. |
-| YGW-046 | Cycling hero images with seasonal taglines in seasonal fonts | 5.5 | P | 📋 Open | |
+| YGW-046 | Cycling hero images with seasonal taglines in seasonal fonts | 5.5 | P | ✅ Done | |
 
 ### YGW-018 — Shareable visual plan card: full spec
 
@@ -427,7 +427,7 @@ Feature: Overwrite saved plot
 | YGW-BL-017 | UI/UX quality gate — checklist passes before any merge (YGW-UX-005) | 7.0 | B | ✅ Done |
 | YGW-BL-018 | Font consistency audit — unified Playfair Display + DM Sans hierarchy | 6.5 | B | ✅ Done |
 | YGW-BL-019 | "Free Plant Advisor" heading prominence — larger, bolder, more visual weight | 7.0 | P | ✅ Done |
-| YGW-BL-020 | Review index.html section ordering — most compelling content highest; reduce scroll-to-value | 7.5 | P | 📋 Open |
+| YGW-BL-020 | Review index.html section ordering — most compelling content highest; reduce scroll-to-value | 7.5 | P | ✅ Done |
 | YGW-BL-021 | Expand plot design element range — 37→53 elements across 8 categories | 8.0 | P | ✅ Done |
 | YGW-BL-022 | Banner nav links → gold-and-green pill buttons to match Green Wizard logo | 8.0 | P | ✅ Done |
 | YGW-BL-023 | Canvas default mode Select not Draw — users need to pan/zoom before drawing boundary | 6.0 | B | ✅ Done |
@@ -450,8 +450,8 @@ Feature: Overwrite saved plot
 | ID | Title | Score | Kano | Status |
 |---|---|---|---|---|
 | YGW-060 | Growth horizon selector — user sets "I want it to look mature in 2yr / 5yr / 10yr"; AI adjusts species selection, spacing, and initial-planting density accordingly | 9.5 | D | ✅ Done |
-| YGW-061 | "Fix my garden" mode — wizard variant for existing gardens; user describes what's there, AI advises what to keep, remove, add, and improve | 9.0 | D | 📋 Open |
-| YGW-062 | Photo-based existing plant scan — upload photo of garden; AI identifies existing plants; feeds into Fix My Garden mode or standalone advice | 8.5 | D | 📋 Open |
+| YGW-061 | "Fix my garden" mode — wizard variant for existing gardens; user describes what's there, AI advises what to keep, remove, add, and improve | 9.0 | D | ✅ Done |
+| YGW-062 | Photo-based existing plant scan — upload photo of garden; AI identifies existing plants; feeds into Fix My Garden mode or standalone advice | 8.5 | D | ✅ Done |
 | YGW-063 | RHS plant database integration — live cultivar data, hardiness ratings, RHS Award of Garden Merit flags in recommendations | 9.5 | P | 💡 Idea |
 | YGW-064 | Stripe billing + trial gate for landscaper.html — 7-day free trial, then £30–100/mo; Stripe Checkout | 10.0 | B | 📋 Open |
 | YGW-065 | Kano decay review — scheduled phase-gate item: review all D-classified features for category migration; update backlog accordingly | 5.0 | B | 📋 Open |
@@ -751,7 +751,7 @@ Feature: Plant Palette Generator
 | YGW-071 | Quick quote helper — landscaper enters site dimensions + palette; tool outputs materials list + estimated cost range | 8.5 | P | Sticky | Landscaper | 📋 Open |
 | YGW-072 | Shareable before/after photo framing — user uploads before photo; AI overlays annotated plan vision; optimised for social | 7.5 | D | Viral | Amateur | 💡 Idea |
 | YGW-073 | Seasonal reveal card — animated/static card showing garden across 4 seasons; timed for seasonal posting | 7.0 | D | Viral | Amateur | 💡 Idea |
-| YGW-074 | "Powered by The Green Wizard" footer in landscaper PDF — one line in proposal template closes B2C viral loop | 9.0 | P | Viral+Sticky | Landscaper | 📋 Open |
+| YGW-074 | "Powered by The Green Wizard" footer in landscaper PDF — one line in proposal template closes B2C viral loop | 9.0 | P | Viral+Sticky | Landscaper | ✅ Done |
 
 > **YGW-074 note:** Highest leverage / lowest effort in the viral column. Every PDF Ollie sends to a client is an acquisition touchpoint. One line of text in the proposal template. No code change needed beyond the PDF CSS/template.
 > **YGW-071 note:** Serves the sticky engine directly for the Landscaper persona. Pairs with YGW-066 (Plant Palette Generator) — same workflow, next step.
@@ -784,26 +784,63 @@ Order confirmed by Rod for next discussion session:
 
 ---
 
-## Priority queue — next 10 to build
+## EPIC N — Collector Mode (2026-03-20)
+
+*Distinct persona from landscaper. Skilled amateur / collector: rarity, drama, combos, talking-point plants. Not conditions-driven. Wants to be surprised and educated simultaneously. Different voice, different prompts, different entry point from EPIC L.*
+
+| ID | Title | Score | Kano | Engine | Persona | Status |
+|---|---|---|---|---|---|---|
+| YGW-075 | Combo Explorer — click a plant, get AI-rated combo options (RAG + star pairing) with opinionated rationale | 8.0 | D | Sticky | Collector | ✅ Built — hold merge until HDD-001 validated |
+
+> **YGW-075 note:** Interaction model and prompt architecture fully designed (.claude/combo-explorer-design.md). Prototype built in Claude.ai session (hardcoded data). Needs: Worker endpoint `/combo-explorer`, AI-generated ratings, integration with Plant Palette output. Do NOT build Worker endpoint until HDD-001 (Ollie test) returns a result. Collector persona not yet validated as a growth segment.
+
+### YGW-075 — Combo Explorer
+
+**Epic:** N — Collector Mode
+**Design doc:** `.claude/combo-explorer-design.md`
+**Depends on:** YGW-066 validated (HDD-001)
+**HDD connection:** HDD-002 (not yet written) — do skilled amateurs pay for combo intelligence?
+
+**User story:** As a skilled amateur gardener, I want to click a plant in my palette and see which plants combine well with it — ranked by how exciting and compatible the pairing is — so I can make confident, interesting choices rather than just safe ones.
+
+**Key design decisions (from Claude.ai prototype session):**
+- Star pairing is opinionated (most exciting + compatible), not just safest. Exactly one per plant.
+- Card sort: Star → Green → Amber → Red. Order carries meaning before click.
+- Separate Worker endpoint (`/combo-explorer`) — different output schema and register from Plant Palette.
+- Collector voice: specific, opinionated, willing to say "this is the one." Not client-safe.
+- Entry point: Option A recommended — run Plant Palette first, then "Explore combos" on result.
+
+**Open questions (resolve before building):**
+1. Entry point confirmed? (Option A = post-palette, Option B = own flow, Option C = curated sets)
+2. Should red cards be shown? (Educational value vs UI clutter)
+3. Collector mode vs landscaper mode — same product or separate landing?
+
+**Gherkin:** Not yet written. Write when HDD-001 validated and collector persona confirmed as growth segment.
+
+---
+
+## Priority queue — next to build
 
 **Engine of Growth: Sticky primary, B2B2C referral tail (ADR-010, 2026-03-20)**
 Landscaper features come before pure-Viral consumer features until HDD-001 is validated.
-YGW-066-AC-007 (Ollie test) blocks merge of all landscaper column items.
+YGW-066-AC-007 (Ollie test) blocks merge of all landscaper column items to main.
+CD3 v8 re-scored 2026-03-20 after YGW-061, YGW-062, YGW-046, YGW-075, YGW-BL-020 built this session.
 
-| Rank | ID | Title | Engine | Blocker |
-|---|---|---|---|---|
-| 1 | **YGW-066** | Plant Palette Generator (Ollie gate) | Sticky | Build first — HDD-001 instrument |
-| 2 | **YGW-071** | Quick Quote Helper | Sticky | None — spec ready |
-| 3 | **YGW-074** | "Powered by The Green Wizard" footer in landscaper PDF | Viral (passive) | None — one line in template |
-| 4 | YGW-064 | Stripe billing + trial gate (landscaper) | Paid | Rod: Stripe account |
-| 5 | YGW-022 | Seasonal re-engagement email | Sticky | Rod: RESEND_API_KEY |
-| 6 | YGW-061 | "Fix my garden" mode | Sticky | None |
-| 7 | YGW-BL-020 | Homepage section reorder | — | None |
-| 8 | YGW-072 | Before/after photo framing | Viral | Prereq: Ollie test passed |
-| 9 | YGW-073 | Seasonal reveal card | Viral | Prereq: Ollie test passed |
-| 10 | YGW-062 | Photo-based plant scan | Sticky | None |
+| Rank | ID | Title | CD3 Score | Engine | Blocker |
+|---|---|---|---|---|---|
+| — | YGW-066 | Plant Palette Generator | — | Sticky | ✅ Built — awaiting Ollie test to merge |
+| — | YGW-071 | Quick Quote Helper | — | Sticky | ✅ Built — awaiting Ollie test to merge |
+| — | YGW-075 | Combo Explorer | — | Sticky | ✅ Built — hold until HDD-001 validated |
+| 1 | **YGW-064** | Stripe billing + trial gate (landscaper) | **11.0** | Paid | Rod: Stripe account |
+| 2 | YGW-022 | Seasonal re-engagement email | 7.0 | Sticky | Rod: RESEND_API_KEY |
+| 3 | YGW-070 | Designer Mode (Oz) | 5.0 | Sticky | Oz availability |
+| 4 | YGW-025 | Year-round interest planner | 3.5 | Sticky | None |
 
-> **Note on YGW-072 and YGW-073:** Both Viral features are held until YGW-066-AC-007 passes. Viral mechanics only work if output quality is share-worthy. Ollie test validates that prerequisite.
+> **Unblocked queue is thin.** Only YGW-025 (3.5) is immediately buildable. Top 3 all have external blockers.
+> **Option to raise:** Landscaper onboarding flow — design fully spec'd in `.claude/onboarding-design.md`, no blocker, estimated ~6.5 CD3. Raise as new item before next build session.
+> **YGW-064** scores highest (11.0) — Rod action: set up Stripe account to unblock.
+> **YGW-072 and YGW-073:** Viral features held until YGW-066-AC-007 (Ollie test) passes.
+> **CD3 formula:** (Customer value + Dependencies − Complexity) + (SWOT × 1.5)
 
 ---
 
@@ -836,4 +873,4 @@ YGW-066-AC-007 (Ollie test) blocks merge of all landscaper column items.
 
 ---
 
-*Document ref: ygw-backlog-v6-2026-03-24 · EPIC O added: YGW-076 Sub-Plot Designer · ADR-011/ADR-012 written · Mobile FAB fix applied to main · LeanSpirited*
+*Document ref: ygw-backlog-v7-2026-03-24 · EPIC O added: YGW-076 Sub-Plot Designer · ADR-011/ADR-012/ADR-013 written · Mobile FAB fix on main · feature/tgw-landscaper-tools merged to main (ADR-013) · YGW-066 Plant Palette + YGW-071 Quick Quote now on main · CD3 v8: YGW-061, YGW-062, YGW-046, YGW-075 (built/held) · EPIC N: YGW-075 Combo Explorer (hold HDD-001) · EPIC M: YGW-071–074 · EPIC L: YGW-066–070 · LeanSpirited*

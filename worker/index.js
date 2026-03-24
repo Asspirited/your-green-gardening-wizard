@@ -6,16 +6,25 @@
 const ALLOWED_ORIGINS = [
   'https://asspirited.github.io',
   'https://your-green-gardening-wizard.pages.dev',
+  'https://your-green-gardening-wizard.leanspirited.workers.dev',
 ];
 const ALLOWED_ORIGINS_DEV = ['http://localhost','http://localhost:8080','http://127.0.0.1','null'];
+
+function isAllowedOrigin(origin, isDev) {
+  if (!origin) return false;
+  if (isDev && ALLOWED_ORIGINS_DEV.includes(origin)) return true;
+  if (ALLOWED_ORIGINS.includes(origin)) return true;
+  // Allow branch preview URLs: *-your-green-gardening-wizard.leanspirited.workers.dev
+  if (origin.endsWith('-your-green-gardening-wizard.leanspirited.workers.dev')) return true;
+  return false;
+}
 
 export default {
   async fetch(request, env) {
     const origin = request.headers.get('Origin') || '';
     const isDev = env.ENVIRONMENT === 'development';
-    const allowed = isDev ? [...ALLOWED_ORIGINS, ...ALLOWED_ORIGINS_DEV] : ALLOWED_ORIGINS;
     const corsHeaders = {
-      'Access-Control-Allow-Origin': allowed.includes(origin) ? origin : allowed[0],
+      'Access-Control-Allow-Origin': isAllowedOrigin(origin, isDev) ? origin : ALLOWED_ORIGINS[0],
       'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
       'Access-Control-Allow-Headers': 'Content-Type',
       'Access-Control-Max-Age': '86400',
